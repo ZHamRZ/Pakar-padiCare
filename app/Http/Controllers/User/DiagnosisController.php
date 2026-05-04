@@ -28,6 +28,11 @@ class DiagnosisController extends Controller
 
     public function identifikasi(Request $request)
     {
+        // CRITICAL FIX: Clear session diagnosis_result lama sebelum menghitung yang baru
+        // Ini mencegah gejala yang di-uncheck tetap terdiagnosa karena data cached
+        session()->forget('diagnosis_result');
+        session()->forget('guest_rekomendasi');
+        
         $request->validate([
             'gejala' => 'required|array|min:1',
             'gejala.*' => 'exists:gejala,id',

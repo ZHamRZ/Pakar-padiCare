@@ -53,9 +53,11 @@ class RecommendationService
 
     /**
      * Apply preference adjustment untuk menyesuaikan rekomendasi dengan kebutuhan user
-     * - 'hemat': Prioritaskan harga murah dengan boost CF
-     * - 'efisiensi': Prioritaskan CF tinggi dengan boost ekstra (produk mahal + CF tinggi = efisiensi tinggi)
+     * - 'hemat': Prioritaskan harga murah dengan boost CF (kombinasi CF tinggi + harga murah)
+     * - 'efisiensi': Prioritaskan produk premium dengan CF tinggi (produk mahal + CF tinggi = efisiensi tinggi)
      * - 'seimbang': Tidak ada adjustment signifikan
+     * 
+     * CRITICAL: Adjustment info ditambahkan untuk transparansi ke user
      */
     private function applyPreferenceAdjustment(array $result, string $presetType): array
     {
@@ -66,6 +68,7 @@ class RecommendationService
             
             $adjustment = 0.0;
             $efficiencyBonus = 0.0;
+            $reason = [];
             
             if ($presetType === 'hemat') {
                 // LOGIKA HEMAT BIAYA:
@@ -76,69 +79,77 @@ class RecommendationService
                 $cfCategory = $this->getCfCategory($baseCf);
                 
                 if ($cfCategory === 'sangat_tinggi' && $priceCategory === 'sangat_murah') {
-                    // PRIORITAS UTAMA: CF sangat tinggi + harga sangat murah
-                    $adjustment = 0.25; // Boost maksimal
-                    $efficiencyBonus = 0.10; // Bonus efisiensi biaya
+                    $adjustment = 0.25;
+                    $efficiencyBonus = 0.10;
+                    $reason = ['CF sangat tinggi', 'harga sangat murah', 'kombinasi optimal hemat'];
                 } elseif ($cfCategory === 'sangat_tinggi' && $priceCategory === 'murah') {
-                    // CF sangat tinggi + harga murah
                     $adjustment = 0.20;
                     $efficiencyBonus = 0.08;
+                    $reason = ['CF sangat tinggi', 'harga murah'];
                 } elseif ($cfCategory === 'tinggi' && $priceCategory === 'sangat_murah') {
-                    // CF tinggi + harga sangat murah
                     $adjustment = 0.18;
                     $efficiencyBonus = 0.07;
+                    $reason = ['CF tinggi', 'harga sangat murah'];
                 } elseif ($cfCategory === 'tinggi' && $priceCategory === 'murah') {
-                    // CF tinggi + harga murah
                     $adjustment = 0.15;
                     $efficiencyBonus = 0.05;
+                    $reason = ['CF tinggi', 'harga murah'];
                 } elseif ($cfCategory === 'sangat_tinggi') {
-                    // CF sangat tinggi tapi harga menengah/mahal (tetap bagus untuk hemat)
                     $adjustment = 0.12;
+                    $reason = ['CF sangat tinggi'];
                 } elseif ($cfCategory === 'tinggi' && $priceCategory === 'menengah') {
                     $adjustment = 0.08;
+                    $reason = ['CF tinggi', 'harga menengah'];
                 } elseif ($cfCategory === 'sedang' && $priceCategory === 'sangat_murah') {
                     $adjustment = 0.10;
+                    $reason = ['harga sangat murah'];
                 } elseif ($cfCategory === 'sedang' && $priceCategory === 'murah') {
                     $adjustment = 0.06;
+                    $reason = ['harga murah'];
                 } elseif ($priceCategory === 'sangat_murah') {
                     $adjustment = 0.05;
+                    $reason = ['harga sangat murah'];
                 } elseif ($priceCategory === 'murah') {
                     $adjustment = 0.03;
+                    $reason = ['harga murah'];
                 } else {
-                    // Harga mahal - penalty berdasarkan tingkat kemahalan
                     $adjustment = $priceCategory === 'mahal' ? -0.08 : -0.04;
+                    $reason = ['harga mahal - penalty'];
                 }
             } elseif ($presetType === 'efisiensi') {
                 // LOGIKA EFISIENSI TINGGI:
                 // Produk dengan CF tinggi DAN harga mahal = efisiensi tinggi (boost ekstra)
-                // Produk dengan CF tinggi tapi murah = baik tapi bukan prioritas efisiensi
                 
                 $priceCategory = $this->getPriceCategory($harga, 'pupuk');
                 $cfCategory = $this->getCfCategory($baseCf);
                 
                 if ($cfCategory === 'sangat_tinggi' && $priceCategory === 'mahal') {
-                    // CF sangat tinggi + mahal = efisiensi tinggi (prioritas utama)
                     $adjustment = 0.15;
                     $efficiencyBonus = 0.05;
+                    $reason = ['CF sangat tinggi', 'produk premium', 'efisiensi maksimal'];
                 } elseif ($cfCategory === 'sangat_tinggi' && $priceCategory === 'menengah') {
-                    // CF sangat tinggi + menengah = efisiensi cukup tinggi
                     $adjustment = 0.12;
                     $efficiencyBonus = 0.03;
+                    $reason = ['CF sangat tinggi', 'harga menengah'];
                 } elseif ($cfCategory === 'sangat_tinggi') {
-                    // CF sangat tinggi + murah = bagus tapi bukan prioritas efisiensi
                     $adjustment = 0.08;
+                    $reason = ['CF sangat tinggi'];
                 } elseif ($cfCategory === 'tinggi' && $priceCategory === 'mahal') {
-                    // CF tinggi + mahal = efisiensi tinggi
                     $adjustment = 0.10;
                     $efficiencyBonus = 0.03;
+                    $reason = ['CF tinggi', 'produk premium'];
                 } elseif ($cfCategory === 'tinggi' && $priceCategory === 'menengah') {
                     $adjustment = 0.07;
+                    $reason = ['CF tinggi', 'harga menengah'];
                 } elseif ($cfCategory === 'tinggi') {
                     $adjustment = 0.05;
+                    $reason = ['CF tinggi'];
                 } elseif ($cfCategory === 'sedang' && $priceCategory === 'mahal') {
                     $adjustment = 0.05;
+                    $reason = ['produk premium'];
                 } elseif ($cfCategory === 'sedang') {
                     $adjustment = 0.03;
+                    $reason = ['CF sedang'];
                 }
             }
             
@@ -148,12 +159,17 @@ class RecommendationService
             $item['cf_percentage'] = round($this->cfEngine->toPercentage($adjustedCf), 2);
             $item['interpretation'] = $this->fpEngine->getRecommendationLabel($adjustedCf);
             $item['preference_applied'] = true;
+            $item['is_high_efficiency'] = $efficiencyBonus > 0;
             $item['adjustment_info'] = [
                 'preset' => $presetType,
-                'adjustment' => round($adjustment, 4),
                 'base_cf' => round($baseCf, 4),
+                'adjusted_cf' => round($adjustedCf, 4),
+                'adjustment' => round($adjustment, 4),
+                'adjustment_percentage' => round($adjustment * 100, 1) . '%',
                 'efficiency_bonus' => $efficiencyBonus > 0 ? round($efficiencyBonus, 4) : null,
-                'is_high_efficiency' => $efficiencyBonus > 0,
+                'reason' => !empty($reason) ? implode(', ', $reason) : 'Tidak ada adjustment signifikan',
+                'price_category' => $this->getPriceCategory($harga, 'pupuk'),
+                'cf_category' => $this->getCfCategory($baseCf),
             ];
             
             return $item;
@@ -166,79 +182,81 @@ class RecommendationService
             
             $adjustment = 0.0;
             $efficiencyBonus = 0.0;
+            $reason = [];
             
             if ($presetType === 'hemat') {
-                // LOGIKA HEMAT BIAYA:
-                // Prioritaskan produk dengan CF TERTINGGI + HARGA TERMURAH
-                // Kombinasi ideal: CF tinggi (>0.7) + harga sangat murah (<Rp50.000)
-                
                 $priceCategory = $this->getPriceCategory($harga, 'pestisida');
                 $cfCategory = $this->getCfCategory($baseCf);
                 
                 if ($cfCategory === 'sangat_tinggi' && $priceCategory === 'sangat_murah') {
-                    // PRIORITAS UTAMA: CF sangat tinggi + harga sangat murah
-                    $adjustment = 0.25; // Boost maksimal
-                    $efficiencyBonus = 0.10; // Bonus efisiensi biaya
+                    $adjustment = 0.25;
+                    $efficiencyBonus = 0.10;
+                    $reason = ['CF sangat tinggi', 'harga sangat murah', 'kombinasi optimal hemat'];
                 } elseif ($cfCategory === 'sangat_tinggi' && $priceCategory === 'murah') {
-                    // CF sangat tinggi + harga murah
                     $adjustment = 0.20;
                     $efficiencyBonus = 0.08;
+                    $reason = ['CF sangat tinggi', 'harga murah'];
                 } elseif ($cfCategory === 'tinggi' && $priceCategory === 'sangat_murah') {
-                    // CF tinggi + harga sangat murah
                     $adjustment = 0.18;
                     $efficiencyBonus = 0.07;
+                    $reason = ['CF tinggi', 'harga sangat murah'];
                 } elseif ($cfCategory === 'tinggi' && $priceCategory === 'murah') {
-                    // CF tinggi + harga murah
                     $adjustment = 0.15;
                     $efficiencyBonus = 0.05;
+                    $reason = ['CF tinggi', 'harga murah'];
                 } elseif ($cfCategory === 'sangat_tinggi') {
-                    // CF sangat tinggi tapi harga menengah/mahal (tetap bagus untuk hemat)
                     $adjustment = 0.12;
+                    $reason = ['CF sangat tinggi'];
                 } elseif ($cfCategory === 'tinggi' && $priceCategory === 'menengah') {
                     $adjustment = 0.08;
+                    $reason = ['CF tinggi', 'harga menengah'];
                 } elseif ($cfCategory === 'sedang' && $priceCategory === 'sangat_murah') {
                     $adjustment = 0.10;
+                    $reason = ['harga sangat murah'];
                 } elseif ($cfCategory === 'sedang' && $priceCategory === 'murah') {
                     $adjustment = 0.06;
+                    $reason = ['harga murah'];
                 } elseif ($priceCategory === 'sangat_murah') {
                     $adjustment = 0.05;
+                    $reason = ['harga sangat murah'];
                 } elseif ($priceCategory === 'murah') {
                     $adjustment = 0.03;
+                    $reason = ['harga murah'];
                 } else {
-                    // Harga mahal - penalty berdasarkan tingkat kemahalan
                     $adjustment = $priceCategory === 'mahal' ? -0.08 : -0.04;
+                    $reason = ['harga mahal - penalty'];
                 }
             } elseif ($presetType === 'efisiensi') {
-                // LOGIKA EFISIENSI TINGGI:
-                // Produk dengan CF tinggi DAN harga mahal = efisiensi tinggi (boost ekstra)
-                // Produk dengan CF tinggi tapi murah = baik tapi bukan prioritas efisiensi
-                
                 $priceCategory = $this->getPriceCategory($harga, 'pestisida');
                 $cfCategory = $this->getCfCategory($baseCf);
                 
                 if ($cfCategory === 'sangat_tinggi' && $priceCategory === 'mahal') {
-                    // CF sangat tinggi + mahal = efisiensi tinggi (prioritas utama)
                     $adjustment = 0.15;
                     $efficiencyBonus = 0.05;
+                    $reason = ['CF sangat tinggi', 'produk premium', 'efisiensi maksimal'];
                 } elseif ($cfCategory === 'sangat_tinggi' && $priceCategory === 'menengah') {
-                    // CF sangat tinggi + menengah = efisiensi cukup tinggi
                     $adjustment = 0.12;
                     $efficiencyBonus = 0.03;
+                    $reason = ['CF sangat tinggi', 'harga menengah'];
                 } elseif ($cfCategory === 'sangat_tinggi') {
-                    // CF sangat tinggi + murah = bagus tapi bukan prioritas efisiensi
                     $adjustment = 0.08;
+                    $reason = ['CF sangat tinggi'];
                 } elseif ($cfCategory === 'tinggi' && $priceCategory === 'mahal') {
-                    // CF tinggi + mahal = efisiensi tinggi
                     $adjustment = 0.10;
                     $efficiencyBonus = 0.03;
+                    $reason = ['CF tinggi', 'produk premium'];
                 } elseif ($cfCategory === 'tinggi' && $priceCategory === 'menengah') {
                     $adjustment = 0.07;
+                    $reason = ['CF tinggi', 'harga menengah'];
                 } elseif ($cfCategory === 'tinggi') {
                     $adjustment = 0.05;
+                    $reason = ['CF tinggi'];
                 } elseif ($cfCategory === 'sedang' && $priceCategory === 'mahal') {
                     $adjustment = 0.05;
+                    $reason = ['produk premium'];
                 } elseif ($cfCategory === 'sedang') {
                     $adjustment = 0.03;
+                    $reason = ['CF sedang'];
                 }
             }
             
@@ -248,12 +266,17 @@ class RecommendationService
             $item['cf_percentage'] = round($this->cfEngine->toPercentage($adjustedCf), 2);
             $item['interpretation'] = $this->fpEngine->getRecommendationLabel($adjustedCf);
             $item['preference_applied'] = true;
+            $item['is_high_efficiency'] = $efficiencyBonus > 0;
             $item['adjustment_info'] = [
                 'preset' => $presetType,
-                'adjustment' => round($adjustment, 4),
                 'base_cf' => round($baseCf, 4),
+                'adjusted_cf' => round($adjustedCf, 4),
+                'adjustment' => round($adjustment, 4),
+                'adjustment_percentage' => round($adjustment * 100, 1) . '%',
                 'efficiency_bonus' => $efficiencyBonus > 0 ? round($efficiencyBonus, 4) : null,
-                'is_high_efficiency' => $efficiencyBonus > 0,
+                'reason' => !empty($reason) ? implode(', ', $reason) : 'Tidak ada adjustment signifikan',
+                'price_category' => $this->getPriceCategory($harga, 'pestisida'),
+                'cf_category' => $this->getCfCategory($baseCf),
             ];
             
             return $item;
@@ -267,7 +290,7 @@ class RecommendationService
             $item['peringkat'] = $index + 1;
         }
         
-        // Limit to top 3 untuk masing-masing
+        // Limit to top 3 untuk masing-masing (CRITICAL: Maksimal 3 rekomendasi)
         $adjustedPupuk = array_slice($adjustedPupuk, 0, 3);
         $adjustedPestisida = array_slice($adjustedPestisida, 0, 3);
         
@@ -280,6 +303,7 @@ class RecommendationService
                 'total_pestisida_direkomendasikan' => count($adjustedPestisida),
                 'preference_applied' => true,
                 'preset_type' => $presetType,
+                'max_recommendations' => 3,
             ]),
             'method_info' => $result['method_info'],
             'preference_info' => [

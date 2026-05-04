@@ -49,6 +49,9 @@ class FertilizerPesticideRecommendationEngine
 
     /**
      * Hitung rekomendasi pupuk berdasarkan PENYAKIT yang terdiagnosis
+     * 
+     * CRITICAL: Filter hanya pupuk dengan CF_Final > 0
+     * Pupuk dengan CF negatif (seperti Urea pada Blast) TIDAK akan direkomendasikan
      */
     public function calculateFertilizerRecommendations(int $diseaseId, array $symptomIds = []): array
     {
@@ -77,9 +80,21 @@ class FertilizerPesticideRecommendationEngine
                 $md = $md / $total;
             }
 
+            // CF_Penyebab: seberapa besar pupuk menyebabkan/memperparah penyakit
             $cfPenyebab = $this->cfEngine->calculateCf($mb, $md);
+            
+            // Transformasi: CF_Rekomendasi = -CF_Penyebab
+            // Jika pupuk memperparah penyakit (CF_Penyebab positif), maka CF_Rekomendasi negatif → TIDAK direkomendasikan
+            // Jika pupuk mencegah penyakit (CF_Penyebab negatif), maka CF_Rekomendasi positif → DIREKOMENDASIKAN
             $cfRekomendasi = -$cfPenyebab;
             $cfRekomendasi = $this->cfEngine->normalizeToRange($cfRekomendasi, -1, 1);
+            
+            // CRITICAL FIX: Skip pupuk dengan CF negatif atau nol
+            // Contoh: Urea pada Blast memiliki CF negatif karena nitrogen tinggi memperparah blast
+            if ($cfRekomendasi <= 0) {
+                continue;
+            }
+            
             $interpretation = $this->getRecommendationLabel($cfRekomendasi);
 
             $recommendations[] = [
@@ -100,6 +115,12 @@ class FertilizerPesticideRecommendationEngine
                 'cf_rekomendasi' => round($cfRekomendasi, 4),
                 'cf_percentage' => round($this->cfEngine->toPercentage($cfRekomendasi), 2),
                 'interpretation' => $interpretation,
+                'adjustment_info' => [
+                    'base_cf' => round($cfRekomendasi, 4),
+                    'adjustment' => 0.0,
+                    'reason' => 'CF dasar dari relasi penyakit-pupuk',
+                ],
+                'is_high_efficiency' => false,
                 'disease_info' => [
                     'id' => $disease->id,
                     'nama' => $disease->nama,
@@ -121,6 +142,8 @@ class FertilizerPesticideRecommendationEngine
 
     /**
      * Hitung rekomendasi pestisida berdasarkan PENYAKIT yang terdiagnosis
+     * 
+     * CRITICAL: Filter hanya pestisida dengan CF_Final > 0
      */
     public function calculatePesticideRecommendations(int $diseaseId, array $symptomIds = []): array
     {
@@ -149,9 +172,16 @@ class FertilizerPesticideRecommendationEngine
                 $md = $md / $total;
             }
 
+            // CF_Solusi: efektivitas pestisida mengatasi penyakit (tanpa transformasi)
             $cfSolusi = $this->cfEngine->calculateCf($mb, $md);
             $cfRekomendasi = $cfSolusi;
             $cfRekomendasi = $this->cfEngine->normalizeToRange($cfRekomendasi, -1, 1);
+            
+            // CRITICAL FIX: Skip pestisida dengan CF negatif atau nol
+            if ($cfRekomendasi <= 0) {
+                continue;
+            }
+            
             $interpretation = $this->getRecommendationLabel($cfRekomendasi);
 
             $recommendations[] = [
@@ -172,6 +202,12 @@ class FertilizerPesticideRecommendationEngine
                 'cf_rekomendasi' => round($cfRekomendasi, 4),
                 'cf_percentage' => round($this->cfEngine->toPercentage($cfRekomendasi), 2),
                 'interpretation' => $interpretation,
+                'adjustment_info' => [
+                    'base_cf' => round($cfRekomendasi, 4),
+                    'adjustment' => 0.0,
+                    'reason' => 'CF dasar dari relasi penyakit-pestisida',
+                ],
+                'is_high_efficiency' => false,
                 'disease_info' => [
                     'id' => $disease->id,
                     'nama' => $disease->nama,
@@ -193,6 +229,9 @@ class FertilizerPesticideRecommendationEngine
 
     /**
      * Hitung rekomendasi lengkap (pupuk + pestisida) berdasarkan PENYAKIT
+     * 
+     * CRITICAL: Filter negatif sudah dilakukan di level calculateFertilizerRecommendations
+     * dan calculatePesticideRecommendations. Method ini hanya untuk limit top N.
      */
     public function calculateAllRecommendations(
         int $diseaseId,
@@ -203,6 +242,8 @@ class FertilizerPesticideRecommendationEngine
         $fertilizerRecs = $this->calculateFertilizerRecommendations($diseaseId, $symptomIds);
         $pesticideRecs = $this->calculatePesticideRecommendations($diseaseId, $symptomIds);
 
+        // Catatan: Filter onlyPositive sudah dilakukan di level method individual
+        // Ini adalah defensive layer tambahan
         if ($onlyPositive) {
             $fertilizerRecs = array_values(array_filter($fertilizerRecs, fn ($item) => $item['cf_rekomendasi'] > 0));
             $pesticideRecs = array_values(array_filter($pesticideRecs, fn ($item) => $item['cf_rekomendasi'] > 0));
@@ -252,6 +293,7 @@ class FertilizerPesticideRecommendationEngine
                 'basis_rekomendasi' => 'Penyakit (bukan gejala)',
                 'pupuk_transformation' => 'CF_rekomendasi = -CF_penyebab',
                 'pestisida_transformation' => 'CF_rekomendasi = CF_solusi (tanpa perubahan)',
+                'negative_filter' => 'Pupuk/Pestisida dengan CF <= 0 otomatis difilter',
             ],
         ];
     }
