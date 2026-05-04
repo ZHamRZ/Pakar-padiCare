@@ -1,42 +1,50 @@
-```php
-/vendor/
+```
+# Compiled and build artifacts
+*.pyc
+__pycache__/
+*.o
+*.obj
+dist/
+build/
+target/
+
+# Dependencies
+.venv/
+venv/
+node_modules/
+vendor/
 composer.lock
+
+# Logs and temp files
+*.log
+*.tmp
+*.swp
+*.swo
+
+# Environment
 .env
 .env.local
 .env.*
-*.log
-.svn/
-.DS_Store
-Thumbs.db
-coverage/
-htmlcov/
-.coverage
+
+# Editors
+.vscode/
+.idea/
 *.swp
 *.swo
-*.tmp
-build/
-dist/
-node_modules/
-.npm
-.yarn
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.idea/
-.vscode/
-.settings/
-*.out
-*.exe
-*.dll
-*.so
-*.a
-*.class
-*.pyc
-__pycache__/
-.pytest_cache/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Cache
+.cache/
 .mypy_cache/
-target/
-.gradle/
+.pytest_cache/
+.coverage
+coverage/
+htmlcov/
+
+# Compressed files
 *.zip
 *.gz
 *.tar
@@ -55,4 +63,8 @@ target/
 *.Z
 *.lz
 *.lzo
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+*.tar.zst
 ```
