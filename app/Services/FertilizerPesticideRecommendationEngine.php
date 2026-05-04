@@ -107,6 +107,7 @@ class FertilizerPesticideRecommendationEngine
                     'md' => round($md, 3),
                 ],
                 'matched_symptoms_count' => count($symptomIds),
+                'matched_symptoms' => $symptomIds, // Tambahkan untuk symptom weight adjustment
             ];
         }
 
@@ -179,6 +180,7 @@ class FertilizerPesticideRecommendationEngine
                     'md' => round($md, 3),
                 ],
                 'matched_symptoms_count' => count($symptomIds),
+                'matched_symptoms' => $symptomIds, // Tambahkan untuk symptom weight adjustment
             ];
         }
 
@@ -193,26 +195,37 @@ class FertilizerPesticideRecommendationEngine
 
     /**
      * Hitung rekomendasi lengkap (pupuk + pestisida) berdasarkan PENYAKIT
+     * Dengan integrasi preferensi user untuk prioritas kebutuhan & harga
      */
     public function calculateAllRecommendations(
         int $diseaseId,
         array $symptomIds = [],
         ?int $topN = 3,  // Default limit ke 3 teratas
-        bool $onlyPositive = true
+        bool $onlyPositive = true,
+        string $presetType = 'seimbang'  // Preferensi: seimbang, hemat, efisiensi
     ): array {
         $fertilizerRecs = $this->calculateFertilizerRecommendations($diseaseId, $symptomIds);
         $pesticideRecs = $this->calculatePesticideRecommendations($diseaseId, $symptomIds);
 
+        // Filter hanya yang positive jika diminta
         if ($onlyPositive) {
             $fertilizerRecs = array_values(array_filter($fertilizerRecs, fn ($item) => $item['cf_rekomendasi'] > 0));
             $pesticideRecs = array_values(array_filter($pesticideRecs, fn ($item) => $item['cf_rekomendasi'] > 0));
+        }
 
-            foreach ($fertilizerRecs as $index => &$item) {
-                $item['peringkat'] = $index + 1;
-            }
-            foreach ($pesticideRecs as $index => &$item) {
-                $item['peringkat'] = $index + 1;
-            }
+        // Apply preference adjustment untuk prioritisasi
+        $fertilizerRecs = $this->applyPreferenceToRecommendations($fertilizerRecs, $presetType, 'pupuk');
+        $pesticideRecs = $this->applyPreferenceToRecommendations($pesticideRecs, $presetType, 'pestisida');
+
+        // Re-calculate peringkat setelah adjustment
+        usort($fertilizerRecs, fn ($a, $b) => $b['cf_rekomendasi'] <=> $a['cf_rekomendasi']);
+        usort($pesticideRecs, fn ($a, $b) => $b['cf_rekomendasi'] <=> $a['cf_rekomendasi']);
+
+        foreach ($fertilizerRecs as $index => &$item) {
+            $item['peringkat'] = $index + 1;
+        }
+        foreach ($pesticideRecs as $index => &$item) {
+            $item['peringkat'] = $index + 1;
         }
 
         // Limit to top N (default 3) untuk masing-masing
@@ -247,13 +260,147 @@ class FertilizerPesticideRecommendationEngine
                 'total_pestisida_direkomendasikan' => count($pesticideRecs),
                 'filter_positive_only' => $onlyPositive,
                 'top_n' => $topN,
+                'preset_type' => $presetType,
             ],
             'method_info' => [
                 'basis_rekomendasi' => 'Penyakit (bukan gejala)',
                 'pupuk_transformation' => 'CF_rekomendasi = -CF_penyebab',
                 'pestisida_transformation' => 'CF_rekomendasi = CF_solusi (tanpa perubahan)',
+                'preference_integration' => 'Prioritas kebutuhan & harga diintegrasikan dalam perhitungan CF',
             ],
         ];
+    }
+
+    /**
+     * Apply preference adjustment ke rekomendasi untuk prioritisasi
+     * 
+     * LOGIKA PRIORITAS:
+     * - 'hemat': CF tinggi + harga murah = boost maksimal (efisiensi biaya)
+     * - 'efisiensi': CF tinggi + harga mahal = boost (produk premium efisien)
+     * - 'seimbang': Tidak ada adjustment signifikan
+     */
+    private function applyPreferenceToRecommendations(array $recommendations, string $presetType, string $type): array
+    {
+        if ($presetType === 'seimbang') {
+            return $recommendations;
+        }
+
+        foreach ($recommendations as &$item) {
+            $baseCf = $item['cf_rekomendasi'];
+            $harga = $type === 'pupuk' 
+                ? (float) data_get($item, 'harga_per_kg', 0)
+                : (float) data_get($item, 'harga', 0);
+            
+            $adjustment = 0.0;
+            $efficiencyBonus = 0.0;
+            
+            // Kategorisasi harga
+            $priceCategory = $this->getPriceCategory($harga, $type);
+            $cfCategory = $this->getCfCategory($baseCf);
+            
+            if ($presetType === 'hemat') {
+                // HEMAT BIAYA: Prioritaskan CF TERTINGGI + HARGA TERMURAH
+                if ($cfCategory === 'sangat_tinggi' && $priceCategory === 'sangat_murah') {
+                    $adjustment = 0.25;
+                    $efficiencyBonus = 0.10;
+                } elseif ($cfCategory === 'sangat_tinggi' && $priceCategory === 'murah') {
+                    $adjustment = 0.20;
+                    $efficiencyBonus = 0.08;
+                } elseif ($cfCategory === 'tinggi' && $priceCategory === 'sangat_murah') {
+                    $adjustment = 0.18;
+                    $efficiencyBonus = 0.07;
+                } elseif ($cfCategory === 'tinggi' && $priceCategory === 'murah') {
+                    $adjustment = 0.15;
+                    $efficiencyBonus = 0.05;
+                } elseif ($cfCategory === 'sangat_tinggi') {
+                    $adjustment = 0.12;
+                } elseif ($cfCategory === 'tinggi' && $priceCategory === 'menengah') {
+                    $adjustment = 0.08;
+                } elseif ($cfCategory === 'sedang' && $priceCategory === 'sangat_murah') {
+                    $adjustment = 0.10;
+                } elseif ($cfCategory === 'sedang' && $priceCategory === 'murah') {
+                    $adjustment = 0.06;
+                } elseif ($priceCategory === 'sangat_murah') {
+                    $adjustment = 0.05;
+                } elseif ($priceCategory === 'murah') {
+                    $adjustment = 0.03;
+                } else {
+                    $adjustment = $priceCategory === 'mahal' ? -0.08 : -0.04;
+                }
+            } elseif ($presetType === 'efisiensi') {
+                // EFISIENSI TINGGI: CF tinggi + harga mahal = efisiensi tinggi
+                if ($cfCategory === 'sangat_tinggi' && $priceCategory === 'mahal') {
+                    $adjustment = 0.15;
+                    $efficiencyBonus = 0.05;
+                } elseif ($cfCategory === 'sangat_tinggi' && $priceCategory === 'menengah') {
+                    $adjustment = 0.12;
+                    $efficiencyBonus = 0.03;
+                } elseif ($cfCategory === 'sangat_tinggi') {
+                    $adjustment = 0.08;
+                } elseif ($cfCategory === 'tinggi' && $priceCategory === 'mahal') {
+                    $adjustment = 0.10;
+                    $efficiencyBonus = 0.03;
+                } elseif ($cfCategory === 'tinggi' && $priceCategory === 'menengah') {
+                    $adjustment = 0.07;
+                } elseif ($cfCategory === 'tinggi') {
+                    $adjustment = 0.05;
+                } elseif ($cfCategory === 'sedang' && $priceCategory === 'mahal') {
+                    $adjustment = 0.05;
+                } elseif ($cfCategory === 'sedang') {
+                    $adjustment = 0.03;
+                }
+            }
+            
+            $adjustedCf = $this->cfEngine->normalizeToRange($baseCf + $adjustment, -1, 1);
+            
+            $item['cf_rekomendasi'] = round($adjustedCf, 4);
+            $item['cf_percentage'] = round($this->cfEngine->toPercentage($adjustedCf), 2);
+            $item['interpretation'] = $this->getRecommendationLabel($adjustedCf);
+            $item['adjustment_info'] = [
+                'preset' => $presetType,
+                'adjustment' => round($adjustment, 4),
+                'base_cf' => round($baseCf, 4),
+                'efficiency_bonus' => $efficiencyBonus > 0 ? round($efficiencyBonus, 4) : null,
+                'is_high_efficiency' => $efficiencyBonus > 0,
+                'price_category' => $priceCategory,
+                'cf_category' => $cfCategory,
+            ];
+        }
+        
+        return $recommendations;
+    }
+
+    /**
+     * Kategorikan harga berdasarkan tipe produk
+     */
+    private function getPriceCategory(float $harga, string $type): string
+    {
+        if ($type === 'pupuk') {
+            if ($harga <= 5000) return 'sangat_murah';
+            if ($harga <= 15000) return 'murah';
+            if ($harga <= 30000) return 'menengah';
+            if ($harga <= 60000) return 'mahal';
+            return 'sangat_mahal';
+        } else {
+            // Pestisida
+            if ($harga <= 50000) return 'sangat_murah';
+            if ($harga <= 100000) return 'murah';
+            if ($harga <= 150000) return 'menengah';
+            if ($harga <= 250000) return 'mahal';
+            return 'sangat_mahal';
+        }
+    }
+
+    /**
+     * Kategorikan nilai CF
+     */
+    private function getCfCategory(float $cf): string
+    {
+        if ($cf >= 0.8) return 'sangat_tinggi';
+        if ($cf >= 0.6) return 'tinggi';
+        if ($cf >= 0.4) return 'sedang';
+        if ($cf >= 0.2) return 'rendah';
+        return 'sangat_rendah';
     }
 
     /**
