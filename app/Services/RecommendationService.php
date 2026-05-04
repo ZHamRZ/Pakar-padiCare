@@ -39,8 +39,8 @@ class RecommendationService
         $result = $this->fpEngine->calculateAllRecommendations(
             $diseaseId,       // Disease ID sebagai basis rekomendasi
             $gejalaIds,       // Symptom IDs untuk kelengkapan diagnosis
-            topN: null,
-            onlyPositive: true
+            topN: 3,          // Tampilkan TOP 3 saja untuk fokus pada rekomendasi terbaik
+            onlyPositive: false  // Tampilkan semua agar user bisa lihat ranking lengkap
         );
         
         // Apply preference adjustment untuk menyesuaikan dengan kebutuhan user
@@ -53,9 +53,16 @@ class RecommendationService
 
     /**
      * Apply preference adjustment untuk menyesuaikan rekomendasi dengan kebutuhan user
-     * - 'hemat': Prioritaskan harga murah dengan boost CF
-     * - 'efisiensi': Prioritaskan CF tinggi dengan boost ekstra (produk mahal + CF tinggi = efisiensi tinggi)
-     * - 'seimbang': Tidak ada adjustment signifikan
+     * 
+     * PRINSIP UTAMA:
+     * - 'hemat': CF TERTINGGI + HARGA TERMURAH = Prioritas Utama (boost maksimal)
+     *   Contoh: Kompos (CF: 0.8, Harga: Rp600) >> Silika Cair (CF: 0.75, Harga: Rp170.000)
+     * 
+     * - 'efisiensi': CF TERTINGGI + HARGA MAHAL = Efisiensi Tinggi (boost ekstra)
+     *   Contoh: Silika Cair (CF: 0.75, Harga: Rp170.000) >> Kompos (CF: 0.8, Harga: Rp600)
+     *   Alasan: Produk mahal + CF tinggi = hasil optimal, worth it untuk investasi
+     * 
+     * - 'seimbang': Tidak ada adjustment, murni berdasarkan CF
      */
     private function applyPreferenceAdjustment(array $result, string $presetType): array
     {
@@ -69,76 +76,86 @@ class RecommendationService
             
             if ($presetType === 'hemat') {
                 // LOGIKA HEMAT BIAYA:
-                // Prioritaskan produk dengan CF TERTINGGI + HARGA TERMURAH
-                // Kombinasi ideal: CF tinggi (>0.7) + harga sangat murah (<Rp10.000)
+                // PRIORITAS: CF TERTINGGI + HARGA TERMURAH
+                // Kombinasi ideal: CF sangat tinggi (>0.8) + harga sangat murah (<Rp5.000)
                 
                 $priceCategory = $this->getPriceCategory($harga, 'pupuk');
                 $cfCategory = $this->getCfCategory($baseCf);
                 
                 if ($cfCategory === 'sangat_tinggi' && $priceCategory === 'sangat_murah') {
                     // PRIORITAS UTAMA: CF sangat tinggi + harga sangat murah
-                    $adjustment = 0.25; // Boost maksimal
-                    $efficiencyBonus = 0.10; // Bonus efisiensi biaya
+                    $adjustment = 0.30; // Boost maksimal untuk hemat biaya
+                    $efficiencyBonus = 0.15; // Bonus efisiensi biaya tertinggi
                 } elseif ($cfCategory === 'sangat_tinggi' && $priceCategory === 'murah') {
                     // CF sangat tinggi + harga murah
-                    $adjustment = 0.20;
-                    $efficiencyBonus = 0.08;
+                    $adjustment = 0.25;
+                    $efficiencyBonus = 0.12;
                 } elseif ($cfCategory === 'tinggi' && $priceCategory === 'sangat_murah') {
                     // CF tinggi + harga sangat murah
-                    $adjustment = 0.18;
-                    $efficiencyBonus = 0.07;
+                    $adjustment = 0.22;
+                    $efficiencyBonus = 0.10;
                 } elseif ($cfCategory === 'tinggi' && $priceCategory === 'murah') {
                     // CF tinggi + harga murah
-                    $adjustment = 0.15;
-                    $efficiencyBonus = 0.05;
+                    $adjustment = 0.18;
+                    $efficiencyBonus = 0.08;
                 } elseif ($cfCategory === 'sangat_tinggi') {
                     // CF sangat tinggi tapi harga menengah/mahal (tetap bagus untuk hemat)
-                    $adjustment = 0.12;
+                    $adjustment = 0.15;
                 } elseif ($cfCategory === 'tinggi' && $priceCategory === 'menengah') {
-                    $adjustment = 0.08;
-                } elseif ($cfCategory === 'sedang' && $priceCategory === 'sangat_murah') {
                     $adjustment = 0.10;
+                } elseif ($cfCategory === 'sedang' && $priceCategory === 'sangat_murah') {
+                    $adjustment = 0.12;
                 } elseif ($cfCategory === 'sedang' && $priceCategory === 'murah') {
-                    $adjustment = 0.06;
+                    $adjustment = 0.08;
                 } elseif ($priceCategory === 'sangat_murah') {
-                    $adjustment = 0.05;
+                    $adjustment = 0.06;
                 } elseif ($priceCategory === 'murah') {
-                    $adjustment = 0.03;
+                    $adjustment = 0.04;
                 } else {
                     // Harga mahal - penalty berdasarkan tingkat kemahalan
-                    $adjustment = $priceCategory === 'mahal' ? -0.08 : -0.04;
+                    $adjustment = $priceCategory === 'mahal' ? -0.10 : -0.05;
                 }
             } elseif ($presetType === 'efisiensi') {
                 // LOGIKA EFISIENSI TINGGI:
-                // Produk dengan CF tinggi DAN harga mahal = efisiensi tinggi (boost ekstra)
-                // Produk dengan CF tinggi tapi murah = baik tapi bukan prioritas efisiensi
+                // PRIORITAS: CF TERTINGGI + HARGA MAHAL = Efisiensi Tinggi
+                // Produk mahal + CF tinggi = hasil optimal, worth it untuk investasi
                 
                 $priceCategory = $this->getPriceCategory($harga, 'pupuk');
                 $cfCategory = $this->getCfCategory($baseCf);
                 
                 if ($cfCategory === 'sangat_tinggi' && $priceCategory === 'mahal') {
                     // CF sangat tinggi + mahal = efisiensi tinggi (prioritas utama)
-                    $adjustment = 0.15;
-                    $efficiencyBonus = 0.05;
+                    $adjustment = 0.20;
+                    $efficiencyBonus = 0.10;
+                } elseif ($cfCategory === 'sangat_tinggi' && $priceCategory === 'sangat_mahal') {
+                    // CF sangat tinggi + sangat mahal = efisiensi sangat tinggi
+                    $adjustment = 0.22;
+                    $efficiencyBonus = 0.12;
                 } elseif ($cfCategory === 'sangat_tinggi' && $priceCategory === 'menengah') {
                     // CF sangat tinggi + menengah = efisiensi cukup tinggi
-                    $adjustment = 0.12;
-                    $efficiencyBonus = 0.03;
+                    $adjustment = 0.15;
+                    $efficiencyBonus = 0.05;
                 } elseif ($cfCategory === 'sangat_tinggi') {
                     // CF sangat tinggi + murah = bagus tapi bukan prioritas efisiensi
-                    $adjustment = 0.08;
+                    $adjustment = 0.10;
                 } elseif ($cfCategory === 'tinggi' && $priceCategory === 'mahal') {
                     // CF tinggi + mahal = efisiensi tinggi
-                    $adjustment = 0.10;
-                    $efficiencyBonus = 0.03;
+                    $adjustment = 0.15;
+                    $efficiencyBonus = 0.07;
+                } elseif ($cfCategory === 'tinggi' && $priceCategory === 'sangat_mahal') {
+                    // CF tinggi + sangat mahal = efisiensi tinggi
+                    $adjustment = 0.17;
+                    $efficiencyBonus = 0.08;
                 } elseif ($cfCategory === 'tinggi' && $priceCategory === 'menengah') {
-                    $adjustment = 0.07;
+                    $adjustment = 0.10;
                 } elseif ($cfCategory === 'tinggi') {
-                    $adjustment = 0.05;
+                    $adjustment = 0.07;
                 } elseif ($cfCategory === 'sedang' && $priceCategory === 'mahal') {
-                    $adjustment = 0.05;
+                    $adjustment = 0.08;
+                } elseif ($cfCategory === 'sedang' && $priceCategory === 'sangat_mahal') {
+                    $adjustment = 0.10;
                 } elseif ($cfCategory === 'sedang') {
-                    $adjustment = 0.03;
+                    $adjustment = 0.05;
                 }
             }
             
@@ -154,6 +171,8 @@ class RecommendationService
                 'base_cf' => round($baseCf, 4),
                 'efficiency_bonus' => $efficiencyBonus > 0 ? round($efficiencyBonus, 4) : null,
                 'is_high_efficiency' => $efficiencyBonus > 0,
+                'price_category' => $priceCategory ?? null,
+                'cf_category' => $cfCategory ?? null,
             ];
             
             return $item;
@@ -169,76 +188,86 @@ class RecommendationService
             
             if ($presetType === 'hemat') {
                 // LOGIKA HEMAT BIAYA:
-                // Prioritaskan produk dengan CF TERTINGGI + HARGA TERMURAH
-                // Kombinasi ideal: CF tinggi (>0.7) + harga sangat murah (<Rp50.000)
+                // PRIORITAS: CF TERTINGGI + HARGA TERMURAH
+                // Kombinasi ideal: CF sangat tinggi (>0.8) + harga sangat murah (<Rp50.000)
                 
                 $priceCategory = $this->getPriceCategory($harga, 'pestisida');
                 $cfCategory = $this->getCfCategory($baseCf);
                 
                 if ($cfCategory === 'sangat_tinggi' && $priceCategory === 'sangat_murah') {
                     // PRIORITAS UTAMA: CF sangat tinggi + harga sangat murah
-                    $adjustment = 0.25; // Boost maksimal
-                    $efficiencyBonus = 0.10; // Bonus efisiensi biaya
+                    $adjustment = 0.30; // Boost maksimal untuk hemat biaya
+                    $efficiencyBonus = 0.15; // Bonus efisiensi biaya tertinggi
                 } elseif ($cfCategory === 'sangat_tinggi' && $priceCategory === 'murah') {
                     // CF sangat tinggi + harga murah
-                    $adjustment = 0.20;
-                    $efficiencyBonus = 0.08;
+                    $adjustment = 0.25;
+                    $efficiencyBonus = 0.12;
                 } elseif ($cfCategory === 'tinggi' && $priceCategory === 'sangat_murah') {
                     // CF tinggi + harga sangat murah
-                    $adjustment = 0.18;
-                    $efficiencyBonus = 0.07;
+                    $adjustment = 0.22;
+                    $efficiencyBonus = 0.10;
                 } elseif ($cfCategory === 'tinggi' && $priceCategory === 'murah') {
                     // CF tinggi + harga murah
-                    $adjustment = 0.15;
-                    $efficiencyBonus = 0.05;
+                    $adjustment = 0.18;
+                    $efficiencyBonus = 0.08;
                 } elseif ($cfCategory === 'sangat_tinggi') {
                     // CF sangat tinggi tapi harga menengah/mahal (tetap bagus untuk hemat)
-                    $adjustment = 0.12;
+                    $adjustment = 0.15;
                 } elseif ($cfCategory === 'tinggi' && $priceCategory === 'menengah') {
-                    $adjustment = 0.08;
-                } elseif ($cfCategory === 'sedang' && $priceCategory === 'sangat_murah') {
                     $adjustment = 0.10;
+                } elseif ($cfCategory === 'sedang' && $priceCategory === 'sangat_murah') {
+                    $adjustment = 0.12;
                 } elseif ($cfCategory === 'sedang' && $priceCategory === 'murah') {
-                    $adjustment = 0.06;
+                    $adjustment = 0.08;
                 } elseif ($priceCategory === 'sangat_murah') {
-                    $adjustment = 0.05;
+                    $adjustment = 0.06;
                 } elseif ($priceCategory === 'murah') {
-                    $adjustment = 0.03;
+                    $adjustment = 0.04;
                 } else {
                     // Harga mahal - penalty berdasarkan tingkat kemahalan
-                    $adjustment = $priceCategory === 'mahal' ? -0.08 : -0.04;
+                    $adjustment = $priceCategory === 'mahal' ? -0.10 : -0.05;
                 }
             } elseif ($presetType === 'efisiensi') {
                 // LOGIKA EFISIENSI TINGGI:
-                // Produk dengan CF tinggi DAN harga mahal = efisiensi tinggi (boost ekstra)
-                // Produk dengan CF tinggi tapi murah = baik tapi bukan prioritas efisiensi
+                // PRIORITAS: CF TERTINGGI + HARGA MAHAL = Efisiensi Tinggi
+                // Produk mahal + CF tinggi = hasil optimal, worth it untuk investasi
                 
                 $priceCategory = $this->getPriceCategory($harga, 'pestisida');
                 $cfCategory = $this->getCfCategory($baseCf);
                 
                 if ($cfCategory === 'sangat_tinggi' && $priceCategory === 'mahal') {
                     // CF sangat tinggi + mahal = efisiensi tinggi (prioritas utama)
-                    $adjustment = 0.15;
-                    $efficiencyBonus = 0.05;
+                    $adjustment = 0.20;
+                    $efficiencyBonus = 0.10;
+                } elseif ($cfCategory === 'sangat_tinggi' && $priceCategory === 'sangat_mahal') {
+                    // CF sangat tinggi + sangat mahal = efisiensi sangat tinggi
+                    $adjustment = 0.22;
+                    $efficiencyBonus = 0.12;
                 } elseif ($cfCategory === 'sangat_tinggi' && $priceCategory === 'menengah') {
                     // CF sangat tinggi + menengah = efisiensi cukup tinggi
-                    $adjustment = 0.12;
-                    $efficiencyBonus = 0.03;
+                    $adjustment = 0.15;
+                    $efficiencyBonus = 0.05;
                 } elseif ($cfCategory === 'sangat_tinggi') {
                     // CF sangat tinggi + murah = bagus tapi bukan prioritas efisiensi
-                    $adjustment = 0.08;
+                    $adjustment = 0.10;
                 } elseif ($cfCategory === 'tinggi' && $priceCategory === 'mahal') {
                     // CF tinggi + mahal = efisiensi tinggi
-                    $adjustment = 0.10;
-                    $efficiencyBonus = 0.03;
+                    $adjustment = 0.15;
+                    $efficiencyBonus = 0.07;
+                } elseif ($cfCategory === 'tinggi' && $priceCategory === 'sangat_mahal') {
+                    // CF tinggi + sangat mahal = efisiensi tinggi
+                    $adjustment = 0.17;
+                    $efficiencyBonus = 0.08;
                 } elseif ($cfCategory === 'tinggi' && $priceCategory === 'menengah') {
-                    $adjustment = 0.07;
+                    $adjustment = 0.10;
                 } elseif ($cfCategory === 'tinggi') {
-                    $adjustment = 0.05;
+                    $adjustment = 0.07;
                 } elseif ($cfCategory === 'sedang' && $priceCategory === 'mahal') {
-                    $adjustment = 0.05;
+                    $adjustment = 0.08;
+                } elseif ($cfCategory === 'sedang' && $priceCategory === 'sangat_mahal') {
+                    $adjustment = 0.10;
                 } elseif ($cfCategory === 'sedang') {
-                    $adjustment = 0.03;
+                    $adjustment = 0.05;
                 }
             }
             
@@ -254,6 +283,8 @@ class RecommendationService
                 'base_cf' => round($baseCf, 4),
                 'efficiency_bonus' => $efficiencyBonus > 0 ? round($efficiencyBonus, 4) : null,
                 'is_high_efficiency' => $efficiencyBonus > 0,
+                'price_category' => $priceCategory ?? null,
+                'cf_category' => $cfCategory ?? null,
             ];
             
             return $item;
@@ -293,9 +324,9 @@ class RecommendationService
     private function getPreferenceDescription(string $preset): string
     {
         return match ($preset) {
-            'hemat' => 'Preferensi ini memprioritaskan produk dengan CF TERTINGGI + HARGA TERMURAH. Kombinasi ideal: CF tinggi (>0.7) dengan harga sangat murah untuk efisiensi biaya maksimal.',
-            'efisiensi' => 'Preferensi ini memperkuat alternatif dengan keyakinan pakar tertinggi. Produk dengan CF tinggi + harga mahal dianggap sebagai solusi efisiensi tinggi (hasil optimal).',
-            'seimbang' => 'Preferensi standar tanpa adjustment signifikan. Rekomendasi murni berdasarkan analisis CF.',
+            'hemat' => 'Preferensi ini memprioritaskan produk dengan CF TERTINGGI + HARGA TERMURAH. Kombinasi ideal: CF sangat tinggi (>0.8) dengan harga sangat murah untuk efisiensi biaya maksimal. Contoh: Kompos (CF tinggi, Rp600/kg) lebih diprioritaskan daripada Silika Cair (CF tinggi, Rp170.000).',
+            'efisiensi' => 'Preferensi ini memperkuat alternatif dengan keyakinan pakar tertinggi DAN harga premium. Produk dengan CF tinggi + harga mahal dianggap sebagai solusi efisiensi tinggi (hasil optimal, worth it untuk investasi). Contoh: Silika Cair (CF tinggi, Rp170.000) lebih diprioritaskan daripada Kompos (CF tinggi, Rp600).',
+            'seimbang' => 'Preferensi standar tanpa adjustment signifikan. Rekomendasi murni berdasarkan analisis Certainty Factor dari pengetahuan pakar.',
             default => 'Preferensi standar dengan penyesuaian minimal.',
         };
     }
@@ -371,8 +402,8 @@ class RecommendationService
         $fpResult = $this->fpEngine->calculateAllRecommendations(
             $diseaseId,       // Disease ID sebagai basis rekomendasi
             $gejalaIds,       // Symptom IDs untuk kelengkapan diagnosis
-            topN: null,
-            onlyPositive: true
+            topN: 3,          // Tampilkan TOP 3 saja untuk fokus pada rekomendasi terbaik
+            onlyPositive: false  // Tampilkan semua agar user bisa lihat ranking lengkap
         );
         
         // Apply preference adjustment jika diperlukan

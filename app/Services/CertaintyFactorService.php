@@ -79,7 +79,7 @@ class CertaintyFactorService
         $fpResult = $this->fpEngine->calculateAllRecommendations(
             $idPenyakit,        // Parameter 1: Disease ID (basis rekomendasi)
             $gejalaIds,         // Parameter 2: Symptom IDs (untuk kelengkapan diagnosis)
-            topN: null,
+            topN: 3,            // Default TOP 3 saja untuk fokus pada rekomendasi terbaik
             onlyPositive: false // Tampilkan semua untuk preview lengkap
         );
         
