@@ -704,7 +704,7 @@
                                     <div class="dv">#{{ $item->peringkat ?? '-' }}</div>
                                 </div>
                                 <div class="detail-row">
-                                    <div class="dl">Skor CF</div>
+                                    <div class="dl">Skor CF Rekomendasi</div>
                                     <div class="dv">
                                         <span class="badge {{ (float)$item->cf_percentage >= 70 ? 'bg-success' : ((float)$item->cf_percentage >= 40 ? 'bg-warning text-dark' : 'bg-info text-dark') }}">
                                             {{ number_format($item->cf_percentage ?? 0, 2) }}%
@@ -715,6 +715,10 @@
                                         </span>
                                         @endif
                                     </div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="dl">CF Dasar</div>
+                                    <div class="dv">{{ number_format($item->cf_rekomendasi ?? 0, 4) }}</div>
                                 </div>
                                 <div class="detail-row span2">
                                     <div class="dl">Detail Kandungan</div>
@@ -823,7 +827,7 @@
                                     <div class="dv">#{{ $item->peringkat ?? '-' }}</div>
                                 </div>
                                 <div class="detail-row">
-                                    <div class="dl">Skor CF</div>
+                                    <div class="dl">Skor CF Rekomendasi</div>
                                     <div class="dv">
                                         <span class="badge {{ (float)$item->cf_percentage >= 70 ? 'bg-success' : ((float)$item->cf_percentage >= 40 ? 'bg-warning text-dark' : 'bg-info text-dark') }}">
                                             {{ number_format($item->cf_percentage ?? 0, 2) }}%
@@ -834,6 +838,10 @@
                                         </span>
                                         @endif
                                     </div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="dl">CF Dasar</div>
+                                    <div class="dv">{{ number_format($item->cf_rekomendasi ?? 0, 4) }}</div>
                                 </div>
                                 <div class="detail-row span2">
                                     <div class="dl">Detail Kandungan</div>

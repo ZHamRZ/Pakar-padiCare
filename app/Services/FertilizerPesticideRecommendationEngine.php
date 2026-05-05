@@ -89,9 +89,9 @@ class FertilizerPesticideRecommendationEngine
             $cfRekomendasi = -$cfPenyebab;
             $cfRekomendasi = $this->cfEngine->normalizeToRange($cfRekomendasi, -1, 1);
 
-            // CRITICAL FIX: Skip pupuk dengan CF negatif atau nol
+            // CRITICAL FIX: Skip pupuk dengan CF negatif atau nol (threshold minimal 0.01)
             // Contoh: Urea pada Blast memiliki CF negatif karena nitrogen tinggi memperparah blast
-            if ($cfRekomendasi <= 0) {
+            if ($cfRekomendasi <= 0.01) {
                 continue;
             }
 
@@ -131,8 +131,10 @@ class FertilizerPesticideRecommendationEngine
             ];
         }
 
+        // Urutkan berdasarkan CF tertinggi
         usort($recommendations, fn($a, $b) => $b['cf_rekomendasi'] <=> $a['cf_rekomendasi']);
 
+        // Assign peringkat
         foreach ($recommendations as $index => &$item) {
             $item['peringkat'] = $index + 1;
         }
@@ -143,7 +145,7 @@ class FertilizerPesticideRecommendationEngine
     /**
      * Hitung rekomendasi pestisida berdasarkan PENYAKIT yang terdiagnosis
      * 
-     * CRITICAL: Filter hanya pestisida dengan CF_Final > 0
+     * CRITICAL: Filter hanya pestisida dengan CF_Final > 0.01
      */
     public function calculatePesticideRecommendations(int $diseaseId, array $symptomIds = []): array
     {
@@ -177,8 +179,8 @@ class FertilizerPesticideRecommendationEngine
             $cfRekomendasi = $cfSolusi;
             $cfRekomendasi = $this->cfEngine->normalizeToRange($cfRekomendasi, -1, 1);
 
-            // CRITICAL FIX: Skip pestisida dengan CF negatif atau nol
-            if ($cfRekomendasi <= 0) {
+            // CRITICAL FIX: Skip pestisida dengan CF negatif atau nol (threshold minimal 0.01)
+            if ($cfRekomendasi <= 0.01) {
                 continue;
             }
 
@@ -218,8 +220,10 @@ class FertilizerPesticideRecommendationEngine
             ];
         }
 
+        // Urutkan berdasarkan CF tertinggi
         usort($recommendations, fn($a, $b) => $b['cf_rekomendasi'] <=> $a['cf_rekomendasi']);
 
+        // Assign peringkat
         foreach ($recommendations as $index => &$item) {
             $item['peringkat'] = $index + 1;
         }
