@@ -238,11 +238,23 @@ class RekomendasiController extends Controller
             $cfValue = (float) data_get($item, 'cf_rekomendasi', data_get($item, 'vi', 0));
             $cfPercentage = (float) data_get($item, 'cf_percentage', 0);
             
-            // Ekstrak MB/MD dari cf_meta jika ada
-            $cfMeta = data_get($item, 'cf_meta', []);
-            $mbPenyakit = (float) data_get($cfMeta, 'mb_penyakit', 0);
-            $mdPenyakit = (float) data_get($cfMeta, 'md_penyakit', 0);
-            $cfPenyakit = data_get($cfMeta, 'cf_penyakit', null);
+            // Ekstrak MB/MD dari disease_info
+            $diseaseInfo = data_get($item, 'disease_info', []);
+            $mbPenyakit = (float) data_get($diseaseInfo, 'mb', 0);
+            $mdPenyakit = (float) data_get($diseaseInfo, 'md', 0);
+            $cfPenyakit = (float) data_get($diseaseInfo, 'cf_raw', $mbPenyakit - $mdPenyakit);
+            
+            // Ekstrak cf_dasar (CF sebelum adjustment)
+            $cfDasar = (float) data_get($item, 'cf_dasar', $cfValue);
+            if ($type === 'pestisida') {
+                $cfDasar = (float) data_get($item, 'cf_solusi', $cfDasar);
+            }
+            
+            // Flag efisiensi tinggi
+            $isHighEfficiency = (bool) data_get($item, 'is_high_efficiency', false);
+            
+            // Adjustment info
+            $adjustmentInfo = data_get($item, 'adjustment_info', []);
             
             $productData = [
                 'kode' => data_get($item, 'kode'),
@@ -297,9 +309,15 @@ class RekomendasiController extends Controller
                 'peringkat' => (int) data_get($item, 'peringkat', 0),
                 'nilai_vi' => $cfValue,
                 'cf_percentage' => $cfPercentage,
-                'adjustment_info' => [],
+                'cf_dasar' => round($cfDasar, 4),
+                'is_high_efficiency' => $isHighEfficiency,
+                'adjustment_info' => $adjustmentInfo,
                 'interpretation' => data_get($item, 'interpretation', []),
-                'cf_meta' => $cfMeta,
+                'cf_meta' => [
+                    'mb_penyakit' => $mbPenyakit,
+                    'md_penyakit' => $mdPenyakit,
+                    'cf_penyakit' => $cfPenyakit,
+                ],
                 $type => (object) $productData,
             ];
         })->values();

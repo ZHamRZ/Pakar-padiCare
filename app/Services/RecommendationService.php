@@ -121,9 +121,9 @@ class RecommendationService
             ->values()
             ->all();
 
-        // Re-rank setelah sorting dan limit max 3 teratas
-        $adjustedPupuk    = $this->rerank(array_slice($adjustedPupuk,    0, 3));
-        $adjustedPestisida = $this->rerank(array_slice($adjustedPestisida, 0, 3));
+        // Re-rank setelah sorting dan limit max 2 teratas
+        $adjustedPupuk    = $this->rerank(array_slice($adjustedPupuk,    0, 2));
+        $adjustedPestisida = $this->rerank(array_slice($adjustedPestisida, 0, 2));
 
         return [
             'pupuk'          => $adjustedPupuk,
@@ -134,7 +134,7 @@ class RecommendationService
                 'total_pestisida_direkomendasikan' => count($adjustedPestisida),
                 'preference_applied'               => true,
                 'preset_type'                      => $presetType,
-                'max_recommendations'              => 3,
+                'max_recommendations'              => 2,
             ]),
             'method_info'    => $result['method_info'],
             'preference_info' => [
