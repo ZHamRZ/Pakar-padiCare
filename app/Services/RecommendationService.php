@@ -101,6 +101,7 @@ class RecommendationService
      */
     private function applyPreferenceAdjustment(array $result, string $presetType): array
     {
+        // Apply adjustment untuk pupuk
         $adjustedPupuk = collect($result['pupuk'])
             ->map(function (array $item) use ($presetType): array {
                 $harga = (float) data_get($item, 'harga_per_kg', 0);
@@ -110,6 +111,7 @@ class RecommendationService
             ->values()
             ->all();
 
+        // Apply adjustment untuk pestisida
         $adjustedPestisida = collect($result['pestisida'])
             ->map(function (array $item) use ($presetType): array {
                 $harga = (float) data_get($item, 'harga', 0);
@@ -119,6 +121,7 @@ class RecommendationService
             ->values()
             ->all();
 
+        // Re-rank setelah sorting dan limit max 3 teratas
         $adjustedPupuk    = $this->rerank(array_slice($adjustedPupuk,    0, 3));
         $adjustedPestisida = $this->rerank(array_slice($adjustedPestisida, 0, 3));
 
