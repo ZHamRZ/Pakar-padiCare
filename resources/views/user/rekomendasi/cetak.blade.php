@@ -60,6 +60,25 @@
         .item-title {
             flex: 1;
         }
+        .cf-badge {
+            display: inline-block;
+            margin-top: 4px;
+            padding: 2px 8px;
+            background: #dcfce7;
+            color: #166534;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+        .high-efficiency-badge {
+            margin-top: 8px;
+            padding: 6px 10px;
+            background: #fef3c7;
+            border-radius: 8px;
+            color: #92400e;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
         @media print {
             .toolbar { display: none !important; }
             body { margin: 0; }
@@ -101,24 +120,23 @@
     <div class="section">
         <h3>Rekomendasi Pupuk</h3>
         <div class="detail-grid">
-            @foreach($rekomendasi->detailPupuk->sortBy('peringkat') as $item)
+            @foreach($rekomendasi->detailPupuk->sortBy('peringkat')->take(2) as $item)
             <div class="detail-box">
                 <div class="item-header">
                     @if(data_get($item, 'pupuk.gambar_url'))
                     <img src="{{ data_get($item, 'pupuk.gambar_url') }}" alt="{{ $item->pupuk->nama ?? 'Pupuk' }}" class="item-image">
                     @else
                     <div class="item-image d-flex align-items-center justify-content-center bg-light text-muted">
-                        <i class="bi bi-flower1" style="font-size: 2rem;"></i>
+                        🌱
                     </div>
                     @endif
                     <div class="item-title">
                         <h4 class="mb-1">{{ $item->pupuk->nama ?? '-' }}</h4>
                         <small class="text-muted">{{ $item->pupuk->kode ?? '-' }}</small>
+                        <span class="cf-badge">{{ number_format((float) $item->nilai_vi, 4) }} ({{ number_format((float) $item->cf_percentage ?? 0, 2) }}%)</span>
                     </div>
                 </div>
                 <div class="detail-list">
-                    <p><strong>Peringkat</strong> {{ $item->peringkat }}</p>
-                    <p><strong>Skor</strong> {{ number_format((float) $item->nilai_vi, 4) }}</p>
                     <p><strong>Kandungan</strong> {{ $item->pupuk->kandungan ?? '-' }}</p>
                     <p><strong>Detail</strong> {{ $item->pupuk->kandungan_detail ?? '-' }}</p>
                     <p><strong>Fungsi</strong> {{ $item->pupuk->fungsi_utama ?? '-' }}</p>
@@ -127,6 +145,9 @@
                     <p><strong>Cara</strong> {{ $item->pupuk->cara_aplikasi ?? '-' }}</p>
                     <p><strong>Jadwal</strong> {{ $item->pupuk->jadwal_umur_aplikasi ?? '-' }}</p>
                     <p><strong>Frekuensi</strong> {{ $item->pupuk->frekuensi_aplikasi ?? '-' }}</p>
+                    @if($item->is_high_efficiency ?? false)
+                    <p class="high-efficiency-badge"><strong>Status</strong> ✓ Produk Efisiensi Tinggi</p>
+                    @endif
                 </div>
             </div>
             @endforeach
@@ -136,31 +157,35 @@
     <div class="section">
         <h3>Rekomendasi Pestisida</h3>
         <div class="detail-grid">
-            @foreach($rekomendasi->detailPestisida->sortBy('peringkat') as $item)
+            @foreach($rekomendasi->detailPestisida->sortBy('peringkat')->take(2) as $item)
             <div class="detail-box">
                 <div class="item-header">
                     @if(data_get($item, 'pestisida.gambar_url'))
                     <img src="{{ data_get($item, 'pestisida.gambar_url') }}" alt="{{ $item->pestisida->nama ?? 'Pestisida' }}" class="item-image">
                     @else
                     <div class="item-image d-flex align-items-center justify-content-center bg-light text-muted">
-                        <i class="bi bi-droplet" style="font-size: 2rem;"></i>
+                        💧
                     </div>
                     @endif
                     <div class="item-title">
                         <h4 class="mb-1">{{ $item->pestisida->nama ?? '-' }}</h4>
                         <small class="text-muted">{{ $item->pestisida->kode ?? '-' }}</small>
+                        <span class="cf-badge">{{ number_format((float) $item->nilai_vi, 4) }} ({{ number_format((float) $item->cf_percentage ?? 0, 2) }}%)</span>
                     </div>
                 </div>
                 <div class="detail-list">
-                    <p><strong>Peringkat</strong> {{ $item->peringkat }}</p>
-                    <p><strong>Skor</strong> {{ number_format((float) $item->nilai_vi, 4) }}</p>
                     <p><strong>Bahan aktif</strong> {{ $item->pestisida->bahan_aktif ?? '-' }}</p>
+                    <p><strong>Kandungan Detail</strong> {{ $item->pestisida->kandungan_detail ?? '-' }}</p>
                     <p><strong>Fungsi</strong> {{ $item->pestisida->fungsi ?? '-' }}</p>
                     <p><strong>Dosis</strong> {{ $item->pestisida->dosis ?? '-' }}</p>
+                    <p><strong>Takaran</strong> {{ $item->pestisida->takaran ?? '-' }}</p>
                     <p><strong>Efek</strong> {{ $item->pestisida->efek_penggunaan ?? '-' }}</p>
                     <p><strong>Cara</strong> {{ $item->pestisida->cara_aplikasi ?? '-' }}</p>
                     <p><strong>Jadwal</strong> {{ $item->pestisida->jadwal_umur_aplikasi ?? '-' }}</p>
                     <p><strong>Frekuensi</strong> {{ $item->pestisida->frekuensi_aplikasi ?? '-' }}</p>
+                    @if($item->is_high_efficiency ?? false)
+                    <p class="high-efficiency-badge"><strong>Status</strong> ✓ Produk Efisiensi Tinggi</p>
+                    @endif
                 </div>
             </div>
             @endforeach
