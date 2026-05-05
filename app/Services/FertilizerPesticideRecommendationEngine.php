@@ -260,10 +260,10 @@ class FertilizerPesticideRecommendationEngine
         $pesticideRecs = $this->calculatePesticideRecommendations($diseaseId, $symptomIds);
 
         // Catatan: Filter onlyPositive sudah dilakukan di level method individual
-        // Ini adalah defensive layer tambahan
+        // Ini adalah defensive layer tambahan dengan threshold 0.01 (bukan > 0)
         if ($onlyPositive) {
-            $fertilizerRecs = array_values(array_filter($fertilizerRecs, fn($item) => $item['cf_rekomendasi'] > 0));
-            $pesticideRecs = array_values(array_filter($pesticideRecs, fn($item) => $item['cf_rekomendasi'] > 0));
+            $fertilizerRecs = array_values(array_filter($fertilizerRecs, fn($item) => $item['cf_rekomendasi'] > 0.01));
+            $pesticideRecs = array_values(array_filter($pesticideRecs, fn($item) => $item['cf_rekomendasi'] > 0.01));
 
             foreach ($fertilizerRecs as $index => &$item) {
                 $item['peringkat'] = $index + 1;

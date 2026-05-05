@@ -655,10 +655,20 @@
                                 {{ data_get($utama, 'penyakit.kode') }}
                             </div>
                         </div>
-                        <span class="confidence-badge text-bg-{{ ExpertSystemPresenter::confidenceTone($utamaScore) }}">
-                            <i class="bi bi-patch-check-fill"></i>
-                            {{ ExpertSystemPresenter::confidenceLabel($utamaScore) }}
-                        </span>
+                        <div class="d-flex align-items-start gap-2">
+                            <span class="confidence-badge text-bg-{{ ExpertSystemPresenter::confidenceTone($utamaScore) }}">
+                                <i class="bi bi-patch-check-fill"></i>
+                                {{ ExpertSystemPresenter::confidenceLabel($utamaScore) }}
+                            </span>
+                            {{-- Checkbox untuk penyakit utama - selalu default checked --}}
+                            <input
+                                class="alt-diagnosis-check"
+                                type="checkbox"
+                                name="id_penyakit[]"
+                                value="{{ data_get($utama, 'penyakit.id') }}"
+                                checked
+                                title="Penyakit utama akan selalu diproses untuk rekomendasi">
+                        </div>
                     </div>
 
                     <p style="font-size:14px; color:var(--slate-500); line-height:1.7; margin-bottom:20px;">
