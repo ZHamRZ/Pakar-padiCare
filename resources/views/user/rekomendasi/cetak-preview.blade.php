@@ -81,6 +81,64 @@
             display: inline-block;
             min-width: 120px;
         }
+        .product-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .product-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+        .product-image-placeholder {
+            width: 80px;
+            height: 80px;
+            background: #f3f4f6;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            border: 1px solid #e5e7eb;
+        }
+        .product-title {
+            flex: 1;
+        }
+        .product-title h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #111827;
+        }
+        .product-title small {
+            display: block;
+            color: #6b7280;
+            font-size: 0.75rem;
+        }
+        .cf-badge {
+            display: inline-block;
+            margin-top: 4px;
+            padding: 2px 8px;
+            background: #dcfce7;
+            color: #166534;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+        .high-efficiency-badge {
+            margin-top: 8px;
+            padding: 6px 10px;
+            background: #fef3c7;
+            border-radius: 8px;
+            color: #92400e;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
         @media print {
             .toolbar {
                 display: none !important;
@@ -120,24 +178,8 @@
     @php
         $rekomendasi = $hasil['rekomendasi'];
         $gejala = collect(data_get($rekomendasi, 'gejala_cocok', []));
-        $sortedPupuk = $rekomendasi->detailPupuk->sortBy('peringkat')->values();
-        $sortedPestisida = $rekomendasi->detailPestisida->sortBy('peringkat')->values();
-        $topPupuk = $sortedPupuk->first();
-        $topPestisida = $sortedPestisida->first();
-        $pupukThreshold = max(0.1, (float) ($topPupuk->nilai_vi ?? 0) - 0.15);
-        $pestisidaThreshold = max(0.1, (float) ($topPestisida->nilai_vi ?? 0) - 0.15);
-        $recommendedPupuk = $sortedPupuk
-            ->filter(fn ($item) => (float) ($item->nilai_vi ?? 0) >= $pupukThreshold)
-            ->values();
-        $recommendedPestisida = $sortedPestisida
-            ->filter(fn ($item) => (float) ($item->nilai_vi ?? 0) >= $pestisidaThreshold)
-            ->values();
-        if ($recommendedPupuk->isEmpty()) {
-            $recommendedPupuk = $sortedPupuk;
-        }
-        if ($recommendedPestisida->isEmpty()) {
-            $recommendedPestisida = $sortedPestisida;
-        }
+        $sortedPupuk = $rekomendasi->detailPupuk->sortBy('peringkat')->take(2)->values();
+        $sortedPestisida = $rekomendasi->detailPestisida->sortBy('peringkat')->take(2)->values();
     @endphp
     <div class="report-card">
         <h2>{{ $rekomendasi->penyakit->nama ?? '-' }}</h2>
@@ -160,16 +202,33 @@
         <div class="section">
             <h3>Rekomendasi Pupuk</h3>
             <div class="detail-grid">
-                @foreach($recommendedPupuk as $item)
+                @foreach($sortedPupuk as $item)
                 <div class="detail-box">
-                    <h4>{{ $item->pupuk->nama ?? '-' }}</h4>
+                    <div class="product-header">
+                        @if(data_get($item, 'pupuk.gambar_url'))
+                        <img src="{{ data_get($item, 'pupuk.gambar_url') }}" alt="{{ $item->pupuk->nama ?? 'Pupuk' }}" class="product-image">
+                        @else
+                        <div class="product-image-placeholder">🌱</div>
+                        @endif
+                        <div class="product-title">
+                            <h4 class="mb-1">{{ $item->pupuk->nama ?? '-' }}</h4>
+                            <small class="text-muted">{{ $item->pupuk->kode ?? '-' }}</small>
+                            <span class="cf-badge">{{ number_format((float) $item->nilai_vi, 4) }} ({{ number_format((float) $item->cf_percentage, 2) }}%)</span>
+                        </div>
+                    </div>
                     <div class="detail-list">
-                        <p><strong>Peringkat</strong> {{ $item->peringkat ?? '-' }}</p>
+                        <p><strong>Kandungan</strong> {{ $item->pupuk->kandungan ?? '-' }}</p>
                         <p><strong>Detail Kandungan</strong> {{ $item->pupuk->kandungan_detail ?? '-' }}</p>
+                        <p><strong>Fungsi Utama</strong> {{ $item->pupuk->fungsi_utama ?? '-' }}</p>
+                        <p><strong>Takaran</strong> {{ $item->pupuk->takaran ?? '-' }}</p>
                         <p><strong>Harga per Satuan</strong> {{ $formatUnitPrice($item->pupuk->harga_per_kg ?? null, $item->pupuk->satuan ?? 'kg') }}</p>
-                        <p><strong>Fungsi</strong> {{ $item->pupuk->fungsi_utama ?? '-' }}</p>
                         <p><strong>Efek Penggunaan</strong> {{ $item->pupuk->efek_penggunaan ?? '-' }}</p>
-                        <p><strong>Frekuensi Aplikasi</strong> {{ $item->pupuk->frekuensi_aplikasi ?? '-' }}</p>
+                        <p><strong>Cara Aplikasi</strong> {{ $item->pupuk->cara_aplikasi ?? '-' }}</p>
+                        <p><strong>Jadwal Umur</strong> {{ $item->pupuk->jadwal_umur_aplikasi ?? '-' }}</p>
+                        <p><strong>Frekuensi</strong> {{ $item->pupuk->frekuensi_aplikasi ?? '-' }}</p>
+                        @if($item->is_high_efficiency ?? false)
+                        <p class="high-efficiency-badge"><strong>Status</strong> ✓ Produk Efisiensi Tinggi</p>
+                        @endif
                     </div>
                 </div>
                 @endforeach
@@ -179,18 +238,34 @@
         <div class="section">
             <h3>Rekomendasi Pestisida</h3>
             <div class="detail-grid">
-                @foreach($recommendedPestisida as $item)
+                @foreach($sortedPestisida as $item)
                 <div class="detail-box">
-                    <h4>{{ $item->pestisida->nama ?? '-' }}</h4>
+                    <div class="product-header">
+                        @if(data_get($item, 'pestisida.gambar_url'))
+                        <img src="{{ data_get($item, 'pestisida.gambar_url') }}" alt="{{ $item->pestisida->nama ?? 'Pestisida' }}" class="product-image">
+                        @else
+                        <div class="product-image-placeholder">💧</div>
+                        @endif
+                        <div class="product-title">
+                            <h4 class="mb-1">{{ $item->pestisida->nama ?? '-' }}</h4>
+                            <small class="text-muted">{{ $item->pestisida->kode ?? '-' }}</small>
+                            <span class="cf-badge">{{ number_format((float) $item->nilai_vi, 4) }} ({{ number_format((float) $item->cf_percentage, 2) }}%)</span>
+                        </div>
+                    </div>
                     <div class="detail-list">
-                        <p><strong>Peringkat</strong> {{ $item->peringkat ?? '-' }}</p>
-                        <p><strong>Detail Kandungan</strong> {{ $item->pestisida->kandungan_detail ?? '-' }}</p>
+                        <p><strong>Bahan Aktif</strong> {{ $item->pestisida->bahan_aktif ?? '-' }}</p>
+                        <p><strong>Kandungan Detail</strong> {{ $item->pestisida->kandungan_detail ?? '-' }}</p>
                         <p><strong>Fungsi</strong> {{ $item->pestisida->fungsi ?? '-' }}</p>
-                        <p><strong>Dosis Singkat</strong> {{ $item->pestisida->dosis ?? '-' }}</p>
-                        <p><strong>Satuan Harga</strong> {{ $formatUnitPrice($item->pestisida->harga ?? null, $item->pestisida->satuan_harga ?? null) }}</p>
+                        <p><strong>Dosis</strong> {{ $item->pestisida->dosis ?? '-' }}</p>
+                        <p><strong>Takaran</strong> {{ $item->pestisida->takaran ?? '-' }}</p>
+                        <p><strong>Harga</strong> {{ $formatUnitPrice($item->pestisida->harga ?? null, $item->pestisida->satuan_harga ?? null) }}</p>
                         <p><strong>Efek Penggunaan</strong> {{ $item->pestisida->efek_penggunaan ?? '-' }}</p>
                         <p><strong>Cara Aplikasi</strong> {{ $item->pestisida->cara_aplikasi ?? '-' }}</p>
-                        <p><strong>Frekuensi Aplikasi</strong> {{ $item->pestisida->frekuensi_aplikasi ?? '-' }}</p>
+                        <p><strong>Jadwal Umur</strong> {{ $item->pestisida->jadwal_umur_aplikasi ?? '-' }}</p>
+                        <p><strong>Frekuensi</strong> {{ $item->pestisida->frekuensi_aplikasi ?? '-' }}</p>
+                        @if($item->is_high_efficiency ?? false)
+                        <p class="high-efficiency-badge"><strong>Status</strong> ✓ Produk Efisiensi Tinggi</p>
+                        @endif
                     </div>
                 </div>
                 @endforeach
