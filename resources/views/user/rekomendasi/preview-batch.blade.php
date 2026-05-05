@@ -528,16 +528,13 @@
     $rekomendasi      = $hasil['rekomendasi'];
     $sortedPupuk      = $rekomendasi->detailPupuk->sortBy('peringkat')->values();
     $sortedPestisida  = $rekomendasi->detailPestisida->sortBy('peringkat')->values();
-    $topPupuk         = $sortedPupuk->first();
-    $topPestisida     = $sortedPestisida->first();
-    $pupukThreshold   = max(0.1, (float) ($topPupuk->nilai_vi ?? 0) - 0.15);
-    $pestisidaThreshold = max(0.1, (float) ($topPestisida->nilai_vi ?? 0) - 0.15);
-    $recommendedPupuk = $sortedPupuk
-        ->filter(fn ($item) => (float) ($item->nilai_vi ?? 0) >= $pupukThreshold)->values();
-    $recommendedPestisida = $sortedPestisida
-        ->filter(fn ($item) => (float) ($item->nilai_vi ?? 0) >= $pestisidaThreshold)->values();
-    if ($recommendedPupuk->isEmpty())     { $recommendedPupuk     = $sortedPupuk; }
-    if ($recommendedPestisida->isEmpty()) { $recommendedPestisida = $sortedPestisida; }
+    
+    // CRITICAL FIX: Limit hanya 2 teratas sesuai spesifikasi
+    $recommendedPupuk = $sortedPupuk->take(2)->values();
+    $recommendedPestisida = $sortedPestisida->take(2)->values();
+    
+    $topPupuk         = $recommendedPupuk->first();
+    $topPestisida     = $recommendedPestisida->first();
     $topScore = max((float) ($topPupuk->nilai_vi ?? 0), (float) ($topPestisida->nilai_vi ?? 0));
 @endphp
 

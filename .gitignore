@@ -1,4 +1,4 @@
-```php
+```
 # Compiled and build artifacts
 *.pyc
 __pycache__/
@@ -24,12 +24,7 @@ node_modules/
 *.swp
 *.swo
 
-# Coverage reports
-coverage/
-htmlcov/
-.coverage
-
-# Editor/IDE files
+# Editors
 .vscode/
 .idea/
 *.swp
@@ -39,27 +34,17 @@ htmlcov/
 .DS_Store
 Thumbs.db
 
-# Build directories
+# Build and distribution
 dist/
 build/
 target/
-.gradle/
-
-# Python specific
-*.pyc
-__pycache__/
-*.pyo
-*.pyd
-.Python
-*.so
-.pytest_cache/
+coverage/
+htmlcov/
+.coverage
 .mypy_cache/
+.pytest_cache/
 
-# PHP specific
-*.phar
-*.pid
-
-# Compressed files
+# Compression archives
 *.zip
 *.gz
 *.tar
