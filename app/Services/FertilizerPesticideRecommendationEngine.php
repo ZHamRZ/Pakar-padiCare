@@ -11,7 +11,6 @@ use Illuminate\Support\Collection;
  * FertilizerPesticideRecommendationEngine
  * 
  * Engine khusus untuk rekomendasi pupuk dan pestisida berdasarkan PENYAKIT menggunakan metode Certainty Factor (CF)
- * dengan memperhatikan perbedaan makna antara penyebab (pupuk) dan solusi (pestisida).
  * 
  * PERUBAHAN LOGIKA (GEJALA → PENYAKIT):
  * =====================================
@@ -23,23 +22,26 @@ use Illuminate\Support\Collection;
  * =============
  * 1. Certainty Factor: CF = MB - MD
  * 2. Interpretasi CF:
- *    - CF > 0  → mendukung hipotesis
+ *    - CF > 0  → mendukung hipotesis (direkomendasikan)
  *    - CF = 0  → netral
- *    - CF < 0  → menolak hipotesis
+ *    - CF < 0  → menolak hipotesis (tidak direkomendasikan)
  * 
- * PERBEDAAN MAKNA DATA:
- * =====================
- * A. PUPUK (SEBAGAI PENYEBAB/PENCEGAH)
- *    - CF menunjukkan seberapa besar pupuk mencegah/menyebabkan penyakit
- *    - CF positif → pupuk tidak cocok untuk penyakit ini (tidak direkomendasikan)
- *    - CF negatif → pupuk cocok untuk penyakit ini (direkomendasikan)
- *    - Transformasi: CF_rekomendasi = -CF_penyebab
+ * INTERPRETASI DATA ATURAN:
+ * =========================
+ * A. PUPUK (DATA CF SUDAH MEREPRESENTASIKAN "KESESUAIAN")
+ *    - CF POSITIF (> 0): Pupuk COCOK untuk penyakit ini → DIREKOMENDASIKAN
+ *    - CF NEGATIF (< 0): Pupuk TIDAK COCOK untuk penyakit ini → TIDAK direkomendasikan
+ *    - TIDAK ADA TRANSFORMASI: CF_rekomendasi = CF_dasar_dari_data
+ *    
+ *    Contoh data aturan untuk Blast (P01):
+ *    - Urea: MB=0.10, MD=0.80 → CF = -0.70 → TIDAK direkomendasikan (nitrogen tinggi memperparah blast)
+ *    - Silika Cair: MB=0.85, MD=0.10 → CF = 0.75 → DIREKOMENDASIKAN (meningkatkan ketahanan)
+ *    - NPK Phonska: MB=0.75, MD=0.15 → CF = 0.60 → DIREKOMENDASIKAN (nutrisi seimbang)
  * 
- * B. PESTISIDA (SEBAGAI SOLUSI/PENGOBATAN)
- *    - CF menunjukkan efektivitas terhadap penyakit
- *    - CF positif → efektif (direkomendasikan)
- *    - CF negatif → tidak efektif (tidak direkomendasikan)
- *    - Tidak ada transformasi: CF_rekomendasi = CF_asli
+ * B. PESTISIDA (DATA CF SUDAH MEREPRESENTASIKAN "EFEKTIVITAS")
+ *    - CF POSITIF (> 0): Pestisida EFEKTIF untuk penyakit ini → DIREKOMENDASIKAN
+ *    - CF NEGATIF (< 0): Pestisida TIDAK EFEKTIF → TIDAK direkomendasikan
+ *    - TIDAK ADA TRANSFORMASI: CF_rekomendasi = CF_dasar_dari_data
  */
 class FertilizerPesticideRecommendationEngine
 {
@@ -50,8 +52,18 @@ class FertilizerPesticideRecommendationEngine
     /**
      * Hitung rekomendasi pupuk berdasarkan PENYAKIT yang terdiagnosis
      * 
-     * CRITICAL: Filter hanya pupuk dengan CF_Final > 0
-     * Pupuk dengan CF negatif (seperti Urea pada Blast) TIDAK akan direkomendasikan
+     * PENTING: Interpretasi CF Pupuk
+     * ==============================
+     * Data aturan CF pupuk sudah merepresentasikan "kesesuaian pupuk untuk penyakit":
+     * - CF POSITIF (> 0): Pupuk COCOK untuk penyakit ini (DIREKOMENDASIKAN)
+     * - CF NEGATIF (< 0): Pupuk TIDAK COCOK untuk penyakit ini (TIDAK direkomendasikan)
+     * 
+     * Contoh untuk Blast (P01):
+     * - Urea: CF = -0.70 → Nitrogen tinggi memperparah blast → TIDAK direkomendasikan
+     * - Silika Cair: CF = 0.75 → Meningkatkan ketahanan → DIREKOMENDASIKAN
+     * 
+     * CRITICAL: Filter hanya pupuk dengan CF_Final > 0.01
+     * Pupuk dengan CF negatif atau nol akan difilter otomatis
      */
     public function calculateFertilizerRecommendations(int $diseaseId, array $symptomIds = []): array
     {
@@ -80,20 +92,19 @@ class FertilizerPesticideRecommendationEngine
                 $md = $md / $total;
             }
 
-            // CF_Penyebab: seberapa besar pupuk menyebabkan/memperparah penyakit
-            $cfPenyebab = $this->cfEngine->calculateCf($mb, $md);
-
-            // Transformasi: CF_Rekomendasi = -CF_Penyebab
-            // Jika pupuk memperparah penyakit (CF_Penyebab positif), maka CF_Rekomendasi negatif → TIDAK direkomendasikan
-            // Jika pupuk mencegah penyakit (CF_Penyebab negatif), maka CF_Rekomendasi positif → DIREKOMENDASIKAN
-            $cfRekomendasi = -$cfPenyebab;
+            // CF langsung dari data aturan: CF = MB - MD
+            // Interpretasi: CF positif = cocok untuk penyakit, CF negatif = tidak cocok
+            $cfRekomendasi = $this->cfEngine->calculateCf($mb, $md);
             $cfRekomendasi = $this->cfEngine->normalizeToRange($cfRekomendasi, -1, 1);
 
-            // CRITICAL FIX: Skip pupuk dengan CF negatif atau nol (threshold minimal 0.01)
-            // Contoh: Urea pada Blast memiliki CF negatif karena nitrogen tinggi memperparah blast
+            // CRITICAL FIX #1: Skip pupuk dengan CF negatif atau nol (threshold minimal 0.01)
+            // Contoh: Urea pada Blast memiliki CF = -0.70 → TIDAK LOLOS FILTER
             if ($cfRekomendasi <= 0.01) {
                 continue;
             }
+
+            // Simpan CF dasar sebelum adjustment untuk referensi
+            $cfDasar = $cfRekomendasi;
 
             $interpretation = $this->getRecommendationLabel($cfRekomendasi);
 
@@ -111,14 +122,14 @@ class FertilizerPesticideRecommendationEngine
                 'frekuensi_aplikasi' => $fertilizer->frekuensi_aplikasi,
                 'efek_penggunaan' => $fertilizer->efek_penggunaan,
                 'gambar_url' => $fertilizer->gambar_url ?? null,
-                'cf_penyebab' => round($cfPenyebab, 4),
+                'cf_dasar' => round($cfDasar, 4),
                 'cf_rekomendasi' => round($cfRekomendasi, 4),
                 'cf_percentage' => round($this->cfEngine->toPercentage($cfRekomendasi), 2),
                 'interpretation' => $interpretation,
                 'adjustment_info' => [
-                    'base_cf' => round($cfRekomendasi, 4),
+                    'base_cf' => round($cfDasar, 4),
                     'adjustment' => 0.0,
-                    'reason' => 'CF dasar dari relasi penyakit-pupuk',
+                    'reason' => 'CF dasar dari relasi penyakit-pupuk (tanpa transformasi)',
                 ],
                 'is_high_efficiency' => false,
                 'disease_info' => [
@@ -126,6 +137,7 @@ class FertilizerPesticideRecommendationEngine
                     'nama' => $disease->nama,
                     'mb' => round($mb, 3),
                     'md' => round($md, 3),
+                    'cf_raw' => round($mb - $md, 3),
                 ],
                 'matched_symptoms_count' => count($symptomIds),
             ];
