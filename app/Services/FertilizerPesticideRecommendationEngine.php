@@ -97,8 +97,8 @@ class FertilizerPesticideRecommendationEngine
             $cfRekomendasi = $this->cfEngine->calculateCf($mb, $md);
             $cfRekomendasi = $this->cfEngine->normalizeToRange($cfRekomendasi, -1, 1);
 
-            // CRITICAL FIX #1: Skip pupuk dengan CF negatif atau nol (threshold minimal 0.01)
-            // Contoh: Urea pada Blast memiliki CF = -0.70 → TIDAK LOLOS FILTER
+            // CRITICAL FIX: Skip pupuk dengan CF negatif atau nol (threshold minimal 0.01)
+            // Contoh: Urea pada Blast memiliki CF negatif karena nitrogen tinggi memperparah blast
             if ($cfRekomendasi <= 0.01) {
                 continue;
             }
