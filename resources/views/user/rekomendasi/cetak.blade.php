@@ -102,7 +102,15 @@
 
     <h2>Laporan Rekomendasi Pupuk dan Pestisida</h2>
     <p>Nama Pengguna: {{ $rekomendasi->user->nama ?? '-' }}</p>
-    <p>Penyakit: {{ $rekomendasi->penyakit->nama ?? '-' }}</p>
+    <div style="display: flex; align-items: flex-start; gap: 16px; margin: 16px 0;">
+        @if($rekomendasi->penyakit->gambar_url)
+        <img src="{{ $rekomendasi->penyakit->gambar_url }}" alt="{{ $rekomendasi->penyakit->nama ?? 'Penyakit' }}" style="width: 120px; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #e5e7eb;">
+        @endif
+        <div style="flex: 1;">
+            <p><strong>Penyakit:</strong> {{ $rekomendasi->penyakit->nama ?? '-' }}</p>
+            <p><strong>Deskripsi:</strong> {{ $rekomendasi->penyakit->deskripsi ?? '-' }}</p>
+        </div>
+    </div>
     <p>Tanggal: {{ optional($rekomendasi->created_at)->format('d M Y H:i') }}</p>
 
     <div class="section">

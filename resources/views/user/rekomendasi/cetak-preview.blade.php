@@ -180,12 +180,20 @@
         $gejala = collect(data_get($rekomendasi, 'gejala_cocok', []));
         $sortedPupuk = $rekomendasi->detailPupuk->sortBy('peringkat')->take(2)->values();
         $sortedPestisida = $rekomendasi->detailPestisida->sortBy('peringkat')->take(2)->values();
+        $penyakitGambarUrl = data_get($rekomendasi, 'penyakit.gambar_url') ?? data_get($rekomendasi, 'penyakit.gambar');
     @endphp
     <div class="report-card">
-        <h2>{{ $rekomendasi->penyakit->nama ?? '-' }}</h2>
-        @if($rekomendasi->preferensi_label)
-        <p>Prioritas pengguna: {{ $rekomendasi->preferensi_label }}</p>
-        @endif
+        <div style="display: flex; align-items: flex-start; gap: 16px; margin-bottom: 16px;">
+            @if($penyakitGambarUrl)
+            <img src="{{ $penyakitGambarUrl }}" alt="{{ $rekomendasi->penyakit->nama ?? 'Penyakit' }}" style="width: 120px; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #e5e7eb;">
+            @endif
+            <div style="flex: 1;">
+                <h2>{{ $rekomendasi->penyakit->nama ?? '-' }}</h2>
+                @if($rekomendasi->preferensi_label)
+                <p>Prioritas pengguna: {{ $rekomendasi->preferensi_label }}</p>
+                @endif
+            </div>
+        </div>
 
         <div class="section">
             <h3>Gejala yang Cocok</h3>
