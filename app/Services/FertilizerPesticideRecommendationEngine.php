@@ -70,7 +70,7 @@ class FertilizerPesticideRecommendationEngine
 
         foreach ($disease->pupuk as $pivotData) {
             $fertilizer = $pivotData;
-            
+
             $mb = (float) ($pivotData->pivot->mb ?? 0.7);
             $md = (float) ($pivotData->pivot->md ?? 0.1);
 
@@ -82,19 +82,19 @@ class FertilizerPesticideRecommendationEngine
 
             // CF_Penyebab: seberapa besar pupuk menyebabkan/memperparah penyakit
             $cfPenyebab = $this->cfEngine->calculateCf($mb, $md);
-            
+
             // Transformasi: CF_Rekomendasi = -CF_Penyebab
             // Jika pupuk memperparah penyakit (CF_Penyebab positif), maka CF_Rekomendasi negatif → TIDAK direkomendasikan
             // Jika pupuk mencegah penyakit (CF_Penyebab negatif), maka CF_Rekomendasi positif → DIREKOMENDASIKAN
             $cfRekomendasi = -$cfPenyebab;
             $cfRekomendasi = $this->cfEngine->normalizeToRange($cfRekomendasi, -1, 1);
-            
+
             // CRITICAL FIX: Skip pupuk dengan CF negatif atau nol
             // Contoh: Urea pada Blast memiliki CF negatif karena nitrogen tinggi memperparah blast
             if ($cfRekomendasi <= 0) {
                 continue;
             }
-            
+
             $interpretation = $this->getRecommendationLabel($cfRekomendasi);
 
             $recommendations[] = [
@@ -131,7 +131,7 @@ class FertilizerPesticideRecommendationEngine
             ];
         }
 
-        usort($recommendations, fn ($a, $b) => $b['cf_rekomendasi'] <=> $a['cf_rekomendasi']);
+        usort($recommendations, fn($a, $b) => $b['cf_rekomendasi'] <=> $a['cf_rekomendasi']);
 
         foreach ($recommendations as $index => &$item) {
             $item['peringkat'] = $index + 1;
@@ -162,7 +162,7 @@ class FertilizerPesticideRecommendationEngine
 
         foreach ($disease->pestisida as $pivotData) {
             $pesticide = $pivotData;
-            
+
             $mb = (float) ($pivotData->pivot->mb ?? 0.7);
             $md = (float) ($pivotData->pivot->md ?? 0.1);
 
@@ -176,12 +176,12 @@ class FertilizerPesticideRecommendationEngine
             $cfSolusi = $this->cfEngine->calculateCf($mb, $md);
             $cfRekomendasi = $cfSolusi;
             $cfRekomendasi = $this->cfEngine->normalizeToRange($cfRekomendasi, -1, 1);
-            
+
             // CRITICAL FIX: Skip pestisida dengan CF negatif atau nol
             if ($cfRekomendasi <= 0) {
                 continue;
             }
-            
+
             $interpretation = $this->getRecommendationLabel($cfRekomendasi);
 
             $recommendations[] = [
@@ -218,7 +218,7 @@ class FertilizerPesticideRecommendationEngine
             ];
         }
 
-        usort($recommendations, fn ($a, $b) => $b['cf_rekomendasi'] <=> $a['cf_rekomendasi']);
+        usort($recommendations, fn($a, $b) => $b['cf_rekomendasi'] <=> $a['cf_rekomendasi']);
 
         foreach ($recommendations as $index => &$item) {
             $item['peringkat'] = $index + 1;
@@ -245,8 +245,8 @@ class FertilizerPesticideRecommendationEngine
         // Catatan: Filter onlyPositive sudah dilakukan di level method individual
         // Ini adalah defensive layer tambahan
         if ($onlyPositive) {
-            $fertilizerRecs = array_values(array_filter($fertilizerRecs, fn ($item) => $item['cf_rekomendasi'] > 0));
-            $pesticideRecs = array_values(array_filter($pesticideRecs, fn ($item) => $item['cf_rekomendasi'] > 0));
+            $fertilizerRecs = array_values(array_filter($fertilizerRecs, fn($item) => $item['cf_rekomendasi'] > 0));
+            $pesticideRecs = array_values(array_filter($pesticideRecs, fn($item) => $item['cf_rekomendasi'] > 0));
 
             foreach ($fertilizerRecs as $index => &$item) {
                 $item['peringkat'] = $index + 1;
@@ -260,7 +260,7 @@ class FertilizerPesticideRecommendationEngine
         if ($topN !== null && $topN > 0) {
             $fertilizerRecs = array_slice($fertilizerRecs, 0, $topN);
             $pesticideRecs = array_slice($pesticideRecs, 0, $topN);
-            
+
             // Re-calculate peringkat setelah slicing
             foreach ($fertilizerRecs as $index => &$item) {
                 $item['peringkat'] = $index + 1;
