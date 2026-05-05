@@ -1,70 +1,39 @@
-```
-# Compiled and build artifacts
-*.pyc
-__pycache__/
-*.o
-*.obj
-*.class
-*.exe
-*.dll
-*.so
-*.a
-*.out
-
-# Dependencies
-vendor/
-node_modules/
+# Laravel core
+/vendor
+/node_modules
 .env
-.env.local
 .env.*
 
-# Logs and temp files
-*.log
-*.tmp
-*.swp
-*.swo
+# Storage (keep structure)
+/public/storage
+/storage/*.key
+/storage/app/*
+!/storage/app/public
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/logs/*
 
-# Editors
+# Cache
+/bootstrap/cache/*.php
+/bootstrap/cache/packages.php
+/bootstrap/cache/services.php
+
+# IDE
 .vscode/
 .idea/
-*.swp
-*.swo
 
-# OS generated files
+# OS
 .DS_Store
 Thumbs.db
 
-# Build and distribution
+# Logs & temp
+*.log
+*.tmp
+
+# Build
 dist/
 build/
-target/
-coverage/
-htmlcov/
-.coverage
-.mypy_cache/
-.pytest_cache/
 
-# Compression archives
-*.zip
-*.gz
-*.tar
-*.tgz
-*.bz2
-*.xz
-*.7z
-*.rar
-*.zst
-*.lz4
-*.lzh
-*.cab
-*.arj
-*.rpm
-*.deb
-*.Z
-*.lz
-*.lzo
-*.tar.gz
-*.tar.bz2
-*.tar.xz
-*.tar.zst
-```
+docs/data/
+public/uploads/
