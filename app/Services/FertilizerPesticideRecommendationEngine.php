@@ -227,6 +227,7 @@ class FertilizerPesticideRecommendationEngine
                     'nama' => $disease->nama,
                     'mb' => round($mb, 3),
                     'md' => round($md, 3),
+                    'cf_raw' => round($mb - $md, 3),
                 ],
                 'matched_symptoms_count' => count($symptomIds),
             ];
@@ -252,7 +253,7 @@ class FertilizerPesticideRecommendationEngine
     public function calculateAllRecommendations(
         int $diseaseId,
         array $symptomIds = [],
-        ?int $topN = 3,  // Default limit ke 3 teratas
+        ?int $topN = 2,  // Default limit ke 2 teratas
         bool $onlyPositive = true
     ): array {
         $fertilizerRecs = $this->calculateFertilizerRecommendations($diseaseId, $symptomIds);
@@ -307,9 +308,9 @@ class FertilizerPesticideRecommendationEngine
             ],
             'method_info' => [
                 'basis_rekomendasi' => 'Penyakit (bukan gejala)',
-                'pupuk_transformation' => 'CF_rekomendasi = -CF_penyebab',
+                'pupuk_transformation' => 'CF_rekomendasi = CF_dasar (tanpa transformasi)',
                 'pestisida_transformation' => 'CF_rekomendasi = CF_solusi (tanpa perubahan)',
-                'negative_filter' => 'Pupuk/Pestisida dengan CF <= 0 otomatis difilter',
+                'negative_filter' => 'Pupuk/Pestisida dengan CF <= 0.01 otomatis difilter',
             ],
         ];
     }

@@ -595,9 +595,7 @@
     @foreach($gejalaInput as $gejalaDipilih)
     <input type="hidden" name="gejala_terpilih[]" value="{{ $gejalaDipilih->id }}">
     @endforeach
-    @foreach($diagnosaTinggi as $diagnosaItem)
-    <input type="hidden" name="id_penyakit[]" value="{{ data_get($diagnosaItem, 'penyakit.id') }}">
-    @endforeach
+    {{-- HIDDEN input id_penyakit[] dihapus - user sekarang memilih via checkbox --}}
 
     {{-- ── Disease Detail Card ── --}}
     <div class="section-card mb-4 anim-fade-up">
@@ -745,7 +743,8 @@
                                     type="checkbox"
                                     name="id_penyakit[]"
                                     value="{{ $altPenyakitId }}"
-                                    checked>
+                                    @if($loop->first) checked @endif
+                                    title="Centang untuk memproses penyakit ini ke rekomendasi">
                             </div>
                         </div>
 
