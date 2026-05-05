@@ -102,6 +102,11 @@ class RekomendasiController extends Controller
                 $detail->pestisida->makeVisible(['gambar']);
             }
         });
+        
+        // Pastikan penyakit memiliki akses ke gambar
+        if ($rekomendasi->penyakit) {
+            $rekomendasi->penyakit->makeVisible(['gambar']);
+        }
 
         if ($request->boolean('download')) {
             $html = view('user.rekomendasi.cetak', compact('rekomendasi'))->render();
