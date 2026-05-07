@@ -1,4 +1,7 @@
-# Dependency
+# Environment
+.env
+
+# Dependencies
 /node_modules
 /vendor
 
@@ -8,9 +11,8 @@
 # Build assets
 /public/assets/build
 /public/hot
-
-# Environment
-.env
+build/
+dist/
 
 # Laravel
 /storage/*.key
@@ -19,3 +21,19 @@
 /storage/framework/sessions
 /storage/framework/views
 /bootstrap/cache
+
+# Logs
+*.log
+
+# Editor/IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# PHP
+*.php~
+__pycache__/
+*.pyc

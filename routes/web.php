@@ -35,6 +35,12 @@ Route::middleware('guest')->group(function () {
 
     Route::get('/register',  [AuthController::class, 'showRegister'])->name('register');
     Route::post('/register', [AuthController::class, 'register'])->name('register.post');
+
+    // Reset Password Routes
+    Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('password.request');
+    Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name('password.email');
+    Route::get('/reset-password/{token}', [AuthController::class, 'showResetForm'])->name('password.reset');
+    Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
 });
 
 // Logout (POST diutamakan; GET sebagai fallback)
@@ -72,11 +78,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/email/verify-by-token/{id}/{hash}', [ProfileController::class, 'verifyEmailByToken'])
         ->name('verification.verifyByToken');
 
-    // -- Verifikasi email via token sederhana (dari kode baru) --
-    // Gunakan ini jika tidak memakai signed URL (misal: kirim token manual ke email)
-    Route::get('/profile/verify/{token}', [ProfileController::class, 'verifyEmailByToken'])
-        ->name('profile.verify.email');
 });
+
+// Link ini dibuka dari email, jadi tidak boleh wajib login.
+Route::get('/profile/verify/{token}', [ProfileController::class, 'verifyEmailByRandomToken'])
+    ->name('profile.verify.email');
 
 
 // ─────────────────────────────────────────────────────────────

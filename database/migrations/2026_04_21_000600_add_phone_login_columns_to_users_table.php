@@ -56,6 +56,12 @@ return new class extends Migration
 
     private function hasUniqueIndex(string $table, string $indexName): bool
     {
+        if (DB::connection()->getDriverName() === 'sqlite') {
+            $indexes = DB::select("PRAGMA index_list('$table')");
+
+            return collect($indexes)->contains(fn ($index) => $index->name === $indexName);
+        }
+
         $result = DB::select('SHOW INDEX FROM `' . $table . '` WHERE Key_name = ?', [$indexName]);
 
         return $result !== [];

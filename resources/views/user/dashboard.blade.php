@@ -368,6 +368,27 @@
     }
     .form-floating-group { position: relative; margin-bottom: 16px; }
     .form-floating-group .fi { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--slate-400); font-size: .95rem; pointer-events: none; }
+    .form-floating-group.has-toggle .form-control { padding-right: 46px; }
+    .password-toggle-inline {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 32px;
+        height: 32px;
+        border: 0;
+        background: transparent;
+        color: var(--slate-400);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        transition: background .2s, color .2s;
+    }
+    .password-toggle-inline:hover {
+        background: var(--green-100);
+        color: var(--green-700);
+    }
     .form-control, .form-select {
         border: 1.5px solid var(--slate-200);
         border-radius: var(--r-sm);
@@ -833,14 +854,23 @@
                             @error('username')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
                     </div>
-                    <div class="mb-4">
+                    <div class="mb-3">
                         <label class="form-label">Password</label>
-                        <div class="form-floating-group">
+                        <div class="form-floating-group has-toggle">
                             <i class="bi bi-lock fi"></i>
-                            <input type="password" name="password"
+                            <input type="password" id="home-login-password" name="password"
                                 class="form-control @error('password') is-invalid @enderror"
                                 placeholder="Masukkan password Anda">
+                            <button class="password-toggle-inline password-toggle" type="button"
+                                data-target="home-login-password" aria-label="Tampilkan password">
+                                <i class="bi bi-eye"></i>
+                            </button>
                             @error('password')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+                        <div class="text-end mt-2">
+                            <a href="{{ route('password.request') }}" style="font-size:13px; font-weight:700; color:var(--green-600); text-decoration:none;">
+                                Lupa password?
+                            </a>
                         </div>
                     </div>
                     <button type="submit" class="btn-login">
@@ -1002,3 +1032,19 @@
 </div>
 @endguest
 @endsection
+
+@push('scripts')
+<script>
+    document.querySelectorAll('.password-toggle').forEach((button) => {
+        button.addEventListener('click', () => {
+            const input = document.getElementById(button.dataset.target);
+            const icon = button.querySelector('i');
+            const isHidden = input.type === 'password';
+
+            input.type = isHidden ? 'text' : 'password';
+            icon.className = isHidden ? 'bi bi-eye-slash' : 'bi bi-eye';
+            button.setAttribute('aria-label', isHidden ? 'Sembunyikan password' : 'Tampilkan password');
+        });
+    });
+</script>
+@endpush

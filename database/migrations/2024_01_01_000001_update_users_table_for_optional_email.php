@@ -9,12 +9,21 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            // Ubah email menjadi nullable jika sebelumnya not null
-            $table->string('email')->nullable()->change();
+            if (Schema::hasColumn('users', 'email')) {
+                // Ubah email menjadi nullable jika sebelumnya not null
+                $table->string('email')->nullable()->change();
+            } else {
+                $table->string('email')->nullable()->unique()->after('username');
+            }
 
             // Tambahkan kolom untuk token verifikasi dan waktu verifikasi
-            $table->string('email_verification_token')->nullable()->after('email');
-            $table->timestamp('email_verified_at')->nullable()->after('email_verification_token');
+            if (!Schema::hasColumn('users', 'email_verification_token')) {
+                $table->string('email_verification_token')->nullable()->after('email');
+            }
+
+            if (!Schema::hasColumn('users', 'email_verified_at')) {
+                $table->timestamp('email_verified_at')->nullable()->after('email_verification_token');
+            }
 
             // Pastikan unique tetap ada tapi mengabaikan null (di beberapa DB driver perlu penanganan khusus, 
             // namun di MySQL modern unique index mengabaikan multiple NULL)
@@ -25,7 +34,10 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn(['email_verification_token', 'email_verified_at']);
+            if (Schema::hasColumn('users', 'email_verification_token')) {
+                $table->dropColumn('email_verification_token');
+            }
+
             // Kembalikan email menjadi not null jika diperlukan
             $table->string('email')->nullable(false)->change();
         });

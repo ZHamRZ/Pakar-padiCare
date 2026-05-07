@@ -253,7 +253,7 @@ class CertaintyFactorEngine
             return ['label' => 'Tinggi', 'color' => 'success', 'icon' => '✓'];
         } elseif ($cf >= 0.4) {
             return ['label' => 'Sedang', 'color' => 'warning', 'icon' => '~'];
-        } elseif ($cf >= 0.2) {
+        } elseif ($cf >= 0.1) {
             return ['label' => 'Rendah', 'color' => 'warning', 'icon' => '…'];
         } elseif ($cf >= 0) {
             return ['label' => 'Sangat Rendah', 'color' => 'danger', 'icon' => '?'];

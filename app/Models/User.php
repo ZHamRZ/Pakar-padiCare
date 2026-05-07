@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Notifications\CustomResetPassword;
 use App\Support\ProjectImage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
@@ -11,7 +13,7 @@ use Illuminate\Support\Str;
 // Hapus implements MustVerifyEmail jika tidak menggunakan verifikasi bawaan Laravel
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, MustVerifyEmail, Notifiable;
 
     /**
      * Nama tabel
@@ -27,6 +29,7 @@ class User extends Authenticatable
         'alamat',
         'catatan_profil',
         'foto_profil',
+        'no_telp',
         'password',
         'role',
 
@@ -52,6 +55,7 @@ class User extends Authenticatable
         return [
             'password' => 'hashed',
             'email_verified_at' => 'datetime',
+            'phone_verified_at' => 'datetime',
         ];
     }
 
@@ -102,11 +106,27 @@ class User extends Authenticatable
         return ProjectImage::url($this->foto_profil);
     }
 
+    public function getNoTeleponAttribute(): ?string
+    {
+        return $this->no_telp;
+    }
+
     /**
      * Identifier tampilan user
      */
     public function getDisplayIdentifierAttribute(): string
     {
         return $this->username ?: '-';
+    }
+
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new CustomResetPassword($token));
     }
 }

@@ -62,7 +62,7 @@
 {{-- ============================================================
      NOTIFIKASI GLOBAL
      - Flash success/error dari controller
-     - Link verifikasi email (untuk environment non-production)
+     - Status pengiriman email verifikasi
 ============================================================ --}}
 @if(session('success'))
 <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
@@ -74,16 +74,6 @@
 @if(session('error'))
 <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
     <i class="bi bi-exclamation-circle me-2"></i>{{ session('error') }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-</div>
-@endif
-
-{{-- Link verifikasi simulasi — HANYA tampil di local/staging, sembunyikan di production --}}
-@if(session('verification_link') && app()->isLocal())
-<div class="alert alert-info alert-dismissible fade show mb-4" role="alert">
-    <i class="bi bi-envelope-check me-2"></i>
-    <strong>Simulasi:</strong> Link verifikasi email →
-    <a href="{{ session('verification_link') }}" class="alert-link">Klik untuk Verifikasi</a>
     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
 </div>
 @endif
