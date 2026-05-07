@@ -7,6 +7,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Auth\Events\PasswordReset;
 
 class AuthController extends Controller
 {
@@ -122,6 +124,98 @@ class AuthController extends Controller
         }
 
         return redirect()->route('home')->with('success', 'Anda telah berhasil logout.');
+    }
+
+    /**
+     * Tampilkan form lupa password
+     */
+    public function showForgotPassword()
+    {
+        if (Auth::check()) {
+            return $this->redirectByRole();
+        }
+
+        return view('auth.forgot-password');
+    }
+
+    /**
+     * Proses kirim link reset password ke email
+     */
+    public function sendResetLink(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+        ], [
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.exists' => 'Email tidak terdaftar di sistem kami.',
+        ]);
+
+        $status = Password::sendResetLink(
+            $request->only('email')
+        );
+
+        if ($status === Password::RESET_LINK_SENT) {
+            return back()
+                ->with('success', 'Link reset password telah dikirim ke email Anda. Silakan cek inbox/spam folder.');
+        }
+
+        return back()
+            ->withInput($request->only('email'))
+            ->withErrors(['email' => __($status)]);
+    }
+
+    /**
+     * Tampilkan form reset password
+     */
+    public function showResetForm(Request $request, $token)
+    {
+        if (Auth::check()) {
+            return $this->redirectByRole();
+        }
+
+        return view('auth.reset-password', [
+            'token' => $token,
+            'email' => $request->email,
+        ]);
+    }
+
+    /**
+     * Proses reset password
+     */
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email|exists:users,email',
+            'password' => 'required|string|min:6|confirmed',
+        ], [
+            'token.required' => 'Token reset password diperlukan.',
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.exists' => 'Email tidak terdaftar.',
+            'password.required' => 'Password wajib diisi.',
+            'password.min' => 'Password minimal 6 karakter.',
+            'password.confirmed' => 'Konfirmasi password tidak cocok.',
+        ]);
+
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user, $password) {
+                $user->password = Hash::make($password);
+                $user->save();
+                event(new PasswordReset($user));
+            }
+        );
+
+        if ($status === Password::PASSWORD_RESET) {
+            return redirect()->route('login')
+                ->with('success', 'Password berhasil direset. Silakan login dengan password baru.');
+        }
+
+        return back()
+            ->withInput($request->only('email'))
+            ->withErrors(['email' => __($status)]);
     }
 
     private function redirectByRole()

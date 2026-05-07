@@ -1,82 +1,27 @@
 ```
-# Environment variables
+# Environment
 .env
-.env.local
-.env.*
+
+# Dependencies
+vendor/
 
 # Logs
 *.log
 
-# Dependencies
-node_modules/
-
-# Build artifacts
-dist/
-build/
-target/
-
-# Python
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
-env/
-venv/
-.venv/
-pip-log.txt
-pip-delete-this-directory.txt
-.tox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.log
-.git/refs/original/
-**/.pytest_cache/
-.mypy_cache/
-
-# IDE
-.vscode/
+# Editor/IDE
 .idea/
-*.swp
-*.swo
+.vscode/
 
 # OS
 .DS_Store
 Thumbs.db
 
-# Compressed
-*.zip
-*.gz
-*.tar
-*.tgz
-*.bz2
-*.xz
-*.7z
-*.rar
-*.zst
-*.lz4
-*.lzh
-*.cab
-*.arj
-*.rpm
-*.deb
-*.Z
-*.lz
-*.lzo
-*.tar.gz
-*.tar.bz2
-*.tar.xz
-*.tar.zst
+# PHP
+*.php~
+__pycache__/
+*.pyc
 
-# Coverage
-coverage/
-htmlcov/
-
-# Temporary
-*.tmp
-*.temp
+# Build artifacts
+build/
+dist/
 ```
