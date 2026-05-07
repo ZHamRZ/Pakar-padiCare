@@ -1,12 +1,21 @@
-# Documentation files (if generated)
-docs/*.html
-docs/_build/
-docs/build/
-docs/doctrees/
-docs/.doctrees/
+# Dependency
+/node_modules
+/vendor
 
-# Common documentation build artifacts
-docs/api/
-docs/reference/
-docs/_static/
-docs/_templates/
+# Upload user
+/public/uploads
+
+# Build assets
+/public/assets/build
+/public/hot
+
+# Environment
+.env
+
+# Laravel
+/storage/*.key
+/storage/logs
+/storage/framework/cache
+/storage/framework/sessions
+/storage/framework/views
+/bootstrap/cache
