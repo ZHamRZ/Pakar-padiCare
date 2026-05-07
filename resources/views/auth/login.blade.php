@@ -50,6 +50,9 @@
                         </button>
                         @error('password')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
+                    <div class="mt-2 text-end">
+                        <a href="{{ route('password.request') }}" class="small text-muted">Lupa password?</a>
+                    </div>
                 </div>
                 <button type="submit" class="btn btn-spk w-100 py-2 fw-semibold">
                     <i class="bi bi-box-arrow-in-right me-1"></i> Login
