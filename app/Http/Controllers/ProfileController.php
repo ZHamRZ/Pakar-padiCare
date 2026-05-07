@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Illuminate\Auth\Access\AuthorizationException;
 
 class ProfileController extends Controller
 {
@@ -95,12 +96,44 @@ class ProfileController extends Controller
 
     public function verifyEmail(EmailVerificationRequest $request)
     {
-        if (!$request->user()->hasVerifiedEmail()) {
+        if ($request->user()->hasVerifiedEmail()) {
+            $route = $request->user()->isAdmin() ? 'admin.profile.edit' : 'user.profile.edit';
+            return redirect()->route($route)->with('success', 'Email sudah diverifikasi sebelumnya.');
+        }
+
+        try {
             $request->fulfill();
             event(new Verified($request->user()));
+        } catch (AuthorizationException $e) {
+            return redirect()->route('verification.notice')->with('error', 'Link verifikasi tidak valid atau sudah kadaluarsa.');
         }
 
         $route = $request->user()->isAdmin() ? 'admin.profile.edit' : 'user.profile.edit';
+
+        return redirect()->route($route)->with('success', 'Email berhasil diverifikasi.');
+    }
+
+    public function verifyEmailByToken($id, $hash)
+    {
+        $user = \App\Models\User::find($id);
+
+        if (!$user) {
+            abort(404, 'User tidak ditemukan.');
+        }
+
+        if (!hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
+            abort(403, 'Link verifikasi tidak valid.');
+        }
+
+        if ($user->hasVerifiedEmail()) {
+            $route = $user->isAdmin() ? 'admin.profile.edit' : 'user.profile.edit';
+            return redirect()->route($route)->with('success', 'Email sudah diverifikasi sebelumnya.');
+        }
+
+        $user->markEmailAsVerified();
+        event(new Verified($user));
+
+        $route = $user->isAdmin() ? 'admin.profile.edit' : 'user.profile.edit';
 
         return redirect()->route($route)->with('success', 'Email berhasil diverifikasi.');
     }
