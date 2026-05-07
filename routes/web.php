@@ -69,6 +69,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/email/verify/{id}/{hash}', [ProfileController::class, 'verifyEmail'])
         ->middleware('signed')
         ->name('verification.verify');
+    Route::get('/email/verify-by-token/{id}/{hash}', [ProfileController::class, 'verifyEmailByToken'])
+        ->name('verification.verifyByToken');
 
     // -- Verifikasi email via token sederhana (dari kode baru) --
     // Gunakan ini jika tidak memakai signed URL (misal: kirim token manual ke email)
