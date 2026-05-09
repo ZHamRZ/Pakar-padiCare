@@ -1,1 +1,4 @@
-(docs/FLOWCHART_SISTEM.drawio is a diagram file, which is a source/config file, so no need to ignore)
+```markdown
+# Documentation
+docs/*.md
+```
