@@ -48,10 +48,12 @@
         <mxCell id="u_d_akun" parent="1" style="rhombus;fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Punya Akun?" vertex="1">
           <mxGeometry height="87" width="149.5" x="258" y="277" as="geometry" />
         </mxCell>
-        <mxCell id="u_input_reg" parent="1" style="shape=parallelogram;fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Input: Nama,&#xa;Username, Password" vertex="1">
+        <mxCell id="u_input_reg" parent="1" style="shape=parallelogram;fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Input: Nama,
+Username, Password" vertex="1">
           <mxGeometry height="48" width="220" x="50" y="372" as="geometry" />
         </mxCell>
-        <mxCell id="u_input_login" parent="1" style="shape=parallelogram;fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Input: Username,&#xa;Password" vertex="1">
+        <mxCell id="u_input_login" parent="1" style="shape=parallelogram;fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Input: Username,
+Password" vertex="1">
           <mxGeometry height="62" width="170" x="461.5" y="293.5" as="geometry" />
         </mxCell>
         <mxCell id="u_dashboard" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Kelola profil" vertex="1">
@@ -94,7 +96,8 @@
         <mxCell id="a_dashboard" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Dashboard Admin" vertex="1">
           <mxGeometry height="47.5" width="151.25" x="1508.75" y="192.5" as="geometry" />
         </mxCell>
-        <mxCell id="a_kelola" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Atur Relasi dan Nilai &#xa;MB dan MD" vertex="1">
+        <mxCell id="a_kelola" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Atur Relasi dan Nilai
+MB dan MD" vertex="1">
           <mxGeometry height="60" width="151.25" x="1508.75" y="260" as="geometry" />
         </mxCell>
         <mxCell id="7Ei0GkiQS-9mdLaq2CWi-5" edge="1" parent="1" source="a_mb_md" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="a_save" value="">
@@ -103,7 +106,8 @@
         <mxCell id="7Ei0GkiQS-9mdLaq2CWi-6" edge="1" parent="1" source="a_mb_md" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="a_save" value="">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="a_mb_md" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Tentukan Nilai MB &#xa;dan MD" vertex="1">
+        <mxCell id="a_mb_md" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Tentukan Nilai MB
+dan MD" vertex="1">
           <mxGeometry height="68" width="152.5" x="1507.5" y="342" as="geometry" />
         </mxCell>
         <mxCell id="a_save" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Simpan ke Database" vertex="1">
@@ -221,10 +225,12 @@
         <mxCell id="u2_klik" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Klik Menu Diagnosis" vertex="1">
           <mxGeometry height="38" width="150" x="58" y="644" as="geometry" />
         </mxCell>
-        <mxCell id="u2_pilih" parent="1" style="shape=parallelogram;fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Pilih Gejala Tanaman&#xa;Atur Bobot Keyakinan (0-100%)" vertex="1">
+        <mxCell id="u2_pilih" parent="1" style="shape=parallelogram;fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Pilih Gejala Tanaman
+Atur Bobot Keyakinan (0-100%)" vertex="1">
           <mxGeometry height="52" width="321.5" x="186.5" y="714" as="geometry" />
         </mxCell>
-        <mxCell id="u2_d_min" parent="1" style="rhombus;fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Min 1 Gejala&#xa;Dipilih?" vertex="1">
+        <mxCell id="u2_d_min" parent="1" style="rhombus;fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Min 1 Gejala
+Dipilih?" vertex="1">
           <mxGeometry height="68" width="185" x="255.25" y="817" as="geometry" />
         </mxCell>
         <mxCell id="u2_err" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Error: Min 1 Gejala" vertex="1">
@@ -239,22 +245,27 @@
         <mxCell id="s2_tampil_f" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Tampilkan Form Gejala" vertex="1">
           <mxGeometry height="52" width="190" x="674" y="811" as="geometry" />
         </mxCell>
-        <mxCell id="s2_terima" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Terima Input Gejala dan Bobot &#xa;Keyakinan" vertex="1">
+        <mxCell id="s2_terima" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Terima Input Gejala dan Bobot
+Keyakinan" vertex="1">
           <mxGeometry height="48" width="213" x="780" y="873" as="geometry" />
         </mxCell>
-        <mxCell id="s2_load_rel" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Ambil Data Relasi Penyakit &#xa;dan Gejala (MB,MD)" vertex="1">
+        <mxCell id="s2_load_rel" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Ambil Data Relasi Penyakit
+dan Gejala (MB,MD)" vertex="1">
           <mxGeometry height="52" width="197" x="788" y="964" as="geometry" />
         </mxCell>
         <mxCell id="s2_cf_calc" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Hitung CF Gejala" vertex="1">
           <mxGeometry height="70" width="194" x="789.5" y="1055" as="geometry" />
         </mxCell>
-        <mxCell id="s2_agr" parent="1" style="rounded=1;fillColor=light-dark(#FFFFFF,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;fontFamily=Helvetica;fontStyle=1;align=center;verticalAlign=middle;strokeWidth=2;" value="Kombinasi CF dari &#xa;Beberapa Gejala" vertex="1">
+        <mxCell id="s2_agr" parent="1" style="rounded=1;fillColor=light-dark(#FFFFFF,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;fontFamily=Helvetica;fontStyle=1;align=center;verticalAlign=middle;strokeWidth=2;" value="Kombinasi CF dari
+Beberapa Gejala" vertex="1">
           <mxGeometry height="48" width="190" x="1035" y="1066" as="geometry" />
         </mxCell>
-        <mxCell id="s2_sort_py" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Pengurutan Peringkat &#xa;Penyakit" vertex="1">
+        <mxCell id="s2_sort_py" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Pengurutan Peringkat
+Penyakit" vertex="1">
           <mxGeometry height="48" width="190" x="1075" y="1189" as="geometry" />
         </mxCell>
-        <mxCell id="s2_session" parent="1" style="shape=parallelogram;fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Simpan Hasil Sementara&#xa;session" vertex="1">
+        <mxCell id="s2_session" parent="1" style="shape=parallelogram;fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Simpan Hasil Sementara
+session" vertex="1">
           <mxGeometry height="58" width="238" x="825" y="1244" as="geometry" />
         </mxCell>
         <mxCell id="e_s2_0" edge="1" parent="1" source="u_dashboard" style="edgeStyle=orthogonalEdgeStyle;strokeColor=light-dark(#000000,#000000);rounded=1;strokeWidth=2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=14;fontColor=#FFFFFF;fontStyle=1;labelBackgroundColor=default;endArrow=classic;fillColor=light-dark(#000000,#FFFFFF);exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;">
@@ -345,10 +356,13 @@
         <mxCell id="e_db2_rel" edge="1" parent="1" source="s2_load_rel" style="edgeStyle=orthogonalEdgeStyle;strokeColor=light-dark(#000000,#000000);dashed=1;endArrow=open;strokeWidth=2;" target="db_central">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="u3_lihat" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Lihat Hasil Identifikasi&#xa;Penyakit + Skor CF" vertex="1">
+        <mxCell id="u3_lihat" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Lihat Hasil Identifikasi
+Penyakit + Skor CF" vertex="1">
           <mxGeometry height="72" width="195" x="242.5" y="1010" as="geometry" />
         </mxCell>
-        <mxCell id="u3_pilih" parent="1" style="shape=parallelogram;fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Pilih Penyakit +&#xa;Preferensi (seimbang /&#xa;hemat / efisiensi / custom)" vertex="1">
+        <mxCell id="u3_pilih" parent="1" style="shape=parallelogram;fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Pilih Penyakit +
+Preferensi (seimbang /
+hemat / efisiensi / custom)" vertex="1">
           <mxGeometry height="65" width="330" x="175" y="1140" as="geometry" />
         </mxCell>
         <mxCell id="u3_submit" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Submit Preferensi" vertex="1">
@@ -361,7 +375,8 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="s3_tampil_h" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Tampilkan Hasil Identifikasi &#xa;Penyakit" vertex="1">
+        <mxCell id="s3_tampil_h" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Tampilkan Hasil Identifikasi
+Penyakit" vertex="1">
           <mxGeometry height="65" width="200" x="683" y="1149.5" as="geometry" />
         </mxCell>
         <mxCell id="WBSQ_r1dtQyw27lXI2u_-4" edge="1" parent="1" source="s3_load_py" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=light-dark(#000000,#000000);curved=0;strokeWidth=2;">
@@ -369,19 +384,25 @@
             <mxPoint x="987" y="1363" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="s3_load_py" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Load Penyakit, Pupuk,&#xa;Pestisida dari DB" vertex="1">
+        <mxCell id="s3_load_py" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Load Penyakit, Pupuk,
+Pestisida dari DB" vertex="1">
           <mxGeometry height="48" width="175" x="736" y="1339" as="geometry" />
         </mxCell>
-        <mxCell id="s3_d_pref" parent="1" style="rhombus;fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Preferensi&#xa;= Seimbang?" vertex="1">
+        <mxCell id="s3_d_pref" parent="1" style="rhombus;fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Preferensi
+= Seimbang?" vertex="1">
           <mxGeometry height="90" width="155.5" x="986" y="1320" as="geometry" />
         </mxCell>
-        <mxCell id="s3_skip_adj" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Skip Adjustment&#xa;Pakai CF Langsung" vertex="1">
+        <mxCell id="s3_skip_adj" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Skip Adjustment
+Pakai CF Langsung" vertex="1">
           <mxGeometry height="48" width="155" x="669.5" y="1466" as="geometry" />
         </mxCell>
-        <mxCell id="s3_adj" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Sesuaikan Berdasarkan &#xa;Preferensi (Hemat Biaya &#xa;/ Efisiensi)" vertex="1">
+        <mxCell id="s3_adj" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Sesuaikan Berdasarkan
+Preferensi (Hemat Biaya
+/ Efisiensi)" vertex="1">
           <mxGeometry height="60" width="190" x="1080" y="1461" as="geometry" />
         </mxCell>
-        <mxCell id="a3_kelola_krit" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Kelola Kriteria Preferensi&#xa;(seimbang, hemat, efisiensi)" vertex="1">
+        <mxCell id="a3_kelola_krit" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Kelola Kriteria Preferensi
+(seimbang, hemat, efisiensi)" vertex="1">
           <mxGeometry height="70" width="200" x="1446.25" y="1190" as="geometry" />
         </mxCell>
         <mxCell id="ea3_db" edge="1" parent="1" source="a3_kelola_krit" style="edgeStyle=orthogonalEdgeStyle;strokeColor=light-dark(#000000,#000000);dashed=1;endArrow=open;strokeWidth=2;" target="db_central">
@@ -472,22 +493,26 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="s4_resort" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Perbarui Nilai dan &#xa;Peringkat Rekomendasi" vertex="1">
+        <mxCell id="s4_resort" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Perbarui Nilai dan
+Peringkat Rekomendasi" vertex="1">
           <mxGeometry height="50" width="185" x="855" y="1466" as="geometry" />
         </mxCell>
         <mxCell id="s4_d_login" parent="1" style="rhombus;fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="User Logged In?" vertex="1">
           <mxGeometry height="62" width="150" x="872.5" y="1582" as="geometry" />
         </mxCell>
-        <mxCell id="s4_save_db" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Simpan Data Rekomendasi &#xa;Pengguna" vertex="1">
+        <mxCell id="s4_save_db" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Simpan Data Rekomendasi
+Pengguna" vertex="1">
           <mxGeometry height="80" width="202" x="670.5" y="1660" as="geometry" />
         </mxCell>
-        <mxCell id="s4_save_ses" parent="1" style="shape=parallelogram;fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Simpan Session:&#xa;guest_rekomendasi" vertex="1">
+        <mxCell id="s4_save_ses" parent="1" style="shape=parallelogram;fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Simpan Session:
+guest_rekomendasi" vertex="1">
           <mxGeometry height="63" width="155" x="1092.5" y="1690" as="geometry" />
         </mxCell>
         <mxCell id="s4_render" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Tampilkan Hasil Rekomendasi" vertex="1">
           <mxGeometry height="70" width="210" x="810" y="1772" as="geometry" />
         </mxCell>
-        <mxCell id="u4_preview" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Lihat Preview&#xa;Rekomendasi" vertex="1">
+        <mxCell id="u4_preview" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Lihat Preview
+Rekomendasi" vertex="1">
           <mxGeometry height="50" width="150" x="250" y="1452" as="geometry" />
         </mxCell>
         <mxCell id="u4_d_aksi" parent="1" style="rhombus;fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Pilih Aksi?" vertex="1">
@@ -502,28 +527,35 @@
         <mxCell id="u4_simpan" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Simpan / Riwayat" vertex="1">
           <mxGeometry height="38" width="130" x="475" y="1707" as="geometry" />
         </mxCell>
-        <mxCell id="s4_sys_cetak" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Render Print-Friendly&#xa;Semua Detail Expanded" vertex="1">
+        <mxCell id="s4_sys_cetak" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Render Print-Friendly
+Semua Detail Expanded" vertex="1">
           <mxGeometry height="53" width="190" x="810" y="1877" as="geometry" />
         </mxCell>
         <mxCell id="s4_d_dl" parent="1" style="rhombus;fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Download?" vertex="1">
           <mxGeometry height="58" width="140" x="835" y="1974" as="geometry" />
         </mxCell>
-        <mxCell id="s4_dl" parent="1" style="shape=parallelogram;fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Download HTML&#xa;hasil-rekomendasi.html" vertex="1">
+        <mxCell id="s4_dl" parent="1" style="shape=parallelogram;fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Download HTML
+hasil-rekomendasi.html" vertex="1">
           <mxGeometry height="58" width="234" x="676" y="2047" as="geometry" />
         </mxCell>
-        <mxCell id="s4_tab" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Buka Tab Baru&#xa;Print Preview" vertex="1">
+        <mxCell id="s4_tab" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Buka Tab Baru
+Print Preview" vertex="1">
           <mxGeometry height="48" width="150" x="1040" y="2052" as="geometry" />
         </mxCell>
-        <mxCell id="s4_load_riw" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Ambil Data Riwayat Rekomendasi &#xa;Pengguna" vertex="1">
+        <mxCell id="s4_load_riw" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Ambil Data Riwayat Rekomendasi
+Pengguna" vertex="1">
           <mxGeometry height="70" width="240" x="790" y="2132" as="geometry" />
         </mxCell>
-        <mxCell id="u4_riwayat" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Lihat List Riwayat:&#xa;Tanggal | Penyakit&#xa;Aksi: Detail/Cetak/Hapus" vertex="1">
+        <mxCell id="u4_riwayat" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Lihat List Riwayat:
+Tanggal | Penyakit
+Aksi: Detail/Cetak/Hapus" vertex="1">
           <mxGeometry height="65" width="212.5" x="213.75" y="1795" as="geometry" />
         </mxCell>
         <mxCell id="u4_d_riw" parent="1" style="rhombus;fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Aksi Riwayat?" vertex="1">
           <mxGeometry height="58" width="150" x="245" y="1902.5" as="geometry" />
         </mxCell>
-        <mxCell id="u4_detail" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Ambil Detail dan &#xa;Tampilkan Hasil" vertex="1">
+        <mxCell id="u4_detail" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Ambil Detail dan
+Tampilkan Hasil" vertex="1">
           <mxGeometry height="48" width="148" x="55" y="2022.5" as="geometry" />
         </mxCell>
         <mxCell id="u4_cetak_r" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Cetak Riwayat" vertex="1">
@@ -535,10 +567,12 @@
         <mxCell id="u_end" parent="1" style="ellipse;fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontColor=#FFFFFF;fontStyle=1;fontSize=14;align=center;verticalAlign=middle;fontFamily=Helvetica;strokeWidth=2;" value="Selesai" vertex="1">
           <mxGeometry height="40" width="110" x="260" y="2260" as="geometry" />
         </mxCell>
-        <mxCell id="a4_pantau" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Pantau Riwayat&#xa;Rekomendasi User" vertex="1">
+        <mxCell id="a4_pantau" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Pantau Riwayat
+Rekomendasi User" vertex="1">
           <mxGeometry height="50" width="165" x="1420" y="1818" as="geometry" />
         </mxCell>
-        <mxCell id="a4_laporan" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Generate Laporan&#xa;&amp; Statistik" vertex="1">
+        <mxCell id="a4_laporan" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Generate Laporan
+&amp; Statistik" vertex="1">
           <mxGeometry height="50" width="165" x="1420" y="1898" as="geometry" />
         </mxCell>
         <mxCell id="bWEPxK2w9no0LcR6kNqD-36" edge="1" parent="1" source="a4_update" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="bWEPxK2w9no0LcR6kNqD-34" value="">
@@ -547,7 +581,8 @@
         <mxCell id="bWEPxK2w9no0LcR6kNqD-37" edge="1" parent="1" source="a4_update" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=light-dark(#000000,#000000);strokeWidth=2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=14;fontColor=#FFFFFF;fontStyle=1;labelBackgroundColor=default;endArrow=classic;fillColor=light-dark(#000000,#FFFFFF);" target="bWEPxK2w9no0LcR6kNqD-34">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="a4_update" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Update / Hapus&#xa;Data Rekomendasi" vertex="1">
+        <mxCell id="a4_update" parent="1" style="fillColor=light-dark(#000000,#FFFFFF);strokeColor=light-dark(#000000,#000000);fontSize=14;fontColor=#FFFFFF;align=center;verticalAlign=middle;fontFamily=Helvetica;fontStyle=1;strokeWidth=2;" value="Update / Hapus
+Data Rekomendasi" vertex="1">
           <mxGeometry height="50" width="165" x="1420" y="1978" as="geometry" />
         </mxCell>
         <mxCell id="e_s4_0a" edge="1" parent="1" source="s3_skip_adj" style="edgeStyle=orthogonalEdgeStyle;strokeColor=light-dark(#000000,#000000);rounded=1;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=#FFFFFF;fontStyle=1;labelBackgroundColor=default;endArrow=classic;fillColor=light-dark(#000000,#FFFFFF);strokeWidth=2;" target="s4_resort">
