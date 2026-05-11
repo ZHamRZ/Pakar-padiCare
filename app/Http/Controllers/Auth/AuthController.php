@@ -52,17 +52,16 @@ class AuthController extends Controller
                 ], 401);
             }
 
+            // Login user
             Auth::login($user, $request->boolean('remember'));
-
             $request->session()->regenerate();
 
             // Determine redirect URL based on role for AJAX login
-            // Always redirect to dashboard based on role, regardless of email verification status
             $redirectUrl = $user->isAdmin() ? route('admin.dashboard') : route('user.dashboard');
 
             return response()->json([
                 'success' => true,
-                'message' => 'Login berhasil.',
+                'message' => 'Login berhasil',
                 'redirect' => $redirectUrl,
                 'role' => $user->role
             ]);
