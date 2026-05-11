@@ -15,14 +15,16 @@
                 <small class="text-muted">Login petani dengan username dan password</small>
             </div>
 
+            {{-- Form login petani (AJAX) --}}
             <form id="loginForm" method="POST">
                 @csrf
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Username</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-person"></i></span>
-                        <input type="text" name="username" id="username" class="form-control @error('username') is-invalid @enderror"
-                            value="{{ old('username') }}" placeholder="Masukkan username" autofocus>
+                        <input type="text" name="username" id="username"
+                            class="form-control @error('username') is-invalid @enderror" value="{{ old('username') }}"
+                            placeholder="Masukkan username" autofocus>
                         @error('username')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                 </div>
@@ -47,7 +49,10 @@
                     <i class="bi bi-box-arrow-in-right me-1"></i> Login
                 </button>
             </form>
+
             <hr>
+
+            {{-- Form login admin (form tradisional) --}}
             <div class="mb-3">
                 <div class="small text-muted mb-2">Admin tetap login dengan username dan password:</div>
                 <form action="{{ route('login.admin.post') }}" method="POST">
@@ -58,9 +63,12 @@
                     <div class="mb-2">
                         <input type="password" name="password" class="form-control" placeholder="Password admin">
                     </div>
-                    <button type="submit" class="btn btn-outline-secondary w-100">Login Admin</button>
+                    <button type="submit" class="btn btn-outline-secondary w-100">
+                        <i class="bi bi-shield-lock me-1"></i> Login Admin
+                    </button>
                 </form>
             </div>
+
             <hr>
             <p class="text-center mb-0 small">
                 Belum punya akun?
@@ -73,36 +81,33 @@
 
 @push('scripts')
 <script>
-    // Password toggle functionality
-    document.querySelectorAll('.password-toggle').forEach((button) => {
-        button.addEventListener('click', () => {
-            const input = document.getElementById(button.dataset.target);
-            const icon = button.querySelector('i');
-            const isHidden = input.type === 'password';
-
-            input.type = isHidden ? 'text' : 'password';
-            icon.className = isHidden ? 'bi bi-eye-slash' : 'bi bi-eye';
-            button.setAttribute('aria-label', isHidden ? 'Sembunyikan password' : 'Tampilkan password');
-        });
+// ── Password toggle ──────────────────────────────────────────────────────────
+document.querySelectorAll('.password-toggle').forEach((button) => {
+    button.addEventListener('click', () => {
+        const input = document.getElementById(button.dataset.target);
+        const icon = button.querySelector('i');
+        const isHidden = input.type === 'password';
+        input.type = isHidden ? 'text' : 'password';
+        icon.className = isHidden ? 'bi bi-eye-slash' : 'bi bi-eye';
+        button.setAttribute('aria-label', isHidden ? 'Sembunyikan password' : 'Tampilkan password');
     });
+});
 
-    // AJAX Login with Fetch API
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
-        e.preventDefault();
+// ── AJAX Login (petani) ──────────────────────────────────────────────────────
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
 
-        const form = this;
-        const btnLogin = document.getElementById('btnLogin');
-        const originalBtnText = btnLogin.innerHTML;
+    const form = this;
+    const btnLogin = document.getElementById('btnLogin');
+    const originalBtnText = btnLogin.innerHTML;
 
-        // Disable button and show loading state
-        btnLogin.disabled = true;
-        btnLogin.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Memproses...';
+    // Loading state
+    btnLogin.disabled = true;
+    btnLogin.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Memproses...';
 
-        const formData = new FormData(form);
-
-        fetch('{{ route("login.post") }}', {
+    fetch('{{ route("login.post") }}', {
             method: 'POST',
-            body: formData,
+            body: new FormData(form),
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
                 'Accept': 'application/json'
@@ -110,67 +115,42 @@
             credentials: 'same-origin'
         })
         .then(response => {
-            if (!response.ok) {
-                return response.json().then(errData => { throw errData; });
-            }
-            return response.json();
+            // Tetap parse JSON meski status 4xx agar pesan error server terbaca
+            return response.json().then(data => ({
+                ok: response.ok,
+                data
+            }));
         })
-        .then(data => {
+        .then(({
+            ok,
+            data
+        }) => {
             btnLogin.disabled = false;
             btnLogin.innerHTML = originalBtnText;
 
-            if (data.success === true) {
-                Swal.fire({
-                    toast: true,
-                    position: 'top-end',
+            if (ok && data.success === true) {
+                // ✅ Tampilkan toast success, redirect SETELAH toast selesai
+                Toast.fire({
                     icon: 'success',
-                    title: 'Login berhasil',
-                    showConfirmButton: false,
-                    timer: 2000,
+                    title: data.message || 'Login berhasil',
+                    timer: 1800,
                     timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer);
-                        toast.addEventListener('mouseleave', Swal.resumeTimer);
-                    }
+                    background: '#ffffff',
+                    color: '#1e293b',
+                    iconColor: '#198754',
                 }).then(() => {
-                    window.location.href = data.redirect || '/dashboard';
+                    window.location.href = data.redirect;
                 });
             } else {
-                Swal.fire({
-                    toast: true,
-                    position: 'top-end',
-                    icon: 'error',
-                    title: data.message || 'Username atau password salah',
-                    showConfirmButton: false,
-                    timer: 4000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer);
-                        toast.addEventListener('mouseleave', Swal.resumeTimer);
-                    }
-                });
+                // ✅ Gunakan showErrorToast dari layouts.app (konsisten)
+                showErrorToast(data.message || 'Username atau password salah.');
             }
         })
-        .catch(error => {
-            console.error('Error:', error);
+        .catch(() => {
             btnLogin.disabled = false;
             btnLogin.innerHTML = originalBtnText;
-
-            const errorMessage = (error && error.message) ? error.message : 'Terjadi kesalahan koneksi. Silakan coba lagi.';
-            Swal.fire({
-                toast: true,
-                position: 'top-end',
-                icon: 'error',
-                title: errorMessage,
-                showConfirmButton: false,
-                timer: 4000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer);
-                    toast.addEventListener('mouseleave', Swal.resumeTimer);
-                }
-            });
+            showErrorToast('Terjadi kesalahan koneksi. Silakan coba lagi.');
         });
-    });
+});
 </script>
 @endpush
