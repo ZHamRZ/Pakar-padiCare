@@ -139,12 +139,12 @@ Route::middleware(['auth', 'role:admin'])
         Route::put('/kriteria/{kriteria}',         [KriteriaController::class, 'update'])->name('kriteria.update');
 
         // Rating Pupuk
-        Route::get('/rating/pupuk',  [RatingController::class, 'pupuk'])->name('rating.pupuk');
-        Route::post('/rating/pupuk', [RatingController::class, 'simpanPupuk'])->name('rating.pupuk.simpan');
+        Route::get('/rating/pupuk',  [RatingController::class, 'pupuk'])->name('admin.rating.pupuk');
+        Route::post('/rating/pupuk', [RatingController::class, 'simpanPupuk'])->name('admin.rating.pupuk.simpan');
 
         // Rating Pestisida
-        Route::get('/rating/pestisida',  [RatingController::class, 'pestisida'])->name('rating.pestisida');
-        Route::post('/rating/pestisida', [RatingController::class, 'simpanPestisida'])->name('rating.pestisida.simpan');
+        Route::get('/rating/pestisida',  [RatingController::class, 'pestisida'])->name('admin.rating.pestisida');
+        Route::post('/rating/pestisida', [RatingController::class, 'simpanPestisida'])->name('admin.rating.pestisida.simpan');
 
         // Manajemen User Petani
         Route::get('/users',                           [UserController::class, 'index'])->name('users.index');

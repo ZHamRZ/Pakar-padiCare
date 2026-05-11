@@ -1,26 +1,32 @@
 ```
-# Environment
-.env
-.env.local
-*.env.*
+# Compiled and build artifacts
+*.pyc
+__pycache__/
+*.o
+*.obj
+dist/
+build/
+target/
+
+# Dependencies
+node_modules/
+vendor/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.coverage
+coverage/
 
 # Logs and temp files
 *.log
 *.tmp
 *.swp
+*.swo
 
-# Dependencies
-node_modules/
-vendor/
-
-# Build artifacts
-dist/
-build/
-public/build/
-storage/framework/cache/
-storage/framework/sessions/
-storage/framework/views/
-bootstrap/cache/
+# Environment
+.env
+.env.local
+.env.*
 
 # Editors
 .vscode/
@@ -32,8 +38,10 @@ bootstrap/cache/
 .DS_Store
 Thumbs.db
 
-# Coverage
-coverage/
-htmlcov/
-.coverage
+# Laravel specific
+bootstrap/cache/
+storage/framework/cache/
+storage/logs/
+public/storage
+.npm
 ```
