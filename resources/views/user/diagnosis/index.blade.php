@@ -223,6 +223,47 @@
                 }
             });
         });
+
+        // Form validation - check if at least one symptom is selected
+        const form = document.querySelector('form[action="{{ route('user.diagnosis.identifikasi') }}"]');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                const checkedCheckboxes = document.querySelectorAll('.symptom-checkbox:checked');
+                if (checkedCheckboxes.length === 0) {
+                    e.preventDefault();
+                    // Show toast notification
+                    const toastHtml = `
+                        <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+                            <div class="toast align-items-center text-bg-danger border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
+                                <div class="d-flex">
+                                    <div class="toast-body">
+                                        <i class="bi bi-exclamation-triangle-fill me-2"></i>Pilih minimal satu gejala
+                                    </div>
+                                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Remove existing toast if any
+                    const existingToast = document.querySelector('.toast-container.position-fixed');
+                    if (existingToast) {
+                        existingToast.remove();
+                    }
+                    
+                    // Add and show toast
+                    document.body.insertAdjacentHTML('beforeend', toastHtml);
+                    
+                    // Auto remove after 3 seconds
+                    setTimeout(() => {
+                        const toastEl = document.querySelector('.toast-container.position-fixed');
+                        if (toastEl) {
+                            toastEl.remove();
+                        }
+                    }, 3000);
+                }
+            });
+        }
     });
 </script>
 @endpush
