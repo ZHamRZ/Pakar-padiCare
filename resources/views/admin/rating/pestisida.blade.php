@@ -37,7 +37,7 @@
             </div>
         </div>
 
-        <form action="{{ route('admin.rating.pestisida.simpan') }}" method="POST" id="ratingForm">
+        <form action="{{ route('rating.pestisida.simpan') }}" method="POST" id="ratingForm">
             @csrf
             @if($errors->any())
             <div class="alert alert-danger">
@@ -297,7 +297,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             // Kirim request AJAX untuk menyimpan semua rule untuk penyakit ini
-            fetch("{{ route('admin.rating.pestisida.simpan') }}", {
+            fetch("{{ route('rating.pestisida.simpan') }}", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
