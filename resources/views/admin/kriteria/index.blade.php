@@ -25,7 +25,7 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Daftar Parameter Preferensi Pengguna</span>
-                    <button type="button" id="btnSaveAll" class="btn btn-spk btn-sm">
+                    <button type="button" id="btnSaveAll" class="btn btn-primary btn-sm">
                         <i class="bi bi-save me-1"></i>Simpan Semua Perubahan
                     </button>
                 </div>
