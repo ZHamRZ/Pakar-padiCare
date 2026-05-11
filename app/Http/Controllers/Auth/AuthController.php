@@ -34,9 +34,21 @@ class AuthController extends Controller
             'password.required' => 'Password wajib diisi.',
         ]);
 
-        $credentials = $request->only('username', 'password');
+        $user = User::where('username', $request->username)->first();
 
-        if (!Auth::attempt($credentials, $request->boolean('remember'))) {
+        if (!$user) {
+            return back()
+                ->withInput($request->only('username'))
+                ->with('error', 'Username dan password tidak di temukan.');
+        }
+
+        if (!Hash::check($request->password, $user->password)) {
+            return back()
+                ->withInput($request->only('username'))
+                ->with('error', 'Password salah.');
+        }
+
+        if (!Auth::login($user, $request->boolean('remember'))) {
             return back()
                 ->withInput($request->only('username'))
                 ->with('error', 'Username atau password salah.');
@@ -94,7 +106,7 @@ class AuthController extends Controller
             'password' => 'required|string|min:6',
         ], [
             'username.required' => 'Username wajib diisi.',
-            'username.unique' => 'Username sudah digunakan, pilih yang lain.',
+            'username.unique' => 'Username sudah di gunakan',
             'password.required' => 'Password wajib diisi.',
             'password.min' => 'Password minimal 6 karakter.',
         ]);
