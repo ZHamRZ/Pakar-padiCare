@@ -44,10 +44,27 @@ class KriteriaController extends Controller
             
             DB::commit();
             
+            // Cek jika request adalah AJAX
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => '✅ Parameter prioritas Certainty Factor berhasil diperbarui. Nilai ini akan mempengaruhi adjustment MB/MD dalam perhitungan rekomendasi.'
+                ]);
+            }
+            
             return redirect()->route('admin.kriteria.index')
                 ->with('success', '✅ Parameter prioritas Certainty Factor berhasil diperbarui. Nilai ini akan mempengaruhi adjustment MB/MD dalam perhitungan rekomendasi.');
         } catch (\Exception $e) {
             DB::rollBack();
+            
+            // Cek jika request adalah AJAX
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => '❌ Gagal memperbarui data: ' . $e->getMessage()
+                ], 500);
+            }
+            
             return redirect()->route('admin.kriteria.index')
                 ->with('error', '❌ Gagal memperbarui data: ' . $e->getMessage());
         }
