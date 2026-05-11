@@ -89,17 +89,17 @@
     // AJAX Login with Fetch API
     document.getElementById('loginForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        
+
         const form = this;
         const btnLogin = document.getElementById('btnLogin');
         const originalBtnText = btnLogin.innerHTML;
-        
+
         // Disable button and show loading state
         btnLogin.disabled = true;
         btnLogin.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Memproses...';
-        
+
         const formData = new FormData(form);
-        
+
         fetch('{{ route("login.post") }}', {
             method: 'POST',
             body: formData,
@@ -109,16 +109,22 @@
             },
             credentials: 'same-origin'
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(errData => { throw errData; });
+            }
+            return response.json();
+        })
         .then(data => {
-            if (data.success) {
-                // Show success toast with timer progress bar
+            btnLogin.disabled = false;
+            btnLogin.innerHTML = originalBtnText;
+
+            if (data.success === true) {
                 Swal.fire({
                     toast: true,
                     position: 'top-end',
                     icon: 'success',
                     title: 'Login berhasil',
-                    text: 'Mengalihkan ke dashboard...',
                     showConfirmButton: false,
                     timer: 2000,
                     timerProgressBar: true,
@@ -127,16 +133,14 @@
                         toast.addEventListener('mouseleave', Swal.resumeTimer);
                     }
                 }).then(() => {
-                    // Redirect based on role after toast closes
-                    window.location.href = data.redirect;
+                    window.location.href = data.redirect || '/dashboard';
                 });
             } else {
-                // Show error toast - no refresh, stay on login page
                 Swal.fire({
                     toast: true,
                     position: 'top-end',
                     icon: 'error',
-                    title: data.message,
+                    title: data.message || 'Username atau password salah',
                     showConfirmButton: false,
                     timer: 4000,
                     timerProgressBar: true,
@@ -145,21 +149,19 @@
                         toast.addEventListener('mouseleave', Swal.resumeTimer);
                     }
                 });
-                
-                // Re-enable button
-                btnLogin.disabled = false;
-                btnLogin.innerHTML = originalBtnText;
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            
-            // Show network error toast - no refresh, stay on login page
+            btnLogin.disabled = false;
+            btnLogin.innerHTML = originalBtnText;
+
+            const errorMessage = (error && error.message) ? error.message : 'Terjadi kesalahan koneksi. Silakan coba lagi.';
             Swal.fire({
                 toast: true,
                 position: 'top-end',
                 icon: 'error',
-                title: 'Terjadi kesalahan koneksi. Silakan coba lagi.',
+                title: errorMessage,
                 showConfirmButton: false,
                 timer: 4000,
                 timerProgressBar: true,
@@ -168,10 +170,6 @@
                     toast.addEventListener('mouseleave', Swal.resumeTimer);
                 }
             });
-            
-            // Re-enable button
-            btnLogin.disabled = false;
-            btnLogin.innerHTML = originalBtnText;
         });
     });
 </script>
