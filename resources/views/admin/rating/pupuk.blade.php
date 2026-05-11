@@ -116,17 +116,17 @@
                                                 data-target="{{ $penyakitItem->id }}-{{ $pupukItem->id }}">
                                             <i class="bi bi-arrow-counterclockwise"></i> Reset
                                         </button>
-                                        <button type="button" class="btn btn-sm btn-primary save-all-single-row" 
-                                                data-penyakit-id="{{ $penyakitItem->id }}" 
-                                                data-pupuk-id="{{ $pupukItem->id }}">
-                                            <i class="bi bi-save-all"></i> Simpan Semua
-                                        </button>
                                     </div>
                                 </td>
                             </tr>
                             @endforeach
                         </tbody>
                     </table>
+                    <div class="mt-3 text-end">
+                        <button type="button" class="btn btn-primary save-all-btn" data-penyakit-id="{{ $penyakitItem->id }}">
+                            <i class="bi bi-save-all"></i> Simpan Semua
+                        </button>
+                    </div>
                 </div>
             </div>
             @endforeach
@@ -141,6 +141,7 @@
 .cf-input { text-align: center; }
 .cf-result { background-color: #f8f9fa; }
 .table-sm th, .table-sm td { padding: 0.5rem; }
+.save-all-btn { min-width: 150px; }
 </style>
 
 <script>
@@ -294,25 +295,41 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Save all single row button - simpan semua untuk satu penyakit-pupuk combination
-    document.querySelectorAll('.save-all-single-row').forEach(btn => {
+    // Save all button - simpan semua untuk satu penyakit
+    document.querySelectorAll('.save-all-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const penyakitId = this.dataset.penyakitId;
-            const pupukId = this.dataset.pupukId;
-            const row = this.closest('tr');
-            const mbInput = row.querySelector('input[name*="[mb]"]');
-            const mdInput = row.querySelector('input[name*="[md]"]');
+            const penyakitItem = document.querySelector(`.penyakit-item[data-penyakit-id="${penyakitId}"]`);
+            const rows = penyakitItem.querySelectorAll('tbody tr');
             
-            // Validasi input
-            const mb = parseFloat(mbInput.value);
-            const md = parseFloat(mdInput.value);
+            const rulesData = {};
+            let hasError = false;
             
-            if (isNaN(mb) || isNaN(md) || mb < 0 || mb > 1 || md < 0 || md > 1) {
+            rows.forEach(row => {
+                const mbInput = row.querySelector('input[name*="[mb]"]');
+                const mdInput = row.querySelector('input[name*="[md]"]');
+                const pupukId = mbInput.name.match(/rules\[(\d+)\]\[(\d+)\]\[mb\]/)[2];
+                
+                const mb = parseFloat(mbInput.value);
+                const md = parseFloat(mdInput.value);
+                
+                if (isNaN(mb) || isNaN(md) || mb < 0 || mb > 1 || md < 0 || md > 1) {
+                    hasError = true;
+                    return;
+                }
+                
+                rulesData[pupukId] = {
+                    mb: mb,
+                    md: md
+                };
+            });
+            
+            if (hasError) {
                 showErrorToast('Nilai MB dan MD harus berupa angka antara 0 dan 1');
                 return;
             }
             
-            // Kirim request AJAX untuk menyimpan satu rule
+            // Kirim request AJAX untuk menyimpan semua rule untuk penyakit ini
             fetch("{{ route('admin.rating.pupuk.simpan') }}", {
                 method: 'POST',
                 headers: {
@@ -321,19 +338,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 body: JSON.stringify({
                     rules: {
-                        [penyakitId]: {
-                            [pupukId]: {
-                                mb: mb,
-                                md: md
-                            }
-                        }
+                        [penyakitId]: rulesData
                     }
                 })
             })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    showSuccessToast('Data berhasil disimpan!');
+                    showSuccessToast('Semua data untuk penyakit ini berhasil disimpan!');
                 } else {
                     showErrorToast('Gagal menyimpan data: ' + (data.message || 'Terjadi kesalahan'));
                 }
