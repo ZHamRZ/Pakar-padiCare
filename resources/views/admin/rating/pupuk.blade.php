@@ -45,10 +45,6 @@
                 <div>Semua nilai MB dan MD wajib diisi, harus numerik, dan berada pada rentang 0-1. Contoh: 0.100 atau 0.900.</div>
             </div>
             @endif
-            <div class="position-sticky top-0 bg-white py-2 mb-3 d-none" id="stickyHeader" style="z-index: 1020;">
-                <button type="submit" class="btn btn-spk">Simpan Aturan CF Pupuk</button>
-                <span class="ms-2 text-muted small">Total: <span id="totalRules">0</span> rule</span>
-            </div>
             
             @foreach($penyakit as $index => $penyakitItem)
             <div class="border rounded-4 p-3 mb-3 penyakit-item" data-penyakit-id="{{ $penyakitItem->id }}">
@@ -69,7 +65,7 @@
                                 <th style="width: 18%;">MB</th>
                                 <th style="width: 18%;">MD</th>
                                 <th style="width: 18%;">CF Dasar</th>
-                                <th style="width: 11%;" class="text-center">Reset</th>
+                                <th style="width: 22%;" class="text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -109,11 +105,18 @@
                                     {{ number_format((float) $mb - (float) $md, 3) }}
                                 </td>
                                 <td class="text-center">
-                                    <button type="button" class="btn btn-sm btn-outline-danger reset-btn" 
-                                            data-mb="0.700" data-md="0.100"
-                                            data-target="{{ $penyakitItem->id }}-{{ $pupukItem->id }}">
-                                        <i class="bi bi-arrow-counterclockwise"></i>
-                                    </button>
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <button type="button" class="btn btn-sm btn-success save-single-btn" 
+                                                data-penyakit-id="{{ $penyakitItem->id }}" 
+                                                data-pupuk-id="{{ $pupukItem->id }}">
+                                            <i class="bi bi-save"></i> Simpan
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-danger reset-btn" 
+                                                data-mb="0.700" data-md="0.100"
+                                                data-target="{{ $penyakitItem->id }}-{{ $pupukItem->id }}">
+                                            <i class="bi bi-arrow-counterclockwise"></i> Reset
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                             @endforeach
@@ -123,17 +126,11 @@
             </div>
             @endforeach
             
-            <div class="position-fixed bottom-0 start-0 w-100 bg-white border-top p-3 shadow-lg d-none" id="stickyFooter" style="z-index: 1020;">
-                <div class="container-fluid">
-                    <div class="row align-items-center">
-                        <div class="col-auto">
-                            <button type="submit" class="btn btn-spk btn-lg">Simpan Aturan CF Pupuk</button>
-                        </div>
-                        <div class="col">
-                            <span class="text-muted">Total: <span id="totalRulesFooter">0</span> rule akan disimpan</span>
-                        </div>
-                    </div>
-                </div>
+            <!-- Tombol Simpan Semua di bawah -->
+            <div class="border-top pt-3 mt-3">
+                <button type="submit" class="btn btn-primary btn-lg w-100">
+                    <i class="bi bi-save-all"></i> Simpan semua
+                </button>
             </div>
         </form>
         @endif
@@ -244,22 +241,58 @@ document.addEventListener('DOMContentLoaded', function() {
     function countRules() {
         const inputs = document.querySelectorAll('input[name*="[mb]"]');
         const count = inputs.length;
-        document.getElementById('totalRules').textContent = count;
-        document.getElementById('totalRulesFooter').textContent = count;
     }
     countRules();
     
-    // Show/hide sticky footer on scroll
-    window.addEventListener('scroll', function() {
-        const footer = document.getElementById('stickyFooter');
-        const header = document.getElementById('stickyHeader');
-        if (window.scrollY > 300) {
-            footer.classList.remove('d-none');
-            header.classList.remove('d-none');
-        } else {
-            footer.classList.add('d-none');
-            header.classList.add('d-none');
-        }
+    // Save single button - simpan satu pupuk/pestisida
+    document.querySelectorAll('.save-single-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const penyakitId = this.dataset.penyakitId;
+            const pupukId = this.dataset.pupukId;
+            const row = this.closest('tr');
+            const mbInput = row.querySelector('input[name*="[mb]"]');
+            const mdInput = row.querySelector('input[name*="[md]"]');
+            
+            // Validasi input
+            const mb = parseFloat(mbInput.value);
+            const md = parseFloat(mdInput.value);
+            
+            if (isNaN(mb) || isNaN(md) || mb < 0 || mb > 1 || md < 0 || md > 1) {
+                alert('Nilai MB dan MD harus berupa angka antara 0 dan 1');
+                return;
+            }
+            
+            // Kirim request AJAX untuk menyimpan satu rule
+            fetch("{{ route('admin.rating.pupuk.simpan') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                },
+                body: JSON.stringify({
+                    rules: {
+                        [penyakitId]: {
+                            [pupukId]: {
+                                mb: mb,
+                                md: md
+                            }
+                        }
+                    }
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Data berhasil disimpan!');
+                } else {
+                    alert('Gagal menyimpan data: ' + (data.message || 'Terjadi kesalahan'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat menyimpan data');
+            });
+        });
     });
 });
 </script>
