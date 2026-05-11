@@ -37,7 +37,7 @@ class RatingController extends Controller
             'rules' => 'required|array',
             'rules.*.*.mb' => 'required|numeric|min:0|max:1',
             'rules.*.*.md' => 'required|numeric|min:0|max:1',
-        ]);
+        ], $this->cfValidationMessages('pupuk'));
 
         foreach ($request->rules as $idPenyakit => $items) {
             foreach ($items as $idPupuk => $rule) {
@@ -78,7 +78,7 @@ class RatingController extends Controller
             'rules' => 'required|array',
             'rules.*.*.mb' => 'required|numeric|min:0|max:1',
             'rules.*.*.md' => 'required|numeric|min:0|max:1',
-        ]);
+        ], $this->cfValidationMessages('pestisida'));
 
         foreach ($request->rules as $idPenyakit => $items) {
             foreach ($items as $idPestisida => $rule) {
@@ -94,5 +94,21 @@ class RatingController extends Controller
 
         return redirect()->route('admin.rating.pestisida')
             ->with('success', 'Aturan CF pestisida berhasil disimpan.');
+    }
+
+    private function cfValidationMessages(string $jenis): array
+    {
+        return [
+            'rules.required' => "Aturan CF {$jenis} wajib diisi.",
+            'rules.array' => "Format aturan CF {$jenis} tidak valid.",
+            'rules.*.*.mb.required' => 'Nilai MB wajib diisi. Contoh: 0.100 atau 0.900.',
+            'rules.*.*.mb.numeric' => 'Nilai MB harus numerik. Contoh: 0.100 atau 0.900.',
+            'rules.*.*.mb.min' => 'Nilai MB harus berada pada rentang 0 sampai 1. Contoh: 0.100 atau 0.900.',
+            'rules.*.*.mb.max' => 'Nilai MB harus berada pada rentang 0 sampai 1. Contoh: 0.100 atau 0.900.',
+            'rules.*.*.md.required' => 'Nilai MD wajib diisi. Contoh: 0.100 atau 0.900.',
+            'rules.*.*.md.numeric' => 'Nilai MD harus numerik. Contoh: 0.100 atau 0.900.',
+            'rules.*.*.md.min' => 'Nilai MD harus berada pada rentang 0 sampai 1. Contoh: 0.100 atau 0.900.',
+            'rules.*.*.md.max' => 'Nilai MD harus berada pada rentang 0 sampai 1. Contoh: 0.100 atau 0.900.',
+        ];
     }
 }

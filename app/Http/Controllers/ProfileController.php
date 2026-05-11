@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
@@ -29,6 +30,10 @@ class ProfileController extends Controller
         /** @var User $user */
         $user = Auth::user();
 
+        $request->merge([
+            'email' => $this->normalizeEmail($request->input('email')),
+        ]);
+
         $validated = $request->validate([
             'nama' => 'required|string|max:100',
             'username' => [
@@ -38,8 +43,15 @@ class ProfileController extends Controller
                 Rule::unique('users', 'username')->ignore($user->id),
             ],
             'email' => [
+                'bail',
                 'nullable',
-                'email',
+                'string',
+                'max:255',
+                function (string $attribute, mixed $value, \Closure $fail): void {
+                    if (!$this->isValidEmailFormat((string) $value)) {
+                        $fail('Email harus valid dan domainnya benar, misalnya nama@gmail.com, nama@yahoo.com, atau nama@domain.co.id.');
+                    }
+                },
                 Rule::unique('users', 'email')->ignore($user->id),
             ],
             'no_telepon' => [
@@ -57,7 +69,7 @@ class ProfileController extends Controller
             'nama.required' => 'Nama wajib diisi.',
             'username.required' => 'Username wajib diisi.',
             'username.unique' => 'Username sudah digunakan.',
-            'email.email' => 'Format email tidak valid.',
+            'email.max' => 'Email maksimal 255 karakter.',
             'email.unique' => 'Email sudah digunakan.',
             'no_telepon.unique' => 'Nomor telepon sudah digunakan.',
             'password.min' => 'Password minimal 8 karakter.',
@@ -169,6 +181,18 @@ class ProfileController extends Controller
             return back()->with('success', 'Email sudah terverifikasi.');
         }
 
+        $rateLimitKey = 'verification-email:' . $user->id;
+
+        if (RateLimiter::tooManyAttempts($rateLimitKey, 1)) {
+            $seconds = RateLimiter::availableIn($rateLimitKey);
+
+            return back()
+                ->withErrors([
+                    'email' => 'Tunggu ' . $seconds . ' detik sebelum mengirim ulang email verifikasi.',
+                ])
+                ->with('verification_resend_available_at', now()->addSeconds($seconds)->timestamp);
+        }
+
         if (!$user->email_verification_token) {
             $user->forceFill([
                 'email_verification_token' => Str::random(60),
@@ -176,8 +200,11 @@ class ProfileController extends Controller
         }
 
         $this->dispatchVerificationEmail($user);
+        RateLimiter::hit($rateLimitKey, 30);
 
-        return back()->with('success', 'Link verifikasi berhasil dikirim ke ' . $user->email);
+        return back()
+            ->with('success', 'Link verifikasi berhasil dikirim ke ' . $user->email)
+            ->with('verification_resend_available_at', now()->addSeconds(30)->timestamp);
     }
 
     private function markEmailVerified(User $user, ?string $route = null): RedirectResponse
@@ -205,6 +232,73 @@ class ProfileController extends Controller
         ]);
 
         Mail::to($user->email)->send(new VerifyEmailMail($user, $url));
+    }
+
+    private function normalizeEmail(mixed $email): ?string
+    {
+        $email = strtolower(trim((string) $email));
+
+        return $email === '' ? null : $email;
+    }
+
+    private function isValidEmailFormat(string $email): bool
+    {
+        if ($email === '' || strlen($email) > 255) {
+            return false;
+        }
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return false;
+        }
+
+        if (!preg_match('/^(?!.*\.\.)[a-z0-9](?:[a-z0-9._%+\-]{0,62}[a-z0-9])?@(?:[a-z0-9](?:[a-z0-9\-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$/', $email)) {
+            return false;
+        }
+
+        [$localPart, $domain] = explode('@', $email, 2);
+
+        if (strlen($localPart) > 64 || strlen($domain) > 253) {
+            return false;
+        }
+
+        foreach (explode('.', $domain) as $label) {
+            if ($label === '' || strlen($label) > 63 || str_starts_with($label, '-') || str_ends_with($label, '-')) {
+                return false;
+            }
+        }
+
+        if (!$this->canReceiveEmail($domain)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private function canReceiveEmail(string $domain): bool
+    {
+        $trustedDomains = [
+            'gmail.com',
+            'googlemail.com',
+            'yahoo.com',
+            'yahoo.co.id',
+            'outlook.com',
+            'hotmail.com',
+            'live.com',
+            'icloud.com',
+            'me.com',
+            'proton.me',
+            'protonmail.com',
+        ];
+
+        if (in_array($domain, $trustedDomains, true)) {
+            return true;
+        }
+
+        if (!function_exists('checkdnsrr')) {
+            return false;
+        }
+
+        return checkdnsrr($domain, 'MX') || checkdnsrr($domain, 'A') || checkdnsrr($domain, 'AAAA');
     }
 
     private function profileRouteFor(User $user): string

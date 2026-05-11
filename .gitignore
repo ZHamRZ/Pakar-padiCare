@@ -1,3 +1,5 @@
-```
-.env
-```
+/node_modules
+/vendor
+/.env
+.phpunit.result.cache
+/public/uploads

@@ -155,6 +155,7 @@ Route::middleware(['auth', 'role:admin'])
 
         // Riwayat diagnosis
         Route::get('/riwayat',          [AdminRiwayat::class, 'index'])->name('riwayat.index');
+        Route::get('/riwayat/{id}/cetak', [AdminRiwayat::class, 'cetak'])->name('riwayat.cetak');
         Route::get('/riwayat/{id}',     [AdminRiwayat::class, 'show'])->name('riwayat.show');
         Route::get('/riwayat/{id}/detail', [AdminRiwayat::class, 'detail'])->name('riwayat.detail');
     });

@@ -5,55 +5,55 @@
 
 @push('styles')
 <style>
-    .profile-avatar {
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 4px solid #fff;
-        box-shadow: 0 12px 24px rgba(15, 23, 42, .12);
-    }
+.profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #fff;
+    box-shadow: 0 12px 24px rgba(15, 23, 42, .12);
+}
 
-    .profile-fallback {
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        background: linear-gradient(135deg, #14532d, #2d8a4e);
-        color: #fff;
-        font-size: 2.2rem;
-        font-weight: 700;
-        border: 4px solid #fff;
-        box-shadow: 0 12px 24px rgba(15, 23, 42, .12);
-    }
+.profile-fallback {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #14532d, #2d8a4e);
+    color: #fff;
+    font-size: 2.2rem;
+    font-weight: 700;
+    border: 4px solid #fff;
+    box-shadow: 0 12px 24px rgba(15, 23, 42, .12);
+}
 
-    .info-row {
-        display: flex;
-        justify-content: space-between;
-        gap: 1rem;
-        padding: .9rem 0;
-        border-bottom: 1px dashed #e2e8f0;
-        align-items: start;
-    }
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: .9rem 0;
+    border-bottom: 1px dashed #e2e8f0;
+    align-items: start;
+}
 
-    .info-row:last-child {
-        border-bottom: 0;
-    }
+.info-row:last-child {
+    border-bottom: 0;
+}
 
-    .badge-verified {
-        font-size: .72rem;
-        padding: .25em .6em;
-    }
+.badge-verified {
+    font-size: .72rem;
+    padding: .25em .6em;
+}
 
-    .collapse-form {
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: .5rem;
-        padding: 1rem;
-        margin-top: .75rem;
-    }
+.collapse-form {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: .5rem;
+    padding: 1rem;
+    margin-top: .75rem;
+}
 </style>
 @endpush
 
@@ -78,11 +78,26 @@
 </div>
 @endif
 
+@if($errors->any())
+<div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+    <i class="bi bi-exclamation-circle me-2"></i>
+    <strong>Data belum disimpan.</strong> Periksa kembali input yang ditandai.
+    <ul class="mb-0 mt-2">
+        @foreach($errors->all() as $error)
+        <li>{{ $error }}</li>
+        @endforeach
+    </ul>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+@endif
+
 @php
 // Route helper: tentukan sekali, gunakan di semua form
 $profileRoute = $user->isAdmin()
 ? route('admin.profile.update')
 : route('user.profile.update');
+$verificationResendAvailableAt = (int) session('verification_resend_available_at', 0);
+$verificationResendCooldown = max(0, $verificationResendAvailableAt - now()->timestamp);
 @endphp
 
 <div class="row g-4">
@@ -227,8 +242,7 @@ $profileRoute = $user->isAdmin()
                         <input type="hidden" name="catatan_profil" value="{{ $user->catatan_profil }}">
 
                         <label class="form-label small fw-semibold">Username</label>
-                        <div class="form-text mb-2">Hanya huruf kecil, angka, dan underscore. Tidak bisa sama dengan
-                            username lain.</div>
+                        <div class="form-text mb-2">Hanya huruf kecil, angka, dan underscore. Username Harus unik.</div>
                         <div class="row g-2">
                             <div class="col-md-8">
                                 <input type="text" name="username" value="{{ old('username', $user->username) }}"
@@ -262,12 +276,18 @@ $profileRoute = $user->isAdmin()
                         <div class="small text-warning mt-1">
                             <i class="bi bi-exclamation-triangle me-1"></i>
                             Verifikasi email untuk mengaktifkan fitur reset password.
-                            <form method="POST" action="{{ route('verification.send') }}" class="d-inline">
+                            <form method="POST" action="{{ route('verification.send') }}" class="d-inline verification-resend-form">
                                 @csrf
-                                <button type="submit" class="btn btn-link btn-sm p-0 text-warning fw-semibold">
+                                <button type="submit"
+                                    class="btn btn-link btn-sm p-0 text-warning fw-semibold verification-resend-button"
+                                    data-cooldown="{{ $verificationResendCooldown }}">
                                     Kirim Ulang
                                 </button>
                             </form>
+                        </div>
+                        <div class="small text-muted mt-1">
+                            Tidak menerima email? Periksa kembali apakah email sudah diisi dengan benar,
+                            pastikan email tersebut milik Anda, lalu cek kotak masuk atau folder spam.
                         </div>
                         @endif
                     </div>
@@ -275,7 +295,7 @@ $profileRoute = $user->isAdmin()
                         data-bs-target="#edit-email">Edit</button>
                 </div>
 
-                <div id="edit-email" class="collapse collapse-form">
+                <div id="edit-email" class="collapse collapse-form @error('email') show @enderror">
                     <form action="{{ $profileRoute }}" method="POST">
                         @csrf
                         @method('PUT')
@@ -294,7 +314,9 @@ $profileRoute = $user->isAdmin()
                             <div class="col-md-8">
                                 <input type="email" name="email" value="{{ old('email', $user->email) }}"
                                     class="form-control @error('email') is-invalid @enderror"
-                                    placeholder="contoh@email.com">
+                                    placeholder="contoh@email.com"
+                                    pattern="^(?!.*\.\.)[A-Za-z0-9](?:[A-Za-z0-9._%+\-]{0,62}[A-Za-z0-9])?@(?:[A-Za-z0-9](?:[A-Za-z0-9\-]{0,61}[A-Za-z0-9])?\.)+[A-Za-z]{2,}$"
+                                    title="Masukkan email valid, misalnya nama@gmail.com, nama@yahoo.com, atau nama@domain.co.id">
                                 @error('email')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
@@ -306,7 +328,7 @@ $profileRoute = $user->isAdmin()
                     </form>
                 </div>
 
-                {{-- ── No. Telepon ───────────────────────────── --}}
+                <!--{{-- ── No. Telepon ───────────────────────────── --}}
                 <div class="info-row">
                     <div>
                         <div class="small text-muted">No. Telepon</div>
@@ -341,7 +363,7 @@ $profileRoute = $user->isAdmin()
                             </div>
                         </div>
                     </form>
-                </div>
+                </div>-->
 
                 {{-- ── Alamat ────────────────────────────────── --}}
                 <div class="info-row">
@@ -373,7 +395,7 @@ $profileRoute = $user->isAdmin()
                     </form>
                 </div>
 
-                {{-- ── Catatan Profil ────────────────────────── --}}
+                <!--{{-- ── Catatan Profil ────────────────────────── --}}
                 <div class="info-row">
                     <div>
                         <div class="small text-muted">Catatan Profil</div>
@@ -405,108 +427,142 @@ $profileRoute = $user->isAdmin()
                 </div>
 
             </div>{{-- /card-body --}}
-        </div>{{-- /card informasi --}}
+        </div>{{-- /card informasi --}}-->
 
-        {{-- ---- KEAMANAN AKUN ---- --}}
-        <div class="card">
-            <div class="card-header">Keamanan Akun</div>
-            <div class="card-body">
+                {{-- ---- KEAMANAN AKUN ---- --}}
+                <div class="card">
+                    <div class="card-header">Keamanan Akun</div>
+                    <div class="card-body">
 
-                {{-- ── Ganti Password ───────────────────────── --}}
-                <div class="d-flex justify-content-between align-items-start mb-3">
-                    <div>
-                        <div class="small text-muted">Password</div>
-                        <div class="fw-semibold">••••••••</div>
-                        <div class="small text-muted mt-1">
-                            <i class="bi bi-shield-check me-1 text-success"></i>
-                            Disembunyikan demi keamanan akun Anda
-                        </div>
-                    </div>
-                    <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#edit-password">Edit</button>
-                </div>
-
-                <div id="edit-password" class="collapse collapse-form">
-                    <form action="{{ $profileRoute }}" method="POST">
-                        @csrf
-                        @method('PUT')
-                        <input type="hidden" name="nama" value="{{ $user->nama }}">
-                        <input type="hidden" name="username" value="{{ $user->username }}">
-                        <input type="hidden" name="email" value="{{ $user->email }}">
-                        <input type="hidden" name="no_telepon" value="{{ $user->no_telepon }}">
-                        <input type="hidden" name="alamat" value="{{ $user->alamat }}">
-                        <input type="hidden" name="catatan_profil" value="{{ $user->catatan_profil }}">
-
-                        <div class="row g-3">
-                            <div class="col-md-4">
-                                <label class="form-label small fw-semibold">
-                                    Password Lama <span class="text-danger">*</span>
-                                </label>
-                                <input type="password" name="password_lama"
-                                    class="form-control @error('password_lama') is-invalid @enderror"
-                                    autocomplete="current-password" required>
-                                @error('password_lama')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                                @enderror
+                        {{-- ── Ganti Password ───────────────────────── --}}
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <div class="small text-muted">Password</div>
+                                <div class="fw-semibold">••••••••</div>
+                                <div class="small text-muted mt-1">
+                                    <i class="bi bi-shield-check me-1 text-success"></i>
+                                    Disembunyikan demi keamanan akun Anda
+                                </div>
                             </div>
-                            <div class="col-md-4">
-                                <label class="form-label small fw-semibold">
-                                    Password Baru <span class="text-danger">*</span>
-                                </label>
-                                <input type="password" name="password"
-                                    class="form-control @error('password') is-invalid @enderror"
-                                    autocomplete="new-password" minlength="8" required>
-                                @error('password')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                                @enderror
-                                <div class="form-text">Minimal 8 karakter</div>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label small fw-semibold">
-                                    Konfirmasi Password Baru <span class="text-danger">*</span>
-                                </label>
-                                <input type="password" name="password_confirmation" class="form-control"
-                                    autocomplete="new-password" required>
-                            </div>
+                            <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#edit-password">Edit</button>
                         </div>
 
-                        <button type="submit" class="btn btn-spk mt-3">
-                            <i class="bi bi-lock me-1"></i>Simpan Password Baru
-                        </button>
-                    </form>
-                </div>
+                        <div id="edit-password" class="collapse collapse-form">
+                            <form action="{{ $profileRoute }}" method="POST">
+                                @csrf
+                                @method('PUT')
+                                <input type="hidden" name="nama" value="{{ $user->nama }}">
+                                <input type="hidden" name="username" value="{{ $user->username }}">
+                                <input type="hidden" name="email" value="{{ $user->email }}">
+                                <input type="hidden" name="no_telepon" value="{{ $user->no_telepon }}">
+                                <input type="hidden" name="alamat" value="{{ $user->alamat }}">
+                                <input type="hidden" name="catatan_profil" value="{{ $user->catatan_profil }}">
 
-                {{-- ── Reset via Email (banner info jika email belum ada) ── --}}
-                @if(!$user->email)
-                <hr class="my-3">
-                <div class="alert alert-warning mb-0 py-2 px-3 small" role="alert">
-                    <i class="bi bi-info-circle me-1"></i>
-                    <strong>Belum ada email terdaftar.</strong>
-                    Tambahkan email di atas untuk mengaktifkan fitur reset password jika Anda lupa password lama.
-                </div>
-                @endif
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <label class="form-label small fw-semibold">
+                                            Password Lama <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="password" name="password_lama"
+                                            class="form-control @error('password_lama') is-invalid @enderror"
+                                            autocomplete="current-password" required>
+                                        @error('password_lama')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label small fw-semibold">
+                                            Password Baru <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="password" name="password"
+                                            class="form-control @error('password') is-invalid @enderror"
+                                            autocomplete="new-password" minlength="8" required>
+                                        @error('password')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                        @enderror
+                                        <div class="form-text">Minimal 8 karakter</div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label small fw-semibold">
+                                            Konfirmasi Password Baru <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="password" name="password_confirmation" class="form-control"
+                                            autocomplete="new-password" required>
+                                    </div>
+                                </div>
 
-            </div>{{-- /card-body --}}
-        </div>{{-- /card keamanan --}}
+                                <button type="submit" class="btn btn-spk mt-3">
+                                    <i class="bi bi-lock me-1"></i>Simpan Password Baru
+                                </button>
+                            </form>
+                        </div>
 
-    </div>{{-- /col-lg-8 --}}
-</div>{{-- /row --}}
-@endsection
+                        {{-- ── Reset via Email (banner info jika email belum ada) ── --}}
+                        @if(!$user->email)
+                        <hr class="my-3">
+                        <div class="alert alert-warning mb-0 py-2 px-3 small" role="alert">
+                            <i class="bi bi-info-circle me-1"></i>
+                            <strong>Belum ada email terdaftar.</strong>
+                            Tambahkan email di atas untuk mengaktifkan fitur reset password jika Anda lupa password
+                            lama.
+                        </div>
+                        @endif
 
-@push('scripts')
-<script>
-    /**
-     * Auto-tutup collapse lain ketika user membuka collapse baru.
-     * Mencegah banyak form terbuka sekaligus → mengurangi kebingungan user.
-     */
-    document.querySelectorAll('.collapse').forEach(function(collapseEl) {
-        collapseEl.addEventListener('show.bs.collapse', function() {
-            document.querySelectorAll('.collapse.show').forEach(function(openEl) {
-                if (openEl !== collapseEl) {
-                    bootstrap.Collapse.getInstance(openEl)?.hide();
-                }
+                    </div>{{-- /card-body --}}
+                </div>{{-- /card keamanan --}}
+
+            </div>{{-- /col-lg-8 --}}
+        </div>{{-- /row --}}
+        @endsection
+
+        @push('scripts')
+        <script>
+        /**
+         * Auto-tutup collapse lain ketika user membuka collapse baru.
+         * Mencegah banyak form terbuka sekaligus → mengurangi kebingungan user.
+         */
+        document.querySelectorAll('.collapse').forEach(function(collapseEl) {
+            collapseEl.addEventListener('show.bs.collapse', function() {
+                document.querySelectorAll('.collapse.show').forEach(function(openEl) {
+                    if (openEl !== collapseEl) {
+                        bootstrap.Collapse.getInstance(openEl)?.hide();
+                    }
+                });
             });
         });
-    });
-</script>
-@endpush
+
+        document.querySelectorAll('.verification-resend-button').forEach(function(button) {
+            var initialText = button.textContent.trim();
+            var remaining = parseInt(button.dataset.cooldown || '0', 10);
+            var form = button.closest('.verification-resend-form');
+            var countdownTimer = null;
+
+            function renderCountdown() {
+                if (remaining <= 0) {
+                    button.disabled = false;
+                    button.textContent = initialText;
+                    if (countdownTimer) {
+                        clearInterval(countdownTimer);
+                    }
+                    return;
+                }
+
+                button.disabled = true;
+                button.textContent = 'Kirim ulang (' + remaining + ' detik)';
+                remaining -= 1;
+            }
+
+            if (remaining > 0) {
+                renderCountdown();
+                countdownTimer = setInterval(renderCountdown, 1000);
+            }
+
+            form?.addEventListener('submit', function() {
+                remaining = 30;
+                renderCountdown();
+                countdownTimer = setInterval(renderCountdown, 1000);
+            });
+        });
+        </script>
+        @endpush

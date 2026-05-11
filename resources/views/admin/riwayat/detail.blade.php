@@ -28,9 +28,15 @@
 </div>
 
 @foreach(['pupuk' => 'Pupuk', 'pestisida' => 'Pestisida'] as $key => $label)
+@php
+    $items = collect($preview[$key] ?? []);
+@endphp
 <div class="card mb-4">
     <div class="card-header">{{ $label }} - Detail Analisis</div>
     <div class="card-body">
+        @if($items->isEmpty())
+        <div class="text-muted">Belum ada detail {{ strtolower($label) }} pada riwayat ini.</div>
+        @else
         <div class="table-responsive mb-4">
             <table class="table table-bordered align-middle">
                 <thead class="table-light">
@@ -42,20 +48,26 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($preview[$key] as $item)
-                    <tr class="{{ $item['peringkat'] === 1 ? 'table-success' : '' }}">
-                        <td>{{ $item['peringkat'] }}</td>
-                        <td>{{ $item['kode'] }}</td>
-                        <td>{{ $item['nama'] }}</td>
-                        <td>{{ number_format($item['vi'], 6) }}</td>
+                    @foreach($items as $item)
+                    @php
+                        $score = (float) data_get($item, 'vi', data_get($item, 'cf_rekomendasi', 0));
+                    @endphp
+                    <tr class="{{ (int) data_get($item, 'peringkat') === 1 ? 'table-success' : '' }}">
+                        <td>{{ data_get($item, 'peringkat', '-') }}</td>
+                        <td>{{ data_get($item, 'kode', '-') }}</td>
+                        <td>{{ data_get($item, 'nama', '-') }}</td>
+                        <td>{{ number_format($score, 6) }}</td>
                     </tr>
                     @endforeach
                 </tbody>
             </table>
         </div>
 
-        @foreach($preview[$key] as $item)
-        <x-expert-system.advanced-details target="admin-detail-{{ $key }}-{{ $loop->index }}" button-label="{{ $item['kode'] }} - {{ $item['nama'] }}">
+        @foreach($items as $item)
+        @php
+            $score = (float) data_get($item, 'vi', data_get($item, 'cf_rekomendasi', 0));
+        @endphp
+        <x-expert-system.advanced-details target="admin-detail-{{ $key }}-{{ $loop->index }}" button-label="{{ data_get($item, 'kode', '-') }} - {{ data_get($item, 'nama', '-') }}">
             <div class="table-responsive">
                 <table class="table table-sm table-striped align-middle mb-0">
                     <thead class="table-light">
@@ -70,26 +82,31 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($item['detail'] as $kode => $detail)
+                        @forelse(data_get($item, 'detail', []) as $kode => $detail)
                         <tr>
-                            <td><strong>{{ $kode }}</strong><br><span class="small text-muted">{{ $detail['kriteria'] }}</span></td>
-                            <td>{{ ucfirst($detail['jenis'] ?? '-') }}</td>
-                            <td>{{ is_null($detail['preferensi_user'] ?? null) ? '-' : ($detail['preferensi_user'] . '%') }}</td>
-                            <td>{{ number_format((float) ($detail['mb_bonus'] ?? 0), 4) }}</td>
-                            <td>{{ number_format((float) ($detail['md_bonus'] ?? 0), 4) }}</td>
-                            <td>{{ number_format((float) ($detail['impact'] ?? 0), 4) }}</td>
-                            <td class="small text-muted">{{ $detail['catatan'] ?? '-' }}</td>
+                            <td><strong>{{ $kode }}</strong><br><span class="small text-muted">{{ data_get($detail, 'kriteria', '-') }}</span></td>
+                            <td>{{ ucfirst(data_get($detail, 'jenis', '-')) }}</td>
+                            <td>{{ is_null(data_get($detail, 'preferensi_user')) ? '-' : (data_get($detail, 'preferensi_user') . '%') }}</td>
+                            <td>{{ number_format((float) data_get($detail, 'mb_bonus', 0), 4) }}</td>
+                            <td>{{ number_format((float) data_get($detail, 'md_bonus', 0), 4) }}</td>
+                            <td>{{ number_format((float) data_get($detail, 'impact', 0), 4) }}</td>
+                            <td class="small text-muted">{{ data_get($detail, 'catatan', '-') }}</td>
                         </tr>
-                        @endforeach
+                        @empty
+                        <tr>
+                            <td colspan="7" class="text-muted text-center">Detail perhitungan belum tersedia.</td>
+                        </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
             <div class="small text-muted mt-3">
                 CF dasar: {{ number_format(data_get($item, 'cf_meta.cf_awal', 0), 4) }},
-                CF akhir: {{ number_format(data_get($item, 'cf_meta.cf_akhir', $item['vi']), 4) }}.
+                CF akhir: {{ number_format(data_get($item, 'cf_meta.cf_akhir', $score), 4) }}.
             </div>
         </x-expert-system.advanced-details>
         @endforeach
+        @endif
     </div>
 </div>
 @endforeach

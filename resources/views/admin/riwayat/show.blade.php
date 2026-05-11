@@ -70,7 +70,11 @@
             </div>
         </div>
 
-        <a href="{{ route('admin.riwayat.detail', $rekomendasi->id) }}" class="btn btn-outline-success">Lihat Detail Analisis</a>
+        <div class="d-flex flex-wrap gap-2">
+            <a href="{{ route('admin.riwayat.index') }}" class="btn btn-outline-secondary">Kembali ke Monitoring</a>
+            <a href="{{ route('admin.riwayat.detail', $rekomendasi->id) }}" class="btn btn-outline-success">Lihat Detail Analisis</a>
+            <a href="{{ route('admin.riwayat.cetak', $rekomendasi->id) }}" class="btn btn-success">Cetak / Ekspor Laporan</a>
+        </div>
     </div>
 </div>
 @endsection

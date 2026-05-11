@@ -39,6 +39,12 @@
 
         <form action="{{ route('admin.rating.pestisida.simpan') }}" method="POST" id="ratingForm">
             @csrf
+            @if($errors->any())
+            <div class="alert alert-danger">
+                <div class="fw-semibold mb-1">Data aturan CF pestisida belum sesuai.</div>
+                <div>Semua nilai MB dan MD wajib diisi, harus numerik, dan berada pada rentang 0-1. Contoh: 0.100 atau 0.900.</div>
+            </div>
+            @endif
             <div class="position-sticky top-0 bg-white py-2 mb-3 d-none" id="stickyHeader" style="z-index: 1020;">
                 <button type="submit" class="btn btn-spk">Simpan Aturan CF Pestisida</button>
                 <span class="ms-2 text-muted small">Total: <span id="totalRules">0</span> rule</span>
@@ -72,24 +78,32 @@
                             @php($rule = $rules->get($key))
                             @php($mb = old("rules.{$penyakitItem->id}.{$pestisidaItem->id}.mb", optional($rule)->mb ?? 0.700))
                             @php($md = old("rules.{$penyakitItem->id}.{$pestisidaItem->id}.md", optional($rule)->md ?? 0.100))
+                            @php($mbErrorKey = "rules.{$penyakitItem->id}.{$pestisidaItem->id}.mb")
+                            @php($mdErrorKey = "rules.{$penyakitItem->id}.{$pestisidaItem->id}.md")
                             <tr>
                                 <td>
                                     <strong>{{ $pestisidaItem->nama }}</strong><br>
                                     <small class="text-muted">{{ $pestisidaItem->kode }}</small>
                                 </td>
                                 <td>
-                                    <input type="number" min="0" max="1" step="0.001"
+                                    <input type="number" min="0" max="1" step="0.001" required inputmode="decimal"
                                         name="rules[{{ $penyakitItem->id }}][{{ $pestisidaItem->id }}][mb]"
                                         value="{{ $mb }}"
-                                        class="form-control form-control-sm cf-input"
+                                        class="form-control form-control-sm cf-input @error($mbErrorKey) is-invalid @enderror"
                                         data-cf="{{ $penyakitItem->id }}-{{ $pestisidaItem->id }}">
+                                    @error($mbErrorKey)
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </td>
                                 <td>
-                                    <input type="number" min="0" max="1" step="0.001"
+                                    <input type="number" min="0" max="1" step="0.001" required inputmode="decimal"
                                         name="rules[{{ $penyakitItem->id }}][{{ $pestisidaItem->id }}][md]"
                                         value="{{ $md }}"
-                                        class="form-control form-control-sm cf-input"
+                                        class="form-control form-control-sm cf-input @error($mdErrorKey) is-invalid @enderror"
                                         data-cf="{{ $penyakitItem->id }}-{{ $pestisidaItem->id }}">
+                                    @error($mdErrorKey)
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </td>
                                 <td class="fw-semibold cf-result" data-cf="{{ $penyakitItem->id }}-{{ $pestisidaItem->id }}">
                                     {{ number_format((float) $mb - (float) $md, 3) }}
