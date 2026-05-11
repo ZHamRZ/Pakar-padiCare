@@ -26,7 +26,6 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        // Handle AJAX request
         if ($request->ajax() || $request->wantsJson()) {
             $request->validate([
                 'username' => 'required|string',
@@ -41,7 +40,7 @@ class AuthController extends Controller
             if (!$user) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Username dan password tidak di temukan.'
+                    'message' => 'Username dan password tidak ditemukan.'
                 ], 401);
             }
 
@@ -52,22 +51,20 @@ class AuthController extends Controller
                 ], 401);
             }
 
-            // Login user
             Auth::login($user, $request->boolean('remember'));
             $request->session()->regenerate();
 
-            // Determine redirect URL based on role for AJAX login
             $redirectUrl = $user->isAdmin() ? route('admin.dashboard') : route('user.dashboard');
 
             return response()->json([
                 'success' => true,
-                'message' => 'Login berhasil',
+                'message' => 'Login berhasil. Selamat datang, ' . $user->nama . '!',
                 'redirect' => $redirectUrl,
-                'role' => $user->role
+                'role'     => $user->role,
             ]);
         }
 
-        // Handle traditional form submission
+        // Form tradisional (fallback jika JS mati)
         $request->validate([
             'username' => 'required|string',
             'password' => 'required|string',
@@ -81,7 +78,7 @@ class AuthController extends Controller
         if (!$user) {
             return back()
                 ->withInput($request->only('username'))
-                ->with('error', 'Username dan password tidak di temukan.');
+                ->with('error', 'Username dan password tidak ditemukan.');
         }
 
         if (!Hash::check($request->password, $user->password)) {
@@ -90,12 +87,8 @@ class AuthController extends Controller
                 ->with('error', 'Password salah.');
         }
 
-        if (!Auth::login($user, $request->boolean('remember'))) {
-            return back()
-                ->withInput($request->only('username'))
-                ->with('error', 'Username atau password salah.');
-        }
-
+        // Auth::login() return void, jangan jadikan kondisi
+        Auth::login($user, $request->boolean('remember'));
         $request->session()->regenerate();
 
         return $this->redirectAfterAuthenticated(Auth::user());
@@ -129,6 +122,9 @@ class AuthController extends Controller
                 ->with('error', 'Form login admin hanya untuk akun admin.');
         }
 
+        // ✅ Flash success agar toast muncul di halaman tujuan setelah redirect
+        session()->flash('success', 'Login berhasil. Selamat datang, ' . Auth::user()->nama . '!');
+
         return $this->redirectAfterAuthenticated(Auth::user());
     }
 
@@ -148,16 +144,16 @@ class AuthController extends Controller
             'password' => 'required|string|min:6',
         ], [
             'username.required' => 'Username wajib diisi.',
-            'username.unique' => 'Username sudah di gunakan',
+            'username.unique'   => 'Username sudah digunakan.',
             'password.required' => 'Password wajib diisi.',
-            'password.min' => 'Password minimal 6 karakter.',
+            'password.min'      => 'Password minimal 6 karakter.',
         ]);
 
         $user = User::create([
-            'nama' => $request->username,
+            'nama'     => $request->username,
             'username' => $request->username,
             'password' => Hash::make($request->password),
-            'role' => 'petani',
+            'role'     => 'petani',
         ]);
 
         Auth::login($user);
@@ -181,9 +177,6 @@ class AuthController extends Controller
         return redirect()->route('home')->with('success', 'Anda telah berhasil logout.');
     }
 
-    /**
-     * Tampilkan form lupa password
-     */
     public function showForgotPassword()
     {
         if (Auth::check()) {
@@ -193,17 +186,14 @@ class AuthController extends Controller
         return view('auth.forgot-password');
     }
 
-    /**
-     * Proses kirim link reset password ke email
-     */
     public function sendResetLink(Request $request)
     {
         $request->validate([
             'email' => 'required|email|exists:users,email',
         ], [
             'email.required' => 'Email wajib diisi.',
-            'email.email' => 'Format email tidak valid.',
-            'email.exists' => 'Email tidak terdaftar di sistem kami.',
+            'email.email'    => 'Format email tidak valid.',
+            'email.exists'   => 'Email tidak terdaftar di sistem kami.',
         ]);
 
         $user = User::where('email', $request->email)->first();
@@ -231,9 +221,7 @@ class AuthController extends Controller
                 ->withErrors(['email' => 'Email belum diverifikasi. Kami mengirim link verifikasi ke email Anda. Verifikasi dulu, lalu minta reset password lagi.']);
         }
 
-        $status = Password::sendResetLink(
-            $request->only('email')
-        );
+        $status = Password::sendResetLink($request->only('email'));
 
         if ($status === Password::RESET_LINK_SENT) {
             return back()
@@ -245,9 +233,6 @@ class AuthController extends Controller
             ->withErrors(['email' => __($status)]);
     }
 
-    /**
-     * Tampilkan form reset password
-     */
     public function showResetForm(Request $request, $token)
     {
         if (Auth::check()) {
@@ -270,23 +255,20 @@ class AuthController extends Controller
         ]);
     }
 
-    /**
-     * Proses reset password
-     */
     public function resetPassword(Request $request)
     {
         $request->validate([
-            'token' => 'required',
-            'email' => 'required|email|exists:users,email',
+            'token'    => 'required',
+            'email'    => 'required|email|exists:users,email',
             'password' => 'required|string|min:6|confirmed',
         ], [
-            'token.required' => 'Token reset password diperlukan.',
-            'email.required' => 'Email wajib diisi.',
-            'email.email' => 'Format email tidak valid.',
-            'email.exists' => 'Email tidak terdaftar.',
-            'password.required' => 'Password wajib diisi.',
-            'password.min' => 'Password minimal 6 karakter.',
-            'password.confirmed' => 'Konfirmasi password tidak cocok.',
+            'token.required'      => 'Token reset password diperlukan.',
+            'email.required'      => 'Email wajib diisi.',
+            'email.email'         => 'Format email tidak valid.',
+            'email.exists'        => 'Email tidak terdaftar.',
+            'password.required'   => 'Password wajib diisi.',
+            'password.min'        => 'Password minimal 6 karakter.',
+            'password.confirmed'  => 'Konfirmasi password tidak cocok.',
         ]);
 
         $user = User::where('email', $request->email)->first();
@@ -330,5 +312,4 @@ class AuthController extends Controller
                 ? 'Silakan verifikasi email terlebih dahulu. Link verifikasi dapat dikirim ulang dari halaman profil.'
                 : 'Silakan lengkapi dan verifikasi email terlebih dahulu agar fitur reset password aktif.');
     }
-
 }
