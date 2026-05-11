@@ -13,13 +13,13 @@ build/
 *.out
 
 # Dependencies
-.venv/
-venv/
 node_modules/
-target/
-.gradle/
-.mypy_cache/
-.pytest_cache/
+vendor/
+composer.lock
+*.lock
+.env
+.env.local
+.env.*
 
 # Logs and temp files
 *.log
@@ -27,23 +27,43 @@ target/
 *.swp
 *.swo
 
-# Environment
-.env
-.env.local
-*.env.*
-
 # Editors
 .vscode/
 .idea/
+*.swp
+*.swo
 
-# System files
+# OS generated files
 .DS_Store
 Thumbs.db
 
-# Coverage
+# Coverage reports
 coverage/
 htmlcov/
 .coverage
+
+# Python specific
+*.pyc
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+
+# PHP specific
+*.php~
+*.bak
+*.orig
+
+# Laravel/PHP frameworks
+bootstrap/cache/
+storage/logs/
+storage/framework/cache/
+storage/framework/sessions/
+storage/framework/views/
+public/storage
+
+# Build directories
+target/
+.gradle/
 
 # Compressed files
 *.zip

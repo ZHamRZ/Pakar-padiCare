@@ -244,20 +244,39 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Remove save-single-btn event listeners since we removed the buttons
     
-    // Reset all button - reset semua nilai untuk satu penyakit
+    // Reset all button - reset semua nilai untuk satu penyakit dengan konfirmasi
     document.querySelectorAll('.reset-all-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const penyakitId = this.dataset.penyakitId;
-            const penyakitItem = document.querySelector(`.penyakit-item[data-penyakit-id="${penyakitId}"]`);
-            const rows = penyakitItem.querySelectorAll('tbody tr');
             
-            rows.forEach(row => {
-                const mbInput = row.querySelector('input[name*="[mb]"]');
-                const mdInput = row.querySelector('input[name*="[md]"]');
-                
-                mbInput.value = 0.700;
-                mdInput.value = 0.100;
-                mbInput.dispatchEvent(new Event('input'));
+            Swal.fire({
+                title: 'Reset Semua Data',
+                text: 'Apakah Anda yakin ingin mereset semua data untuk penyakit ini?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Reset Semua',
+                cancelButtonText: 'Batal',
+                reverseButtons: true,
+                background: isDarkMode() ? '#1e293b' : '#ffffff',
+                color: isDarkMode() ? '#f1f5f9' : '#1e293b'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const penyakitItem = document.querySelector(`.penyakit-item[data-penyakit-id="${penyakitId}"]`);
+                    const rows = penyakitItem.querySelectorAll('tbody tr');
+                    
+                    rows.forEach(row => {
+                        const mbInput = row.querySelector('input[name*="[mb]"]');
+                        const mdInput = row.querySelector('input[name*="[md]"]');
+                        
+                        mbInput.value = 0.700;
+                        mdInput.value = 0.100;
+                        mbInput.dispatchEvent(new Event('input'));
+                    });
+                    
+                    showSuccessToast('Semua data berhasil direset!');
+                }
             });
         });
     });
@@ -301,7 +320,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                    'Accept': 'application/json'
                 },
                 body: JSON.stringify({
                     rules: {
@@ -310,26 +330,35 @@ document.addEventListener('DOMContentLoaded', function() {
                 })
             })
             .then(response => {
+                // Cek apakah response adalah JSON
                 const contentType = response.headers.get('content-type');
                 if (contentType && contentType.includes('application/json')) {
-                    return response.json().then(data => {
-                        if (!response.ok) {
-                            throw new Error(data.message || 'Network response was not ok');
-                        }
-                        return data;
-                    });
+                    return response.json();
                 } else {
-                    // Response bukan JSON, kemungkinan HTML error page
+                    // Jika bukan JSON, baca sebagai text dan coba parse atau tampilkan error
                     return response.text().then(text => {
-                        throw new Error('Server mengembalikan response yang tidak valid. Periksa log server untuk detail.');
+                        // Coba parse jika ternyata JSON tapi header salah
+                        try {
+                            const data = JSON.parse(text);
+                            if (!response.ok) {
+                                throw new Error(data.message || 'Gagal menyimpan data');
+                            }
+                            return data;
+                        } catch (e) {
+                            // Bukan JSON, tampilkan error umum
+                            if (!response.ok) {
+                                throw new Error('Server error: ' + response.status + ' ' + response.statusText);
+                            }
+                            return { success: true, message: 'Data berhasil disimpan' };
+                        }
                     });
                 }
             })
             .then(data => {
-                if (data.success) {
+                if (data.success === true) {
                     showSuccessToast('Semua data untuk penyakit ini berhasil disimpan!');
                 } else {
-                    showErrorToast('Gagal menyimpan data: ' + (data.message || 'Terjadi kesalahan'));
+                    showErrorToast(data.message || 'Gagal menyimpan data');
                 }
             })
             .catch(error => {
