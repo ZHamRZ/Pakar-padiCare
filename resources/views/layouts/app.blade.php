@@ -399,12 +399,11 @@
     </div>
 
     <!-- Modal Konfirmasi Logout -->
-    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header border-0 pb-0">
+                <div class="modal-header border-0 pb-2">
                     <h5 class="modal-title fw-bold" id="logoutModalLabel">Akhiri Sesi</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body py-3">
                     <p class="mb-0">Apakah Anda yakin ingin keluar dari sesi ini?</p>
