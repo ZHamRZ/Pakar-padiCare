@@ -8,6 +8,7 @@
     <title>@yield('title', 'PadiCare Lombok') - Sistem Pakar Penyakit & Rekomendasi Pupuk Padi</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link rel="icon" type="image/png" href="{{ asset('assets/icons8-wheat-hatch-16.png') }}">
     <style>
     :root {
@@ -473,8 +474,95 @@
     </a>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
     <script>
+    // SweetAlert2 Toast Configuration with Dark Mode Support
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 4000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        },
+        customClass: {
+            popup: 'rounded-4 shadow-lg',
+            icon: 'me-2'
+        }
+    });
+
+    // Auto-detect dark mode
+    const isDarkMode = () => window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    // Function to show error toast
+    function showErrorToast(message) {
+        Toast.fire({
+            icon: 'error',
+            title: message,
+            background: isDarkMode() ? '#1e293b' : '#ffffff',
+            color: isDarkMode() ? '#f1f5f9' : '#1e293b',
+            iconColor: isDarkMode() ? '#ef4444' : '#dc3545',
+            showClass: {
+                popup: 'animate__animated animate__fadeInDown'
+            },
+            hideClass: {
+                popup: 'animate__animated animate__fadeOutUp'
+            }
+        });
+    }
+
+    // Function to show success toast
+    function showSuccessToast(message) {
+        Toast.fire({
+            icon: 'success',
+            title: message,
+            background: isDarkMode() ? '#1e293b' : '#ffffff',
+            color: isDarkMode() ? '#f1f5f9' : '#1e293b',
+            iconColor: isDarkMode() ? '#22c55e' : '#198754',
+            showClass: {
+                popup: 'animate__animated animate__fadeInDown'
+            },
+            hideClass: {
+                popup: 'animate__animated animate__fadeOutUp'
+            }
+        });
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
+        // Handle Laravel session errors with SweetAlert2
+        @if(session('error'))
+            showErrorToast("{{ session('error') }}");
+        @endif
+
+        @if(session('success'))
+            showSuccessToast("{{ session('success') }}");
+        @endif
+
+        @if(session('info'))
+            Toast.fire({
+                icon: 'info',
+                title: "{{ session('info') }}",
+                background: isDarkMode() ? '#1e293b' : '#ffffff',
+                color: isDarkMode() ? '#f1f5f9' : '#1e293b',
+                iconColor: isDarkMode() ? '#3b82f6' : '#0dcaf0'
+            });
+        @endif
+
+        @if(session('warning'))
+            Toast.fire({
+                icon: 'warning',
+                title: "{{ session('warning') }}",
+                background: isDarkMode() ? '#1e293b' : '#ffffff',
+                color: isDarkMode() ? '#f1f5f9' : '#1e293b',
+                iconColor: isDarkMode() ? '#f59e0b' : '#ffc107'
+            });
+        @endif
+
+        // Remove old Bootstrap alerts
+        document.querySelectorAll('.alert').forEach(el => el.remove());
+
         const backButton = document.querySelector('.global-back-button');
 
         if (!backButton) return;
