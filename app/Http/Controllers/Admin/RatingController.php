@@ -29,6 +29,9 @@ class RatingController extends Controller
     public function simpanPupuk(Request $request)
     {
         if (!CfSchema::hasPupukRuleTable()) {
+            if ($request->expectsJson()) {
+                return response()->json(['success' => false, 'message' => 'Tabel rule CF pupuk belum tersedia. Jalankan migration database terlebih dahulu.'], 400);
+            }
             return redirect()->route('admin.rating.pupuk')
                 ->with('error', 'Tabel rule CF pupuk belum tersedia. Jalankan migration database terlebih dahulu.');
         }
@@ -51,6 +54,10 @@ class RatingController extends Controller
             }
         }
 
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'message' => 'Data berhasil disimpan']);
+        }
+
         return redirect()->route('admin.rating.pupuk')
             ->with('success', 'Aturan CF pupuk berhasil disimpan.');
     }
@@ -70,6 +77,9 @@ class RatingController extends Controller
     public function simpanPestisida(Request $request)
     {
         if (!CfSchema::hasPestisidaRuleTable()) {
+            if ($request->expectsJson()) {
+                return response()->json(['success' => false, 'message' => 'Tabel rule CF pestisida belum tersedia. Jalankan migration database terlebih dahulu.'], 400);
+            }
             return redirect()->route('admin.rating.pestisida')
                 ->with('error', 'Tabel rule CF pestisida belum tersedia. Jalankan migration database terlebih dahulu.');
         }
@@ -90,6 +100,10 @@ class RatingController extends Controller
                     ]
                 );
             }
+        }
+
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'message' => 'Data berhasil disimpan']);
         }
 
         return redirect()->route('admin.rating.pestisida')

@@ -105,7 +105,7 @@
                                     {{ number_format((float) $mb - (float) $md, 3) }}
                                 </td>
                                 <td class="text-center">
-                                    <div class="d-flex justify-content-center gap-2">
+                                    <div class="d-flex justify-content-center gap-2 flex-wrap">
                                         <button type="button" class="btn btn-sm btn-success save-single-btn" 
                                                 data-penyakit-id="{{ $penyakitItem->id }}" 
                                                 data-pupuk-id="{{ $pupukItem->id }}">
@@ -115,6 +115,11 @@
                                                 data-mb="0.700" data-md="0.100"
                                                 data-target="{{ $penyakitItem->id }}-{{ $pupukItem->id }}">
                                             <i class="bi bi-arrow-counterclockwise"></i> Reset
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-primary save-all-single-row" 
+                                                data-penyakit-id="{{ $penyakitItem->id }}" 
+                                                data-pupuk-id="{{ $pupukItem->id }}">
+                                            <i class="bi bi-save-all"></i> Simpan Semua
                                         </button>
                                     </div>
                                 </td>
@@ -126,12 +131,6 @@
             </div>
             @endforeach
             
-            <!-- Tombol Simpan Semua di bawah -->
-            <div class="border-top pt-3 mt-3">
-                <button type="submit" class="btn btn-primary btn-lg w-100">
-                    <i class="bi bi-save-all"></i> Simpan semua
-                </button>
-            </div>
         </form>
         @endif
     </div>
@@ -258,7 +257,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const md = parseFloat(mdInput.value);
             
             if (isNaN(mb) || isNaN(md) || mb < 0 || mb > 1 || md < 0 || md > 1) {
-                alert('Nilai MB dan MD harus berupa angka antara 0 dan 1');
+                showErrorToast('Nilai MB dan MD harus berupa angka antara 0 dan 1');
                 return;
             }
             
@@ -283,14 +282,65 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    alert('Data berhasil disimpan!');
+                    showSuccessToast('Data berhasil disimpan!');
                 } else {
-                    alert('Gagal menyimpan data: ' + (data.message || 'Terjadi kesalahan'));
+                    showErrorToast('Gagal menyimpan data: ' + (data.message || 'Terjadi kesalahan'));
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Terjadi kesalahan saat menyimpan data');
+                showErrorToast('Terjadi kesalahan saat menyimpan data');
+            });
+        });
+    });
+    
+    // Save all single row button - simpan semua untuk satu penyakit-pupuk combination
+    document.querySelectorAll('.save-all-single-row').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const penyakitId = this.dataset.penyakitId;
+            const pupukId = this.dataset.pupukId;
+            const row = this.closest('tr');
+            const mbInput = row.querySelector('input[name*="[mb]"]');
+            const mdInput = row.querySelector('input[name*="[md]"]');
+            
+            // Validasi input
+            const mb = parseFloat(mbInput.value);
+            const md = parseFloat(mdInput.value);
+            
+            if (isNaN(mb) || isNaN(md) || mb < 0 || mb > 1 || md < 0 || md > 1) {
+                showErrorToast('Nilai MB dan MD harus berupa angka antara 0 dan 1');
+                return;
+            }
+            
+            // Kirim request AJAX untuk menyimpan satu rule
+            fetch("{{ route('admin.rating.pupuk.simpan') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                },
+                body: JSON.stringify({
+                    rules: {
+                        [penyakitId]: {
+                            [pupukId]: {
+                                mb: mb,
+                                md: md
+                            }
+                        }
+                    }
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showSuccessToast('Data berhasil disimpan!');
+                } else {
+                    showErrorToast('Gagal menyimpan data: ' + (data.message || 'Terjadi kesalahan'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showErrorToast('Terjadi kesalahan saat menyimpan data');
             });
         });
     });
