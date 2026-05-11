@@ -125,21 +125,22 @@
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Show success toast
+                // Show success toast with timer progress bar
                 Swal.fire({
                     toast: true,
                     position: 'top-end',
                     icon: 'success',
-                    title: data.message,
+                    title: 'Login berhasil',
+                    text: 'Mengalihkan ke dashboard...',
                     showConfirmButton: false,
-                    timer: 3000,
+                    timer: 2000,
                     timerProgressBar: true,
                     didOpen: (toast) => {
                         toast.addEventListener('mouseenter', Swal.stopTimer);
                         toast.addEventListener('mouseleave', Swal.resumeTimer);
                     }
                 }).then(() => {
-                    // Redirect to dashboard after toast closes
+                    // Redirect based on role after toast closes
                     window.location.href = data.redirect;
                 });
             } else {
