@@ -1,5 +1,12 @@
+
 /node_modules
 /vendor
 /.env
 .phpunit.result.cache
 /public/uploads
+
+```markdown
+# Documentation
+docs/*.md
+```
+
