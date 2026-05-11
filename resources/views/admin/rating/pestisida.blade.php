@@ -310,12 +310,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 })
             })
             .then(response => {
-                if (!response.ok) {
-                    return response.json().then(errData => {
-                        throw new Error(errData.message || 'Network response was not ok');
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    return response.json().then(data => {
+                        if (!response.ok) {
+                            throw new Error(data.message || 'Network response was not ok');
+                        }
+                        return data;
+                    });
+                } else {
+                    // Response bukan JSON, kemungkinan HTML error page
+                    return response.text().then(text => {
+                        throw new Error('Server mengembalikan response yang tidak valid. Periksa log server untuk detail.');
                     });
                 }
-                return response.json();
             })
             .then(data => {
                 if (data.success) {
