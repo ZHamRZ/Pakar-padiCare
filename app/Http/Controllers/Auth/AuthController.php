@@ -52,12 +52,7 @@ class AuthController extends Controller
                 ], 401);
             }
 
-            if (!Auth::login($user, $request->boolean('remember'))) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Username atau password salah.'
-                ], 401);
-            }
+            Auth::login($user, $request->boolean('remember'));
 
             $request->session()->regenerate();
 
