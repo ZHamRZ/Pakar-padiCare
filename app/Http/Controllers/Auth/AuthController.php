@@ -26,6 +26,49 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
+        // Handle AJAX request
+        if ($request->ajax() || $request->wantsJson()) {
+            $request->validate([
+                'username' => 'required|string',
+                'password' => 'required|string',
+            ], [
+                'username.required' => 'Username wajib diisi.',
+                'password.required' => 'Password wajib diisi.',
+            ]);
+
+            $user = User::where('username', $request->username)->first();
+
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Username dan password tidak di temukan.'
+                ], 401);
+            }
+
+            if (!Hash::check($request->password, $user->password)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Password salah.'
+                ], 401);
+            }
+
+            if (!Auth::login($user, $request->boolean('remember'))) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Username atau password salah.'
+                ], 401);
+            }
+
+            $request->session()->regenerate();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Login berhasil.',
+                'redirect' => $this->redirectAfterAuthenticated(Auth::user())->getTargetUrl()
+            ]);
+        }
+
+        // Handle traditional form submission
         $request->validate([
             'username' => 'required|string',
             'password' => 'required|string',
