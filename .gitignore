@@ -13,19 +13,28 @@ build/
 *.out
 
 # Dependencies
+.venv/
+venv/
 node_modules/
-vendor/
-composer.lock
-*.lock
-.env
-.env.local
-.env.*
+target/
+.gradle/
+.mypy_cache/
+.pytest_cache/
+.julia/
+zig*/
 
 # Logs and temp files
 *.log
 *.tmp
 *.swp
 *.swo
+*.bak
+*.cache
+
+# Environment
+.env
+.env.local
+.env.*
 
 # Editors
 .vscode/
@@ -33,7 +42,7 @@ composer.lock
 *.swp
 *.swo
 
-# OS generated files
+# System files
 .DS_Store
 Thumbs.db
 
@@ -41,29 +50,6 @@ Thumbs.db
 coverage/
 htmlcov/
 .coverage
-
-# Python specific
-*.pyc
-__pycache__/
-.pytest_cache/
-.mypy_cache/
-
-# PHP specific
-*.php~
-*.bak
-*.orig
-
-# Laravel/PHP frameworks
-bootstrap/cache/
-storage/logs/
-storage/framework/cache/
-storage/framework/sessions/
-storage/framework/views/
-public/storage
-
-# Build directories
-target/
-.gradle/
 
 # Compressed files
 *.zip

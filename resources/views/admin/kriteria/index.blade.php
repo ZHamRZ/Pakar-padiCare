@@ -4,20 +4,11 @@
 @section('page-title', 'Parameter Prioritas')
 
 @section('content')
+<!-- Toast Notification -->
+<div id="toastContainer" style="position: fixed; top: 20px; right: 20px; z-index: 9999;"></div>
+
 <div class="row g-4">
     <div class="col-12">
-        @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-        @endif
-        @if(session('error'))
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ session('error') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-        @endif
         @if(session('info'))
         <div class="alert alert-info alert-dismissible fade show" role="alert">
             <i class="bi bi-info-circle-fill me-2"></i>{{ session('info') }}
@@ -27,14 +18,16 @@
     </div>
 </div>
 
-<form action="{{ route('admin.kriteria.updateBulk') }}" method="POST">
+<form id="kriteriaForm">
     @csrf
     <div class="row g-4">
         <div class="col-xl-8">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Daftar Parameter Preferensi Pengguna</span>
-                    <button type="submit" class="btn btn-spk btn-sm">Simpan Semua Perubahan</button>
+                    <button type="button" id="btnSaveAll" class="btn btn-spk btn-sm">
+                        <i class="bi bi-save me-1"></i>Simpan Semua Perubahan
+                    </button>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
@@ -108,4 +101,94 @@
         </div>
     </div>
 </form>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const btnSaveAll = document.getElementById('btnSaveAll');
+    const toastContainer = document.getElementById('toastContainer');
+    
+    // Fungsi menampilkan Toast Notification
+    function showToast(message, type = 'success') {
+        const toast = document.createElement('div');
+        toast.className = `alert alert-${type} alert-dismissible fade show shadow-sm`;
+        toast.style.minWidth = '300px';
+        toast.innerHTML = `
+            <i class="bi bi-${type === 'success' ? 'check-circle' : 'exclamation-triangle'} me-2"></i>
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        toastContainer.appendChild(toast);
+        
+        // Auto dismiss setelah 5 detik
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 150);
+        }, 5000);
+    }
+    
+    // Event handler untuk tombol Simpan Semua
+    btnSaveAll.addEventListener('click', function() {
+        // Konfirmasi sebelum menyimpan
+        if (!confirm('Apakah Anda yakin ingin menyimpan semua perubahan pada parameter prioritas?')) {
+            return;
+        }
+        
+        // Tampilkan loading state
+        const originalText = btnSaveAll.innerHTML;
+        btnSaveAll.disabled = true;
+        btnSaveAll.innerHTML = '<i class="bi bi-hourglass-split me-1"></i>Menyimpan...';
+        
+        // Kumpulkan data dari form
+        const formData = new FormData();
+        formData.append('_token', '{{ csrf_token() }}');
+        
+        // Ambil semua input dalam tabel
+        const inputs = document.querySelectorAll('#kriteriaForm input, #kriteriaForm select');
+        inputs.forEach(input => {
+            if (input.name) {
+                formData.append(input.name, input.value);
+            }
+        });
+        
+        // Kirim via AJAX
+        fetch('{{ route("admin.kriteria.updateBulk") }}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => {
+            // Cek content type response
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+                return response.json();
+            } else {
+                // Jika bukan JSON, anggap sukses jika status OK
+                if (response.ok) {
+                    return { success: true, message: 'Data berhasil disimpan' };
+                }
+                throw new Error('Server mengembalikan response yang tidak valid');
+            }
+        })
+        .then(data => {
+            if (data.success || data.message) {
+                showToast('✅ Parameter prioritas Certainty Factor berhasil diperbarui!', 'success');
+            } else {
+                throw new Error(data.message || 'Terjadi kesalahan saat menyimpan data');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showToast('❌ ' + (error.message || 'Terjadi kesalahan saat menyimpan data'), 'danger');
+        })
+        .finally(() => {
+            // Kembalikan tombol ke keadaan semula
+            btnSaveAll.disabled = false;
+            btnSaveAll.innerHTML = originalText;
+        });
+    });
+});
+</script>
 @endsection
