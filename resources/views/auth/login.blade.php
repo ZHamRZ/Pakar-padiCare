@@ -28,7 +28,7 @@
             </div>
             @endif
 
-            <form id="loginForm" action="{{ route('login.post') }}" method="POST">
+            <form id="loginForm" method="POST">
                 @csrf
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Username</label>
@@ -113,7 +113,7 @@
         
         const formData = new FormData(form);
         
-        fetch(form.action, {
+        fetch('{{ route("login.post") }}', {
             method: 'POST',
             body: formData,
             headers: {
@@ -139,11 +139,11 @@
                         toast.addEventListener('mouseleave', Swal.resumeTimer);
                     }
                 }).then(() => {
-                    // Redirect to dashboard
+                    // Redirect to dashboard after toast closes
                     window.location.href = data.redirect;
                 });
             } else {
-                // Show error toast
+                // Show error toast - no refresh, stay on login page
                 Swal.fire({
                     toast: true,
                     position: 'top-end',
@@ -166,7 +166,7 @@
         .catch(error => {
             console.error('Error:', error);
             
-            // Show network error toast
+            // Show network error toast - no refresh, stay on login page
             Swal.fire({
                 toast: true,
                 position: 'top-end',
