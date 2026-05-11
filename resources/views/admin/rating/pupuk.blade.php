@@ -106,11 +106,6 @@
                                 </td>
                                 <td class="text-center">
                                     <div class="d-flex justify-content-center gap-2 flex-wrap">
-                                        <button type="button" class="btn btn-sm btn-success save-single-btn" 
-                                                data-penyakit-id="{{ $penyakitItem->id }}" 
-                                                data-pupuk-id="{{ $pupukItem->id }}">
-                                            <i class="bi bi-save"></i> Simpan
-                                        </button>
                                         <button type="button" class="btn btn-sm btn-outline-danger reset-btn" 
                                                 data-mb="0.700" data-md="0.100"
                                                 data-target="{{ $penyakitItem->id }}-{{ $pupukItem->id }}">
@@ -122,7 +117,10 @@
                             @endforeach
                         </tbody>
                     </table>
-                    <div class="mt-3 text-end">
+                    <div class="mt-3 d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-outline-secondary reset-all-btn" data-penyakit-id="{{ $penyakitItem->id }}">
+                            <i class="bi bi-arrow-counterclockwise"></i> Reset Semua
+                        </button>
                         <button type="button" class="btn btn-primary save-all-btn" data-penyakit-id="{{ $penyakitItem->id }}">
                             <i class="bi bi-save-all"></i> Simpan Semua
                         </button>
@@ -244,53 +242,22 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     countRules();
     
-    // Save single button - simpan satu pupuk/pestisida
-    document.querySelectorAll('.save-single-btn').forEach(btn => {
+    // Remove save-single-btn event listeners since we removed the buttons
+    
+    // Reset all button - reset semua nilai untuk satu penyakit
+    document.querySelectorAll('.reset-all-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const penyakitId = this.dataset.penyakitId;
-            const pupukId = this.dataset.pupukId;
-            const row = this.closest('tr');
-            const mbInput = row.querySelector('input[name*="[mb]"]');
-            const mdInput = row.querySelector('input[name*="[md]"]');
+            const penyakitItem = document.querySelector(`.penyakit-item[data-penyakit-id="${penyakitId}"]`);
+            const rows = penyakitItem.querySelectorAll('tbody tr');
             
-            // Validasi input
-            const mb = parseFloat(mbInput.value);
-            const md = parseFloat(mdInput.value);
-            
-            if (isNaN(mb) || isNaN(md) || mb < 0 || mb > 1 || md < 0 || md > 1) {
-                showErrorToast('Nilai MB dan MD harus berupa angka antara 0 dan 1');
-                return;
-            }
-            
-            // Kirim request AJAX untuk menyimpan satu rule
-            fetch("{{ route('admin.rating.pupuk.simpan') }}", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
-                },
-                body: JSON.stringify({
-                    rules: {
-                        [penyakitId]: {
-                            [pupukId]: {
-                                mb: mb,
-                                md: md
-                            }
-                        }
-                    }
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    showSuccessToast('Data berhasil disimpan!');
-                } else {
-                    showErrorToast('Gagal menyimpan data: ' + (data.message || 'Terjadi kesalahan'));
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showErrorToast('Terjadi kesalahan saat menyimpan data');
+            rows.forEach(row => {
+                const mbInput = row.querySelector('input[name*="[mb]"]');
+                const mdInput = row.querySelector('input[name*="[md]"]');
+                
+                mbInput.value = 0.700;
+                mdInput.value = 0.100;
+                mbInput.dispatchEvent(new Event('input'));
             });
         });
     });
@@ -342,7 +309,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 })
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
             .then(data => {
                 if (data.success) {
                     showSuccessToast('Semua data untuk penyakit ini berhasil disimpan!');
