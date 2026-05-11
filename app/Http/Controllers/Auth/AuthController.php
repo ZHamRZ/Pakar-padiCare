@@ -56,10 +56,13 @@ class AuthController extends Controller
 
             $request->session()->regenerate();
 
+            // Determine redirect URL based on role for AJAX login
+            $redirectUrl = $user->isAdmin() ? route('admin.dashboard') : route('user.dashboard');
+
             return response()->json([
                 'success' => true,
                 'message' => 'Login berhasil.',
-                'redirect' => $this->redirectAfterAuthenticated(Auth::user())->getTargetUrl()
+                'redirect' => $redirectUrl
             ]);
         }
 
