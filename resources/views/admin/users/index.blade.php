@@ -140,60 +140,7 @@ let deleteUserModalInstance = null;
 
 // Inisialisasi modal saat DOM siap
 document.addEventListener('DOMContentLoaded', function() {
-    // Inisialisasi SweetAlert2 Toast Configuration dengan Dark Mode Support
-    const isDarkMode = () => window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    // Fungsi untuk menampilkan toast error
-    function showErrorToast(message) {
-        Swal.fire({
-            toast: true,
-            position: 'top-end',
-            icon: 'error',
-            title: message,
-            showConfirmButton: false,
-            timer: 4000,
-            timerProgressBar: true,
-            background: isDarkMode() ? '#1e293b' : '#ffffff',
-            color: isDarkMode() ? '#f1f5f9' : '#1e293b',
-            iconColor: isDarkMode() ? '#ef4444' : '#dc3545',
-            customClass: {
-                popup: 'rounded-4 shadow-lg',
-                icon: 'me-2'
-            },
-            showClass: {
-                popup: 'animate__animated animate__fadeInDown'
-            },
-            hideClass: {
-                popup: 'animate__animated animate__fadeOutUp'
-            }
-        });
-    }
-    
-    // Fungsi untuk menampilkan toast success
-    function showSuccessToast(message) {
-        Swal.fire({
-            toast: true,
-            position: 'top-end',
-            icon: 'success',
-            title: message,
-            showConfirmButton: false,
-            timer: 4000,
-            timerProgressBar: true,
-            background: isDarkMode() ? '#1e293b' : '#ffffff',
-            color: isDarkMode() ? '#f1f5f9' : '#1e293b',
-            iconColor: isDarkMode() ? '#22c55e' : '#198754',
-            customClass: {
-                popup: 'rounded-4 shadow-lg',
-                icon: 'me-2'
-            },
-            showClass: {
-                popup: 'animate__animated animate__fadeInDown'
-            },
-            hideClass: {
-                popup: 'animate__animated animate__fadeOutUp'
-            }
-        });
-    }
+    // Gunakan fungsi Toast global dari layouts/app.blade.php
     
     // Fungsi untuk membuka modal reset password
     window.openResetPasswordModal = function(userId, userName) {
@@ -360,7 +307,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 deleteUserModalInstance.hide();
                 
                 // Hapus baris tabel secara visual
-                const row = document.querySelector(`button[onclick*="openDeleteUserModal(${currentUserId}"])`)?.closest('tr');
+                const row = document.querySelector(`button[onclick*="openDeleteUserModal(${currentUserId})"]`)?.closest('tr');
                 if (row) {
                     row.style.transition = 'opacity 0.3s ease';
                     row.style.opacity = '0';
@@ -383,15 +330,6 @@ document.addEventListener('DOMContentLoaded', function() {
             setLoading('delete', false);
         }
     });
-    
-    // Handle session messages dari server-side
-    @if(session('error'))
-        showErrorToast("{{ session('error') }}");
-    @endif
-    
-    @if(session('success'))
-        showSuccessToast("{{ session('success') }}");
-    @endif
 });
 </script>
 @endpush
