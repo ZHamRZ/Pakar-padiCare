@@ -204,7 +204,7 @@
         color: var(--spk-dark);
         border: 1px solid rgba(20, 83, 45, .18);
         box-shadow: 0 18px 40px rgba(15, 23, 42, .16);
-        z-index: 1100;
+        z-index: 950;
         transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
     }
 
