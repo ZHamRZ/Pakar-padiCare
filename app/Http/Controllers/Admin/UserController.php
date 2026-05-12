@@ -52,10 +52,16 @@ class UserController extends Controller
     /**
      * Hapus user
      */
-    public function destroy(User $user)
+    public function destroy(User $user, Request $request)
     {
         // Cegah admin dihapus
         if ($user->role === 'admin') {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Akun admin tidak dapat dihapus.'
+                ], 403);
+            }
             return back()->with(
                 'error',
                 'Akun admin tidak dapat dihapus.'
@@ -63,6 +69,13 @@ class UserController extends Controller
         }
 
         $user->delete();
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Akun pengguna berhasil dihapus.'
+            ]);
+        }
 
         return redirect()
             ->route('admin.users.index')
@@ -75,11 +88,18 @@ class UserController extends Controller
     /**
      * Reset password user
      */
-    public function resetPassword(User $user)
+    public function resetPassword(User $user, Request $request)
     {
         $user->update([
             'password' => Hash::make('petani123')
         ]);
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Password berhasil direset ke: petani123'
+            ]);
+        }
 
         return back()->with(
             'success',
