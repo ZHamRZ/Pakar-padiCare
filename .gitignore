@@ -12,26 +12,20 @@ __pycache__/
 
 # Dependencies
 node_modules/
-venv/
-.venv/
+vendor/
+composer.lock
+*.lock
+
+# Logs and temp files
+*.log
+*.tmp
+*.swp
+*.swo
+
+# Environment
 .env
 .env.local
-*.env.*
-
-# Build directories
-dist/
-build/
-target/
-coverage/
-htmlcov/
-
-# Cache directories
-.mypy_cache/
-.pytest_cache/
-.gradle/
-.cargo/
-.npm/
-.yarn/
+.env.*
 
 # Editors
 .vscode/
@@ -39,11 +33,18 @@ htmlcov/
 *.swp
 *.swo
 
-# System files
+# OS
 .DS_Store
 Thumbs.db
-*.log
-*.tmp
+
+# Build and distribution
+dist/
+build/
+target/
+coverage/
+htmlcov/
+.mypy_cache/
+.pytest_cache/
 
 # Compressed files
 *.zip
