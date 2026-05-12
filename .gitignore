@@ -1,3 +1,4 @@
+```php
 # Compiled and build artifacts
 *.pyc
 __pycache__/
@@ -12,26 +13,17 @@ __pycache__/
 
 # Dependencies
 node_modules/
-venv/
-.venv/
+vendor/
+composer.lock
 .env
 .env.local
-*.env.*
+.env.*
 
-# Build directories
-dist/
-build/
-target/
-coverage/
-htmlcov/
-
-# Cache directories
-.mypy_cache/
-.pytest_cache/
-.gradle/
-.cargo/
-.npm/
-.yarn/
+# Logs and temp files
+*.log
+*.tmp
+*.swp
+*.swo
 
 # Editors
 .vscode/
@@ -42,29 +34,41 @@ htmlcov/
 # System files
 .DS_Store
 Thumbs.db
-*.log
-*.tmp
 
-# Compressed files
-*.zip
-*.gz
-*.tar
-*.tgz
-*.bz2
-*.xz
-*.7z
-*.rar
-*.zst
-*.lz4
-*.lzh
-*.cab
-*.arj
-*.rpm
-*.deb
-*.Z
-*.lz
-*.lzo
-*.tar.gz
-*.tar.bz2
-*.tar.xz
-*.tar.zst
+# Coverage and testing
+.coverage
+coverage/
+htmlcov/
+
+# Build directories
+dist/
+build/
+target/
+.gradle/
+
+# Python specific
+*.pyc
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+
+# PHP specific
+vendor/
+composer.lock
+*.phar
+
+# Laravel/Homestead specific (if applicable)
+Homestead.yaml
+Homestead.json
+Vagrantfile
+
+# Storage and cache
+/storage/*
+!/storage/.gitkeep
+/cache/*
+!/cache/.gitkeep
+
+# Environment specific
+.env.*
+!.env.example
+```
