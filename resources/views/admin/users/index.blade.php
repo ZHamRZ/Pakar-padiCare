@@ -148,8 +148,6 @@ let deleteUserModalInstance = null;
 
 // Inisialisasi modal saat DOM siap
 document.addEventListener('DOMContentLoaded', function() {
-    // Gunakan fungsi Toast global dari layouts/app.blade.php
-    
     // Fungsi untuk membuka modal reset password
     window.openResetPasswordModal = function(userId, userName) {
         if (isProcessing) return;
@@ -274,7 +272,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = await response.json();
             
             if (response.ok && data.success) {
-                showSuccessToast(data.message || 'Password berhasil direset.');
+                window.showSuccessToast(data.message || 'Password berhasil direset.');
                 resetPasswordModalInstance.hide();
                 
                 // Refresh halaman untuk update data jika diperlukan
@@ -282,12 +280,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     window.location.reload();
                 }, 1000);
             } else {
-                showErrorToast(data.message || 'Gagal mereset password.');
+                window.showErrorToast(data.message || 'Gagal mereset password.');
                 setLoading('reset', false);
             }
         } catch (error) {
             console.error('Error:', error);
-            showErrorToast('Terjadi kesalahan pada sistem. Silakan coba lagi.');
+            window.showErrorToast('Terjadi kesalahan pada sistem. Silakan coba lagi.');
             setLoading('reset', false);
         }
     });
@@ -311,7 +309,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = await response.json();
             
             if (response.ok && data.success) {
-                showSuccessToast(data.message || 'Pengguna berhasil dihapus.');
+                window.showSuccessToast(data.message || 'Pengguna berhasil dihapus.');
                 deleteUserModalInstance.hide();
                 
                 // Hapus baris tabel secara visual
@@ -329,12 +327,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     }, 300);
                 }
             } else {
-                showErrorToast(data.message || 'Gagal menghapus pengguna.');
+                window.showErrorToast(data.message || 'Gagal menghapus pengguna.');
                 setLoading('delete', false);
             }
         } catch (error) {
             console.error('Error:', error);
-            showErrorToast('Terjadi kesalahan pada sistem. Silakan coba lagi.');
+            window.showErrorToast('Terjadi kesalahan pada sistem. Silakan coba lagi.');
             setLoading('delete', false);
         }
     });

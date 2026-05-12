@@ -471,8 +471,8 @@
     // Auto-detect dark mode
     const isDarkMode = () => window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-    // Function to show error toast
-    function showErrorToast(message) {
+    // Function to show error toast - made globally accessible
+    window.showErrorToast = function(message) {
         Toast.fire({
             icon: 'error',
             title: message,
@@ -488,8 +488,8 @@
         });
     }
 
-    // Function to show success toast
-    function showSuccessToast(message) {
+    // Function to show success toast - made globally accessible
+    window.showSuccessToast = function(message) {
         Toast.fire({
             icon: 'success',
             title: message,
