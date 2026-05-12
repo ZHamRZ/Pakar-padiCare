@@ -11,6 +11,7 @@
             <table class="table table-hover mb-0 align-middle">
                 <thead class="table-light">
                     <tr>
+                        <th>Foto</th>
                         <th>Nama</th>
                         <th>Username</th>
                         <th>Email</th>
@@ -24,6 +25,13 @@
                 <tbody>
                     @forelse($users as $user)
                     <tr>
+                        <td>
+                            @if($user->foto_profil_url)
+                                <img src="{{ $user->foto_profil_url }}" alt="{{ $user->nama }}" class="rounded-circle" width="40" height="40" style="object-fit: cover;">
+                            @else
+                                <span class="avatar-fallback d-inline-flex align-items-center justify-content-center rounded-circle bg-secondary text-white fw-bold" style="width: 40px; height: 40px; font-size: 0.9rem;">{{ strtoupper(substr($user->nama, 0, 1)) }}</span>
+                            @endif
+                        </td>
                         <td>{{ $user->nama }}</td>
                         <td>{{ $user->username }}</td>
                         <td>{{ $user->email ?? '-' }}</td>
@@ -56,7 +64,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="8" class="text-center py-4 text-muted">Belum ada pengguna petani.</td>
+                        <td colspan="9" class="text-center py-4 text-muted">Belum ada pengguna petani.</td>
                     </tr>
                     @endforelse
                 </tbody>
