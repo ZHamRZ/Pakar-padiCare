@@ -520,5 +520,314 @@ $verificationResendCooldown = max(0, $verificationResendAvailableAt - now()->tim
                 countdownTimer = setInterval(renderCountdown, 1000);
             });
         });
+
+        /**
+         * ============================================
+         * CROP IMAGE FUNCTIONALITY
+         * ============================================
+         */
+        let cropModalInstance = null;
+        let currentImageFile = null;
+        let imageElement = null;
+        let zoomLevel = 1;
+        let panX = 0;
+        let panY = 0;
+        let isDragging = false;
+        let startX, startY;
+
+        // Initialize file input listener
+        const fotoInput = document.querySelector('input[name="foto_profil"]');
+        if (fotoInput) {
+            fotoInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                // Validate file type
+                const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
+                if (!validTypes.includes(file.type)) {
+                    showErrorToast('Format file tidak didukung. Gunakan JPG, PNG, atau WebP.');
+                    this.value = '';
+                    return;
+                }
+
+                // Validate file size (2MB max)
+                if (file.size > 2 * 1024 * 1024) {
+                    showErrorToast('Ukuran file terlalu besar. Maksimal 2MB.');
+                    this.value = '';
+                    return;
+                }
+
+                currentImageFile = file;
+                openCropModal(file);
+            });
+        }
+
+        function openCropModal(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                // Show modal
+                const modalEl = document.getElementById('cropModal');
+                if (!modalEl) {
+                    showErrorToast('Modal crop tidak ditemukan.');
+                    return;
+                }
+
+                cropModalInstance = new bootstrap.Modal(modalEl);
+                cropModalInstance.show();
+
+                // Set image source
+                setTimeout(() => {
+                    imageElement = document.getElementById('cropImage');
+                    const avatarPreview = document.getElementById('avatarPreview');
+                    
+                    if (imageElement && avatarPreview) {
+                        imageElement.src = e.target.result;
+                        avatarPreview.src = e.target.result;
+                        
+                        // Reset crop parameters
+                        zoomLevel = 1;
+                        panX = 0;
+                        panY = 0;
+                        updateCropTransform();
+                        
+                        document.getElementById('zoomRange').value = 1;
+                    }
+                }, 150);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function updateCropTransform() {
+            if (!imageElement) return;
+            
+            imageElement.style.transform = `translate(${panX}px, ${panY}px) scale(${zoomLevel})`;
+            updateAvatarPreview();
+        }
+
+        function updateAvatarPreview() {
+            const avatarPreview = document.getElementById('avatarPreview');
+            if (!avatarPreview || !imageElement) return;
+
+            // Create a canvas to generate circular preview
+            const canvas = document.createElement('canvas');
+            canvas.width = 200;
+            canvas.height = 200;
+            const ctx = canvas.getContext('2d');
+
+            // Clear and create circular mask
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.arc(100, 100, 100, 0, Math.PI * 2);
+            ctx.closePath();
+            ctx.clip();
+
+            // Draw white background
+            ctx.fillStyle = '#f0fdf4';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw the cropped portion of the image
+            try {
+                ctx.drawImage(
+                    imageElement,
+                    -panX / zoomLevel,
+                    -panY / zoomLevel,
+                    imageElement.naturalWidth / zoomLevel,
+                    imageElement.naturalHeight / zoomLevel,
+                    0,
+                    0,
+                    200,
+                    200
+                );
+            } catch (err) {
+                // Fallback: just show current image src
+            }
+
+            avatarPreview.src = canvas.toDataURL('image/jpeg', 0.9);
+        }
+
+        // Zoom slider handler
+        const zoomRange = document.getElementById('zoomRange');
+        if (zoomRange) {
+            zoomRange.addEventListener('input', function() {
+                zoomLevel = parseFloat(this.value);
+                updateCropTransform();
+            });
+        }
+
+        // Pan/drag functionality
+        const cropContainer = document.getElementById('cropContainer');
+        if (cropContainer && imageElement) {
+            cropContainer.addEventListener('mousedown', startDrag);
+            cropContainer.addEventListener('touchstart', startDrag, { passive: false });
+            
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('touchmove', drag, { passive: false });
+            
+            document.addEventListener('mouseup', endDrag);
+            document.addEventListener('touchend', endDrag);
+        }
+
+        function startDrag(e) {
+            isDragging = true;
+            startX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+            startY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
+            cropContainer.style.cursor = 'grabbing';
+        }
+
+        function drag(e) {
+            if (!isDragging) return;
+            e.preventDefault();
+
+            const currentX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+            const currentY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
+
+            const deltaX = currentX - startX;
+            const deltaY = currentY - startY;
+
+            panX += deltaX;
+            panY += deltaY;
+
+            startX = currentX;
+            startY = currentY;
+
+            updateCropTransform();
+        }
+
+        function endDrag() {
+            isDragging = false;
+            if (cropContainer) {
+                cropContainer.style.cursor = 'move';
+            }
+        }
+
+        // Reset button
+        const resetBtn = document.getElementById('resetCropBtn');
+        if (resetBtn) {
+            resetBtn.addEventListener('click', function() {
+                zoomLevel = 1;
+                panX = 0;
+                panY = 0;
+                document.getElementById('zoomRange').value = 1;
+                updateCropTransform();
+                
+                // Reset avatar preview to original
+                if (currentImageFile) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const avatarPreview = document.getElementById('avatarPreview');
+                        if (avatarPreview) {
+                            avatarPreview.src = e.target.result;
+                        }
+                    };
+                    reader.readAsDataURL(currentImageFile);
+                }
+            });
+        }
+
+        // Save/Crop button
+        const saveBtn = document.getElementById('saveCropBtn');
+        if (saveBtn) {
+            saveBtn.addEventListener('click', function() {
+                if (!imageElement || !currentImageFile) {
+                    showErrorToast('Tidak ada gambar untuk diproses.');
+                    return;
+                }
+
+                saveBtn.disabled = true;
+                saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Memproses...';
+
+                // Create canvas with the cropped result
+                const canvas = document.createElement('canvas');
+                const size = 400; // Output size
+                canvas.width = size;
+                canvas.height = size;
+                const ctx = canvas.getContext('2d');
+
+                // Fill with white background
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, size, size);
+
+                // Calculate the visible portion based on pan and zoom
+                const img = imageElement;
+                const displayWidth = img.naturalWidth * zoomLevel;
+                const displayHeight = img.naturalHeight * zoomLevel;
+
+                // Calculate which part of the original image is visible in the crop area
+                const containerRect = cropContainer.getBoundingClientRect();
+                const imgRect = imageElement.getBoundingClientRect();
+
+                // Calculate the offset relative to the container center
+                const offsetX = (imgRect.left - containerRect.left) + containerRect.width / 2;
+                const offsetY = (imgRect.top - containerRect.top) + containerRect.height / 2;
+
+                // Draw the image centered
+                ctx.save();
+                ctx.translate(size / 2, size / 2);
+                ctx.scale(zoomLevel, zoomLevel);
+                ctx.translate(panX / zoomLevel, panY / zoomLevel);
+                ctx.drawImage(img, -img.naturalWidth / 2, -img.naturalHeight / 2);
+                ctx.restore();
+
+                // Convert to base64
+                const croppedDataUrl = canvas.toDataURL('image/jpeg', 0.9);
+
+                // Create hidden form and submit
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = window.location.href;
+
+                // Add CSRF token
+                const csrfToken = document.querySelector('meta[name="csrf-token"]');
+                if (csrfToken) {
+                    const csrfInput = document.createElement('input');
+                    csrfInput.type = 'hidden';
+                    csrfInput.name = '_token';
+                    csrfInput.value = csrfToken.content;
+                    form.appendChild(csrfInput);
+                }
+
+                // Add method spoofing for PUT
+                const methodInput = document.createElement('input');
+                methodInput.type = 'hidden';
+                methodInput.name = '_method';
+                methodInput.value = 'PUT';
+                form.appendChild(methodInput);
+
+                // Add cropped image data
+                const croppedInput = document.createElement('input');
+                croppedInput.type = 'hidden';
+                croppedInput.name = 'cropped_image';
+                croppedInput.value = croppedDataUrl;
+                form.appendChild(croppedInput);
+
+                // Add other required fields to preserve data
+                const userFields = ['nama', 'username', 'email', 'alamat', 'catatan_profil'];
+                userFields.forEach(function(fieldName) {
+                    const existingInput = document.querySelector(`input[name="${fieldName}"], textarea[name="${fieldName}"]`);
+                    if (existingInput) {
+                        const hiddenInput = document.createElement('input');
+                        hiddenInput.type = 'hidden';
+                        hiddenInput.name = fieldName;
+                        hiddenInput.value = existingInput.value;
+                        form.appendChild(hiddenInput);
+                    }
+                });
+
+                document.body.appendChild(form);
+                form.submit();
+            });
+        }
+
+        // Handle modal close
+        const cropModalEl = document.getElementById('cropModal');
+        if (cropModalEl) {
+            cropModalEl.addEventListener('hidden.bs.modal', function() {
+                // Reset file input if user cancels
+                if (fotoInput && !saveBtn?.dataset.saved) {
+                    fotoInput.value = '';
+                }
+                currentImageFile = null;
+            });
+        }
         </script>
         @endpush
