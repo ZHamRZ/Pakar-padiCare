@@ -33,7 +33,7 @@ class CertaintyFactorService
 
         return DB::transaction(function () use ($idUser, $idPenyakit, $preview, $preferensiSnapshot) {
             $rekomendasi = Rekomendasi::create([
-                'id_user' => $idUser,
+                'id_pengguna' => $idUser,
                 'id_penyakit' => $idPenyakit,
                 'tanggal' => now(),
                 'preferensi_label' => $preferensiSnapshot['preset_label'],

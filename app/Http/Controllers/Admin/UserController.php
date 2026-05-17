@@ -20,7 +20,7 @@ class UserController extends Controller
             ->latest()
             ->paginate(10);
 
-        return view('admin.users.index', compact('users'));
+        return view('admin.pengguna.index', compact('users'));
     }
 
     /**
@@ -78,7 +78,7 @@ class UserController extends Controller
         }
 
         return redirect()
-            ->route('admin.users.index')
+            ->route('admin.pengguna.index')
             ->with(
                 'success',
                 'Akun pengguna berhasil dihapus.'

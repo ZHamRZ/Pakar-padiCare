@@ -46,22 +46,6 @@ class Pupuk extends Model
         return $relation;
     }
 
-    public function gejala()
-    {
-        $relation = $this->belongsToMany(
-            Gejala::class,
-            'gejala_pupuk',
-            'id_pupuk',
-            'id_gejala'
-        );
-
-        if (CfSchema::hasPupukRuleTable()) {
-            $relation->withPivot(['mb', 'md'])->withTimestamps();
-        }
-
-        return $relation;
-    }
-
     public function getHargaFormattedAttribute(): string
     {
         return 'Rp ' . number_format($this->harga_per_kg, 0, ',', '.');

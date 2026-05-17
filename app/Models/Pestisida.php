@@ -48,22 +48,6 @@ class Pestisida extends Model
         return $relation;
     }
 
-    public function gejala()
-    {
-        $relation = $this->belongsToMany(
-            Gejala::class,
-            'gejala_pestisida',
-            'id_pestisida',
-            'id_gejala'
-        );
-
-        if (CfSchema::hasPestisidaRuleTable()) {
-            $relation->withPivot(['mb', 'md'])->withTimestamps();
-        }
-
-        return $relation;
-    }
-
     public function getHargaFormattedAttribute(): string
     {
         return 'Rp ' . number_format($this->harga, 0, ',', '.');

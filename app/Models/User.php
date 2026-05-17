@@ -18,7 +18,7 @@ class User extends Authenticatable
     /**
      * Nama tabel
      */
-    protected $table = 'users';
+    protected $table = 'pengguna';
 
     /**
      * Field yang boleh diisi
@@ -29,7 +29,6 @@ class User extends Authenticatable
         'alamat',
         'catatan_profil',
         'foto_profil',
-        'no_telp',
         'password',
         'role',
 
@@ -55,7 +54,6 @@ class User extends Authenticatable
         return [
             'password' => 'hashed',
             'email_verified_at' => 'datetime',
-            'phone_verified_at' => 'datetime',
         ];
     }
 
@@ -64,7 +62,7 @@ class User extends Authenticatable
      */
     public function rekomendasi()
     {
-        return $this->hasMany(Rekomendasi::class, 'id_user');
+        return $this->hasMany(Rekomendasi::class, 'id_pengguna');
     }
 
     /**
@@ -104,11 +102,6 @@ class User extends Authenticatable
     public function getFotoProfilUrlAttribute(): ?string
     {
         return ProjectImage::url($this->foto_profil);
-    }
-
-    public function getNoTeleponAttribute(): ?string
-    {
-        return $this->no_telp;
     }
 
     /**

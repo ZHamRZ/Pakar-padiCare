@@ -24,19 +24,19 @@ class DashboardController extends Controller
         $rekomendasi7Hari = 0;
 
         if ($user && !$user->isAdmin()) {
-            $totalRekomendasi = Rekomendasi::where('id_user', $user->id)->count();
+            $totalRekomendasi = Rekomendasi::where('id_pengguna', $user->id)->count();
             $riwayatTerbaru = Rekomendasi::with(['penyakit', 'detailPupuk.pupuk', 'detailPestisida.pestisida'])
-                ->where('id_user', $user->id)
+                ->where('id_pengguna', $user->id)
                 ->latest()
                 ->take(5)
                 ->get();
 
-            $rekomendasiBulanIni = Rekomendasi::where('id_user', $user->id)
+            $rekomendasiBulanIni = Rekomendasi::where('id_pengguna', $user->id)
                 ->whereMonth('created_at', now()->month)
                 ->whereYear('created_at', now()->year)
                 ->count();
 
-            $rekomendasi7Hari = Rekomendasi::where('id_user', $user->id)
+            $rekomendasi7Hari = Rekomendasi::where('id_pengguna', $user->id)
                 ->where('created_at', '>=', now()->subDays(7))
                 ->count();
         }

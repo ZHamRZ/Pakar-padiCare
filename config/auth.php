@@ -17,7 +17,7 @@ return [
 
     'defaults' => [
         'guard' => env('AUTH_GUARD', 'web'),
-        'passwords' => env('AUTH_PASSWORD_BROKER', 'users'),
+        'passwords' => env('AUTH_PASSWORD_BROKER', 'pengguna'),
     ],
 
     /*
@@ -40,7 +40,7 @@ return [
     'guards' => [
         'web' => [
             'driver' => 'session',
-            'provider' => 'users',
+            'provider' => 'pengguna',
         ],
     ],
 
@@ -62,14 +62,14 @@ return [
     */
 
     'providers' => [
-        'users' => [
+        'pengguna' => [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', User::class),
         ],
 
-        // 'users' => [
+        // 'pengguna' => [
         //     'driver' => 'database',
-        //     'table' => 'users',
+        //     'table' => 'pengguna',
         // ],
     ],
 
@@ -80,7 +80,7 @@ return [
     |
     | These configuration options specify the behavior of Laravel's password
     | reset functionality, including the table utilized for token storage
-    | and the user provider that is invoked to actually retrieve users.
+    | and the user provider that is invoked to actually retrieve pengguna.
     |
     | The expiry time is the number of minutes that each reset token will be
     | considered valid. This security feature keeps tokens short-lived so
@@ -93,9 +93,9 @@ return [
     */
 
     'passwords' => [
-        'users' => [
-            'provider' => 'users',
-            'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
+        'pengguna' => [
+            'provider' => 'pengguna',
+            'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'token_reset_sandi'),
             'expire' => 60,
             'throttle' => 60,
         ],

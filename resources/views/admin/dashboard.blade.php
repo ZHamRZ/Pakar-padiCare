@@ -413,7 +413,7 @@ $statItems = [
         <div class="section-card" style="height:auto;">
             <div class="section-card-header">
                 <div class="section-card-title">Pengguna Terbaru</div>
-                <a href="{{ route('admin.users.index') }}"
+                <a href="{{ route('admin.pengguna.index') }}"
                    style="font-size:12px; font-weight:700; color:var(--green-600); text-decoration:none;">
                     Kelola user →
                 </a>

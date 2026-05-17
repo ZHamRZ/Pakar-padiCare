@@ -14,7 +14,7 @@ use App\Http\Controllers\Admin\GejalaController;
 use App\Http\Controllers\Admin\PupukController;
 use App\Http\Controllers\Admin\PestisidaController;
 use App\Http\Controllers\Admin\KriteriaController;
-use App\Http\Controllers\Admin\RatingController;
+use App\Http\Controllers\Admin\NilaiCfController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\RiwayatController as AdminRiwayat;
 
@@ -138,20 +138,20 @@ Route::middleware(['auth', 'role:admin'])
         Route::get('/kriteria/{kriteria}/edit',    [KriteriaController::class, 'edit'])->name('kriteria.edit');
         Route::put('/kriteria/{kriteria}',         [KriteriaController::class, 'update'])->name('kriteria.update');
 
-        // Rating Pupuk
-        Route::get('/rating/pupuk',  [RatingController::class, 'pupuk'])->name('rating.pupuk');
-        Route::post('/rating/pupuk', [RatingController::class, 'simpanPupuk'])->name('rating.pupuk.simpan');
+        // Nilai CF Pakar Pupuk
+        Route::get('/nilai-cf/pupuk',  [NilaiCfController::class, 'pupuk'])->name('nilai-cf.pupuk');
+        Route::post('/nilai-cf/pupuk', [NilaiCfController::class, 'simpanPupuk'])->name('nilai-cf.pupuk.simpan');
 
-        // Rating Pestisida
-        Route::get('/rating/pestisida',  [RatingController::class, 'pestisida'])->name('rating.pestisida');
-        Route::post('/rating/pestisida', [RatingController::class, 'simpanPestisida'])->name('rating.pestisida.simpan');
+        // Nilai CF Pakar Pestisida
+        Route::get('/nilai-cf/pestisida',  [NilaiCfController::class, 'pestisida'])->name('nilai-cf.pestisida');
+        Route::post('/nilai-cf/pestisida', [NilaiCfController::class, 'simpanPestisida'])->name('nilai-cf.pestisida.simpan');
 
         // Manajemen User Petani
-        Route::get('/users',                           [UserController::class, 'index'])->name('users.index');
-        Route::delete('/users/{user}',                 [UserController::class, 'destroy'])->name('users.destroy');
-        Route::post('/users/{user}/reset-password',    [UserController::class, 'resetPassword'])->name('users.resetPassword');
+        Route::get('/pengguna',                           [UserController::class, 'index'])->name('pengguna.index');
+        Route::delete('/pengguna/{user}',                 [UserController::class, 'destroy'])->name('pengguna.destroy');
+        Route::post('/pengguna/{user}/reset-password',    [UserController::class, 'resetPassword'])->name('pengguna.resetPassword');
         // Verifikasi email manual oleh admin (dari kode baru)
-        Route::post('/users/{user}/verify-email',      [UserController::class, 'verifyEmailManual'])->name('users.verify');
+        Route::post('/pengguna/{user}/verify-email',      [UserController::class, 'verifyEmailManual'])->name('pengguna.verify');
 
         // Riwayat diagnosis
         Route::get('/riwayat',          [AdminRiwayat::class, 'index'])->name('riwayat.index');

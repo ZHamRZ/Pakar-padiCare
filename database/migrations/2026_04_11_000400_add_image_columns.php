@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table('pengguna', function (Blueprint $table) {
             $table->string('foto_profil')->nullable()->after('catatan_profil');
         });
 
@@ -39,7 +39,7 @@ return new class extends Migration
             $table->dropColumn('gambar');
         });
 
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table('pengguna', function (Blueprint $table) {
             $table->dropColumn('foto_profil');
         });
     }

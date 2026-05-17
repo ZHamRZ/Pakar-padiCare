@@ -8,8 +8,8 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            if (Schema::hasColumn('users', 'email')) {
+        Schema::table('pengguna', function (Blueprint $table) {
+            if (Schema::hasColumn('pengguna', 'email')) {
                 // Ubah email menjadi nullable jika sebelumnya not null
                 $table->string('email')->nullable()->change();
             } else {
@@ -17,11 +17,11 @@ return new class extends Migration
             }
 
             // Tambahkan kolom untuk token verifikasi dan waktu verifikasi
-            if (!Schema::hasColumn('users', 'email_verification_token')) {
+            if (!Schema::hasColumn('pengguna', 'email_verification_token')) {
                 $table->string('email_verification_token')->nullable()->after('email');
             }
 
-            if (!Schema::hasColumn('users', 'email_verified_at')) {
+            if (!Schema::hasColumn('pengguna', 'email_verified_at')) {
                 $table->timestamp('email_verified_at')->nullable()->after('email_verification_token');
             }
 
@@ -33,8 +33,8 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            if (Schema::hasColumn('users', 'email_verification_token')) {
+        Schema::table('pengguna', function (Blueprint $table) {
+            if (Schema::hasColumn('pengguna', 'email_verification_token')) {
                 $table->dropColumn('email_verification_token');
             }
 

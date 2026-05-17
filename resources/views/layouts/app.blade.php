@@ -330,22 +330,22 @@
                     class="nav-link {{ request()->routeIs('admin.kriteria*') ? 'active' : '' }}">
                     <i class="bi bi-sliders"></i> Parameter Prioritas
                 </a>
-                <a href="{{ route('admin.rating.pupuk') }}"
-                    class="nav-link {{ request()->routeIs('admin.rating.pupuk*') ? 'active' : '' }}">
-                    <i class="bi bi-table"></i> Rule CF Pupuk
+                <a href="{{ route('admin.nilai-cf.pupuk') }}"
+                    class="nav-link {{ request()->routeIs('admin.nilai-cf.pupuk*') ? 'active' : '' }}">
+                    <i class="bi bi-table"></i> Nilai CF Pupuk
                 </a>
-                <a href="{{ route('admin.rating.pestisida') }}"
-                    class="nav-link {{ request()->routeIs('admin.rating.pestisida*') ? 'active' : '' }}">
-                    <i class="bi bi-table"></i> Rule CF Pestisida
+                <a href="{{ route('admin.nilai-cf.pestisida') }}"
+                    class="nav-link {{ request()->routeIs('admin.nilai-cf.pestisida*') ? 'active' : '' }}">
+                    <i class="bi bi-table"></i> Nilai CF Pestisida
                 </a>
                 <span class="nav-section">Pengguna</span>
-                <a href="{{ route('admin.users.index') }}"
-                    class="nav-link {{ request()->routeIs('admin.users*') ? 'active' : '' }}">
+                <a href="{{ route('admin.pengguna.index') }}"
+                    class="nav-link {{ request()->routeIs('admin.pengguna*') ? 'active' : '' }}">
                     <i class="bi bi-people"></i> Data Pengguna
                 </a>
                 <a href="{{ route('admin.riwayat.index') }}"
                     class="nav-link {{ request()->routeIs('admin.riwayat*') ? 'active' : '' }}">
-                    <i class="bi bi-clock-history"></i> Riwayat Semua User
+                    <i class="bi bi-clock-history"></i> Riwayat Semua Pengguna
                 </a>
                 <span class="nav-section">Akun</span>
                 <a href="{{ route('admin.profile.edit') }}"

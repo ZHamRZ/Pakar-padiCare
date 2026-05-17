@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Gejala;
 use App\Models\Penyakit;
 use App\Models\PenyakitPupuk;
 use App\Models\PenyakitPestisida;
@@ -12,7 +11,7 @@ use App\Models\Pestisida;
 use App\Support\CfSchema;
 use Illuminate\Http\Request;
 
-class RatingController extends Controller
+class NilaiCfController extends Controller
 {
     public function pupuk()
     {
@@ -23,23 +22,23 @@ class RatingController extends Controller
             ? PenyakitPupuk::all()->keyBy(fn ($item) => "{$item->id_penyakit}_{$item->id_pupuk}")
             : collect();
 
-        return view('admin.rating.pupuk', compact('penyakit', 'pupuk', 'rules', 'cfReady'));
+        return view('admin.nilai_cf.pupuk', compact('penyakit', 'pupuk', 'rules', 'cfReady'));
     }
 
     public function simpanPupuk(Request $request)
     {
         if (!CfSchema::hasPupukRuleTable()) {
             if ($request->expectsJson()) {
-                return response()->json(['success' => false, 'message' => 'Tabel rule CF pupuk belum tersedia. Jalankan migration database terlebih dahulu.'], 400);
+                return response()->json(['success' => false, 'message' => 'Tabel nilai CF pupuk belum tersedia. Jalankan migration database terlebih dahulu.'], 400);
             }
-            return redirect()->route('admin.rating.pupuk')
-                ->with('error', 'Tabel rule CF pupuk belum tersedia. Jalankan migration database terlebih dahulu.');
+            return redirect()->route('admin.nilai-cf.pupuk')
+                ->with('error', 'Tabel nilai CF pupuk belum tersedia. Jalankan migration database terlebih dahulu.');
         }
 
         $request->validate([
             'rules' => 'required|array',
-            'rules.*.*.mb' => 'required|numeric|min:0|max:1',
-            'rules.*.*.md' => 'required|numeric|min:0|max:1',
+            'rules.*.*.mb' => ['required', 'numeric', 'min:0', 'max:1', 'regex:/^\d(\.\d{1,3})?$/'],
+            'rules.*.*.md' => ['required', 'numeric', 'min:0', 'max:1', 'regex:/^\d(\.\d{1,3})?$/'],
         ], $this->cfValidationMessages('pupuk'));
 
         foreach ($request->rules as $idPenyakit => $items) {
@@ -58,8 +57,8 @@ class RatingController extends Controller
             return response()->json(['success' => true, 'message' => 'Data berhasil disimpan']);
         }
 
-        return redirect()->route('admin.rating.pupuk')
-            ->with('success', 'Aturan CF pupuk berhasil disimpan.');
+        return redirect()->route('admin.nilai-cf.pupuk')
+            ->with('success', 'Nilai CF pakar untuk pupuk berhasil disimpan.');
     }
 
     public function pestisida()
@@ -71,23 +70,23 @@ class RatingController extends Controller
             ? PenyakitPestisida::all()->keyBy(fn ($item) => "{$item->id_penyakit}_{$item->id_pestisida}")
             : collect();
 
-        return view('admin.rating.pestisida', compact('penyakit', 'pestisida', 'rules', 'cfReady'));
+        return view('admin.nilai_cf.pestisida', compact('penyakit', 'pestisida', 'rules', 'cfReady'));
     }
 
     public function simpanPestisida(Request $request)
     {
         if (!CfSchema::hasPestisidaRuleTable()) {
             if ($request->expectsJson()) {
-                return response()->json(['success' => false, 'message' => 'Tabel rule CF pestisida belum tersedia. Jalankan migration database terlebih dahulu.'], 400);
+                return response()->json(['success' => false, 'message' => 'Tabel nilai CF pestisida belum tersedia. Jalankan migration database terlebih dahulu.'], 400);
             }
-            return redirect()->route('admin.rating.pestisida')
-                ->with('error', 'Tabel rule CF pestisida belum tersedia. Jalankan migration database terlebih dahulu.');
+            return redirect()->route('admin.nilai-cf.pestisida')
+                ->with('error', 'Tabel nilai CF pestisida belum tersedia. Jalankan migration database terlebih dahulu.');
         }
 
         $request->validate([
             'rules' => 'required|array',
-            'rules.*.*.mb' => 'required|numeric|min:0|max:1',
-            'rules.*.*.md' => 'required|numeric|min:0|max:1',
+            'rules.*.*.mb' => ['required', 'numeric', 'min:0', 'max:1', 'regex:/^\d(\.\d{1,3})?$/'],
+            'rules.*.*.md' => ['required', 'numeric', 'min:0', 'max:1', 'regex:/^\d(\.\d{1,3})?$/'],
         ], $this->cfValidationMessages('pestisida'));
 
         foreach ($request->rules as $idPenyakit => $items) {
@@ -106,23 +105,25 @@ class RatingController extends Controller
             return response()->json(['success' => true, 'message' => 'Data berhasil disimpan']);
         }
 
-        return redirect()->route('admin.rating.pestisida')
-            ->with('success', 'Aturan CF pestisida berhasil disimpan.');
+        return redirect()->route('admin.nilai-cf.pestisida')
+            ->with('success', 'Nilai CF pakar untuk pestisida berhasil disimpan.');
     }
 
     private function cfValidationMessages(string $jenis): array
     {
         return [
-            'rules.required' => "Aturan CF {$jenis} wajib diisi.",
-            'rules.array' => "Format aturan CF {$jenis} tidak valid.",
+            'rules.required' => "Nilai CF {$jenis} wajib diisi.",
+            'rules.array' => "Format nilai CF {$jenis} tidak valid.",
             'rules.*.*.mb.required' => 'Nilai MB wajib diisi. Contoh: 0.100 atau 0.900.',
             'rules.*.*.mb.numeric' => 'Nilai MB harus numerik. Contoh: 0.100 atau 0.900.',
             'rules.*.*.mb.min' => 'Nilai MB harus berada pada rentang 0 sampai 1. Contoh: 0.100 atau 0.900.',
             'rules.*.*.mb.max' => 'Nilai MB harus berada pada rentang 0 sampai 1. Contoh: 0.100 atau 0.900.',
+            'rules.*.*.mb.regex' => 'Nilai MB maksimal 3 angka di belakang koma. Contoh: 0.100 atau 0.900.',
             'rules.*.*.md.required' => 'Nilai MD wajib diisi. Contoh: 0.100 atau 0.900.',
             'rules.*.*.md.numeric' => 'Nilai MD harus numerik. Contoh: 0.100 atau 0.900.',
             'rules.*.*.md.min' => 'Nilai MD harus berada pada rentang 0 sampai 1. Contoh: 0.100 atau 0.900.',
             'rules.*.*.md.max' => 'Nilai MD harus berada pada rentang 0 sampai 1. Contoh: 0.100 atau 0.900.',
+            'rules.*.*.md.regex' => 'Nilai MD maksimal 3 angka di belakang koma. Contoh: 0.100 atau 0.900.',
         ];
     }
 }

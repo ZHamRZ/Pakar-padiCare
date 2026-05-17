@@ -351,23 +351,17 @@ CREATE TABLE `users` (
   `username` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `role` enum('admin','petani') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'petani',
   `email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `no_telp` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `alamat` text COLLATE utf8mb4_unicode_ci,
   `catatan_profil` text COLLATE utf8mb4_unicode_ci,
   `foto_profil` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `email_verified_at` timestamp NULL DEFAULT NULL,
-  `phone_verified_at` timestamp NULL DEFAULT NULL,
   `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `login_otp_code` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `login_otp_expires_at` timestamp NULL DEFAULT NULL,
-  `login_otp_sent_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `users_username_unique` (`username`),
-  UNIQUE KEY `users_email_unique` (`email`),
-  UNIQUE KEY `users_no_telp_unique` (`no_telp`)
+  UNIQUE KEY `users_email_unique` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

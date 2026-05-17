@@ -64,11 +64,11 @@
             <input type="date" id="tanggal_sampai" name="tanggal_sampai" class="form-control" value="{{ $filters['tanggal_sampai'] ?? '' }}">
         </div>
         <div class="col-md-3">
-            <label class="filter-label" for="user_id">User</label>
-            <select id="user_id" name="user_id" class="form-select">
-                <option value="">Semua user</option>
+            <label class="filter-label" for="id_pengguna">Pengguna</label>
+            <select id="id_pengguna" name="id_pengguna" class="form-select">
+                <option value="">Semua pengguna</option>
                 @foreach($users as $user)
-                <option value="{{ $user->id }}" @selected((string) ($filters['user_id'] ?? '') === (string) $user->id)>
+                <option value="{{ $user->id }}" @selected((string) ($filters['id_pengguna'] ?? '') === (string) $user->id)>
                     {{ $user->nama }}{{ $user->username ? ' - ' . $user->username : '' }}
                 </option>
                 @endforeach

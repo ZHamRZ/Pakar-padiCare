@@ -11,7 +11,7 @@ class RiwayatController extends Controller
     public function index()
     {
         $riwayat = Rekomendasi::with(['penyakit', 'detailPupuk', 'detailPestisida'])
-            ->where('id_user', Auth::id())
+            ->where('id_pengguna', Auth::id())
             ->latest()
             ->paginate(10);
 

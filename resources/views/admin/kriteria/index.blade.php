@@ -52,8 +52,8 @@
                                     </td>
                                     <td>
                                         <select name="kriteria[{{ $item->id }}][jenis]" class="form-select form-select-sm">
-                                            <option value="benefit" {{ old('kriteria.'.$item->id.'.jenis', $item->jenis) === 'benefit' ? 'selected' : '' }}>Benefit</option>
-                                            <option value="cost" {{ old('kriteria.'.$item->id.'.jenis', $item->jenis) === 'cost' ? 'selected' : '' }}>Cost</option>
+                                            <option value="manfaat" {{ old('kriteria.'.$item->id.'.jenis', $item->jenis) === 'manfaat' ? 'selected' : '' }}>Manfaat</option>
+                                            <option value="biaya" {{ old('kriteria.'.$item->id.'.jenis', $item->jenis) === 'biaya' ? 'selected' : '' }}>Biaya</option>
                                         </select>
                                     </td>
                                     <td>
@@ -92,7 +92,7 @@
                     <h6 class="fw-bold">Cara Menggunakan:</h6>
                     <ol class="small mb-0">
                         <li>Edit langsung nilai di tabel sebelah kiri</li>
-                        <li>Ubah nama, jenis (benefit/cost), faktor dasar (0-1), dan keterangan</li>
+                        <li>Ubah nama, jenis (manfaat/biaya), faktor dasar (0-1), dan keterangan</li>
                         <li>Klik tombol <strong>"Simpan Semua Perubahan"</strong> untuk menyimpan</li>
                         <li>Atau gunakan tombol Edit untuk mengubah satu parameter secara detail</li>
                     </ol>

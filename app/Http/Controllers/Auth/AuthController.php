@@ -140,7 +140,7 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'username' => 'required|string|max:50|unique:users,username',
+            'username' => 'required|string|max:50|unique:pengguna,username',
             'password' => 'required|string|min:6',
         ], [
             'username.required' => 'Username wajib diisi.',
@@ -189,7 +189,7 @@ class AuthController extends Controller
     public function sendResetLink(Request $request)
     {
         $request->validate([
-            'email' => 'required|email|exists:users,email',
+            'email' => 'required|email|exists:pengguna,email',
         ], [
             'email.required' => 'Email wajib diisi.',
             'email.email'    => 'Format email tidak valid.',
@@ -259,7 +259,7 @@ class AuthController extends Controller
     {
         $request->validate([
             'token'    => 'required',
-            'email'    => 'required|email|exists:users,email',
+            'email'    => 'required|email|exists:pengguna,email',
             'password' => 'required|string|min:6|confirmed',
         ], [
             'token.required'      => 'Token reset password diperlukan.',

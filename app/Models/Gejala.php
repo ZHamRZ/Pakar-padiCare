@@ -21,38 +21,6 @@ class Gejala extends Model
         );
     }
 
-    public function pupuk()
-    {
-        $relation = $this->belongsToMany(
-            Pupuk::class,
-            'gejala_pupuk',
-            'id_gejala',
-            'id_pupuk'
-        );
-
-        if (Schema::hasTable('gejala_pupuk')) {
-            $relation->withPivot(['mb', 'md'])->withTimestamps();
-        }
-
-        return $relation;
-    }
-
-    public function pestisida()
-    {
-        $relation = $this->belongsToMany(
-            Pestisida::class,
-            'gejala_pestisida',
-            'id_gejala',
-            'id_pestisida'
-        );
-
-        if (Schema::hasTable('gejala_pestisida')) {
-            $relation->withPivot(['mb', 'md'])->withTimestamps();
-        }
-
-        return $relation;
-    }
-
     public function getGambarUrlAttribute(): ?string
     {
         if (!self::supportsImages()) {

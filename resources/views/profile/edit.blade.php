@@ -153,7 +153,6 @@ $verificationResendCooldown = max(0, $verificationResendAvailableAt - now()->tim
                         <input type="hidden" name="nama" value="{{ $user->nama }}">
                         <input type="hidden" name="username" value="{{ $user->username }}">
                         <input type="hidden" name="email" value="{{ $user->email }}">
-                        <input type="hidden" name="no_telepon" value="{{ $user->no_telepon }}">
                         <input type="hidden" name="alamat" value="{{ $user->alamat }}">
                         <input type="hidden" name="catatan_profil" value="{{ $user->catatan_profil }}">
 
@@ -201,7 +200,6 @@ $verificationResendCooldown = max(0, $verificationResendAvailableAt - now()->tim
                         @method('PUT')
                         <input type="hidden" name="username" value="{{ $user->username }}">
                         <input type="hidden" name="email" value="{{ $user->email }}">
-                        <input type="hidden" name="no_telepon" value="{{ $user->no_telepon }}">
                         <input type="hidden" name="alamat" value="{{ $user->alamat }}">
                         <input type="hidden" name="catatan_profil" value="{{ $user->catatan_profil }}">
 
@@ -237,7 +235,6 @@ $verificationResendCooldown = max(0, $verificationResendAvailableAt - now()->tim
                         @method('PUT')
                         <input type="hidden" name="nama" value="{{ $user->nama }}">
                         <input type="hidden" name="email" value="{{ $user->email }}">
-                        <input type="hidden" name="no_telepon" value="{{ $user->no_telepon }}">
                         <input type="hidden" name="alamat" value="{{ $user->alamat }}">
                         <input type="hidden" name="catatan_profil" value="{{ $user->catatan_profil }}">
 
@@ -301,7 +298,6 @@ $verificationResendCooldown = max(0, $verificationResendAvailableAt - now()->tim
                         @method('PUT')
                         <input type="hidden" name="nama" value="{{ $user->nama }}">
                         <input type="hidden" name="username" value="{{ $user->username }}">
-                        <input type="hidden" name="no_telepon" value="{{ $user->no_telepon }}">
                         <input type="hidden" name="alamat" value="{{ $user->alamat }}">
                         <input type="hidden" name="catatan_profil" value="{{ $user->catatan_profil }}">
 
@@ -328,43 +324,6 @@ $verificationResendCooldown = max(0, $verificationResendAvailableAt - now()->tim
                     </form>
                 </div>
 
-                <!--{{-- ── No. Telepon ───────────────────────────── --}}
-                <div class="info-row">
-                    <div>
-                        <div class="small text-muted">No. Telepon</div>
-                        <div class="fw-semibold">{{ $user->no_telepon ?: 'Belum diisi' }}</div>
-                    </div>
-                    <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#edit-telp">Edit</button>
-                </div>
-
-                <div id="edit-telp" class="collapse collapse-form">
-                    <form action="{{ $profileRoute }}" method="POST">
-                        @csrf
-                        @method('PUT')
-                        <input type="hidden" name="nama" value="{{ $user->nama }}">
-                        <input type="hidden" name="username" value="{{ $user->username }}">
-                        <input type="hidden" name="email" value="{{ $user->email }}">
-                        <input type="hidden" name="alamat" value="{{ $user->alamat }}">
-                        <input type="hidden" name="catatan_profil" value="{{ $user->catatan_profil }}">
-
-                        <label class="form-label small fw-semibold">No. Telepon / WhatsApp</label>
-                        <div class="row g-2">
-                            <div class="col-md-8">
-                                <input type="tel" name="no_telepon" value="{{ old('no_telepon', $user->no_telepon) }}"
-                                    class="form-control @error('no_telepon') is-invalid @enderror"
-                                    placeholder="08xxxxxxxxxx" maxlength="15">
-                                @error('no_telepon')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-md-4">
-                                <button type="submit" class="btn btn-spk w-100">Simpan</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>-->
-
                 {{-- ── Alamat ────────────────────────────────── --}}
                 <div class="info-row">
                     <div>
@@ -382,7 +341,6 @@ $verificationResendCooldown = max(0, $verificationResendAvailableAt - now()->tim
                         <input type="hidden" name="nama" value="{{ $user->nama }}">
                         <input type="hidden" name="username" value="{{ $user->username }}">
                         <input type="hidden" name="email" value="{{ $user->email }}">
-                        <input type="hidden" name="no_telepon" value="{{ $user->no_telepon }}">
                         <input type="hidden" name="catatan_profil" value="{{ $user->catatan_profil }}">
 
                         <label class="form-label small fw-semibold">Alamat Lengkap</label>
@@ -412,7 +370,6 @@ $verificationResendCooldown = max(0, $verificationResendAvailableAt - now()->tim
                         <input type="hidden" name="nama" value="{{ $user->nama }}">
                         <input type="hidden" name="username" value="{{ $user->username }}">
                         <input type="hidden" name="email" value="{{ $user->email }}">
-                        <input type="hidden" name="no_telepon" value="{{ $user->no_telepon }}">
                         <input type="hidden" name="alamat" value="{{ $user->alamat }}">
 
                         <label class="form-label small fw-semibold">Catatan Profil</label>
@@ -455,7 +412,6 @@ $verificationResendCooldown = max(0, $verificationResendAvailableAt - now()->tim
                                 <input type="hidden" name="nama" value="{{ $user->nama }}">
                                 <input type="hidden" name="username" value="{{ $user->username }}">
                                 <input type="hidden" name="email" value="{{ $user->email }}">
-                                <input type="hidden" name="no_telepon" value="{{ $user->no_telepon }}">
                                 <input type="hidden" name="alamat" value="{{ $user->alamat }}">
                                 <input type="hidden" name="catatan_profil" value="{{ $user->catatan_profil }}">
 

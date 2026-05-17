@@ -29,7 +29,7 @@ return new class extends Migration
             $table->id();
             $table->string('kode', 10)->unique();
             $table->string('nama', 100);
-            $table->enum('jenis', ['benefit', 'cost']);
+            $table->enum('jenis', ['manfaat', 'biaya']);
             $table->decimal('bobot', 5, 2);
             $table->text('keterangan')->nullable();
             $table->timestamps();
@@ -60,32 +60,9 @@ return new class extends Migration
             $table->timestamps();
         });
 
-
-        Schema::create('rating_pupuk', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('id_pupuk')->constrained('pupuk')->cascadeOnDelete();
-            $table->foreignId('id_kriteria')->constrained('kriteria')->cascadeOnDelete();
-            $table->foreignId('id_penyakit')->constrained('penyakit')->cascadeOnDelete();
-            $table->decimal('nilai', 5, 2);
-            $table->timestamps();
-            $table->unique(['id_pupuk', 'id_kriteria', 'id_penyakit']);
-        });
-
-
-        Schema::create('rating_pestisida', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('id_pestisida')->constrained('pestisida')->cascadeOnDelete();
-            $table->foreignId('id_kriteria')->constrained('kriteria')->cascadeOnDelete();
-            $table->foreignId('id_penyakit')->constrained('penyakit')->cascadeOnDelete();
-            $table->decimal('nilai', 5, 2);
-            $table->timestamps();
-            $table->unique(['id_pestisida', 'id_kriteria', 'id_penyakit']);
-        });
-
-
         Schema::create('rekomendasi', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_user')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('id_pengguna')->constrained('pengguna')->cascadeOnDelete();
             $table->foreignId('id_penyakit')->constrained('penyakit')->cascadeOnDelete();
             $table->timestamp('tanggal')->useCurrent();
             $table->timestamps();
@@ -115,8 +92,6 @@ return new class extends Migration
         Schema::dropIfExists('detail_rekomendasi_pestisida');
         Schema::dropIfExists('detail_rekomendasi_pupuk');
         Schema::dropIfExists('rekomendasi');
-        Schema::dropIfExists('rating_pestisida');
-        Schema::dropIfExists('rating_pupuk');
         Schema::dropIfExists('pestisida');
         Schema::dropIfExists('pupuk');
         Schema::dropIfExists('kriteria');

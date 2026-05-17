@@ -71,10 +71,10 @@ class DatabaseSeeder extends Seeder
 
         // ── KRITERIA ──────────────────────────────────────────
         Kriteria::insert([
-            ['kode' => 'C1', 'nama' => 'Jenis Penyakit',    'jenis' => 'benefit', 'bobot' => 0.35, 'keterangan' => 'Kesesuaian produk terhadap jenis penyakit yang dipilih', 'created_at' => now(), 'updated_at' => now()],
-            ['kode' => 'C2', 'nama' => 'Harga',             'jenis' => 'cost',   'bobot' => 0.25, 'keterangan' => 'Harga per satuan produk yang tersedia di pasaran',      'created_at' => now(), 'updated_at' => now()],
-            ['kode' => 'C3', 'nama' => 'Efektivitas',       'jenis' => 'benefit', 'bobot' => 0.25, 'keterangan' => 'Tingkat keberhasilan mengendalikan penyakit',           'created_at' => now(), 'updated_at' => now()],
-            ['kode' => 'C4', 'nama' => 'Dampak Lingkungan', 'jenis' => 'cost',   'bobot' => 0.15, 'keterangan' => 'Pengaruh negatif terhadap lingkungan sawah',            'created_at' => now(), 'updated_at' => now()],
+            ['kode' => 'C1', 'nama' => 'Jenis Penyakit',    'jenis' => 'manfaat', 'bobot' => 0.35, 'keterangan' => 'Kesesuaian produk terhadap jenis penyakit yang dipilih', 'created_at' => now(), 'updated_at' => now()],
+            ['kode' => 'C2', 'nama' => 'Harga',             'jenis' => 'biaya',   'bobot' => 0.25, 'keterangan' => 'Harga per satuan produk yang tersedia di pasaran',      'created_at' => now(), 'updated_at' => now()],
+            ['kode' => 'C3', 'nama' => 'Efektivitas',       'jenis' => 'manfaat', 'bobot' => 0.25, 'keterangan' => 'Tingkat keberhasilan mengendalikan penyakit',           'created_at' => now(), 'updated_at' => now()],
+            ['kode' => 'C4', 'nama' => 'Dampak Lingkungan', 'jenis' => 'biaya',   'bobot' => 0.15, 'keterangan' => 'Pengaruh negatif terhadap lingkungan sawah',            'created_at' => now(), 'updated_at' => now()],
         ]);
 
         // ── PUPUK ─────────────────────────────────────────────

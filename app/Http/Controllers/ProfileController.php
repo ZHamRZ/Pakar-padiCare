@@ -40,7 +40,7 @@ class ProfileController extends Controller
                 'required',
                 'string',
                 'max:50',
-                Rule::unique('users', 'username')->ignore($user->id),
+                Rule::unique('pengguna', 'username')->ignore($user->id),
             ],
             'email' => [
                 'bail',
@@ -52,13 +52,7 @@ class ProfileController extends Controller
                         $fail('Email harus valid dan domainnya benar, misalnya nama@gmail.com, nama@yahoo.com, atau nama@domain.co.id.');
                     }
                 },
-                Rule::unique('users', 'email')->ignore($user->id),
-            ],
-            'no_telepon' => [
-                'nullable',
-                'string',
-                'max:30',
-                Rule::unique('users', 'no_telp')->ignore($user->id),
+                Rule::unique('pengguna', 'email')->ignore($user->id),
             ],
             'alamat' => 'nullable|string',
             'catatan_profil' => 'nullable|string',
@@ -71,7 +65,6 @@ class ProfileController extends Controller
             'username.unique' => 'Username sudah digunakan.',
             'email.max' => 'Email maksimal 255 karakter.',
             'email.unique' => 'Email sudah digunakan.',
-            'no_telepon.unique' => 'Nomor telepon sudah digunakan.',
             'password.min' => 'Password minimal 8 karakter.',
             'password.confirmed' => 'Konfirmasi password tidak cocok.',
         ]);
@@ -107,7 +100,6 @@ class ProfileController extends Controller
         $user->fill([
             'nama' => $validated['nama'],
             'username' => $validated['username'],
-            'no_telp' => $validated['no_telepon'] ?? null,
             'alamat' => $validated['alamat'] ?? null,
             'catatan_profil' => $validated['catatan_profil'] ?? null,
             'email' => $emailBaru,

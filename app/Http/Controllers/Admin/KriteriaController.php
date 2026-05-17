@@ -22,7 +22,7 @@ class KriteriaController extends Controller
         $request->validate([
             'kriteria' => 'required|array',
             'kriteria.*.nama' => 'required|string|max:100',
-            'kriteria.*.jenis' => 'required|in:benefit,cost',
+            'kriteria.*.jenis' => 'required|in:manfaat,biaya',
             'kriteria.*.bobot' => 'required|numeric|min:0|max:1',
             'kriteria.*.keterangan' => 'nullable|string',
         ]);
@@ -80,7 +80,7 @@ class KriteriaController extends Controller
     {
         $request->validate([
             'nama'       => 'required|string|max:100',
-            'jenis'      => 'required|in:benefit,cost',
+            'jenis'      => 'required|in:manfaat,biaya',
             'bobot'      => 'required|numeric|min:0|max:1',
             'keterangan' => 'nullable|string',
         ]);

@@ -68,16 +68,16 @@
 
 @push('scripts')
 <script>
-    document.querySelectorAll('.password-toggle').forEach((button) => {
-        button.addEventListener('click', () => {
-            const input = document.getElementById(button.dataset.target);
-            const icon = button.querySelector('i');
-            const isHidden = input.type === 'password';
+document.querySelectorAll('.password-toggle').forEach((button) => {
+    button.addEventListener('click', () => {
+        const input = document.getElementById(button.dataset.target);
+        const icon = button.querySelector('i');
+        const isHidden = input.type === 'password';
 
-            input.type = isHidden ? 'text' : 'password';
-            icon.className = isHidden ? 'bi bi-eye-slash' : 'bi bi-eye';
-            button.setAttribute('aria-label', isHidden ? 'Sembunyikan password' : 'Tampilkan password');
-        });
+        input.type = isHidden ? 'text' : 'password';
+        icon.className = isHidden ? 'bi bi-eye-slash' : 'bi bi-eye';
+        button.setAttribute('aria-label', isHidden ? 'Sembunyikan password' : 'Tampilkan password');
     });
+});
 </script>
 @endpush

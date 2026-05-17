@@ -7,13 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class Rekomendasi extends Model
 {
     protected $table    = 'rekomendasi';
-    protected $fillable = ['id_user', 'id_penyakit', 'tanggal', 'preferensi_label', 'preferensi_pengguna'];
+    protected $fillable = ['id_pengguna', 'id_penyakit', 'tanggal', 'preferensi_label', 'preferensi_pengguna'];
     protected $dates    = ['tanggal'];
     protected $casts    = ['preferensi_pengguna' => 'array'];
 
     public function user()
     {
-        return $this->belongsTo(User::class,     'id_user');
+        return $this->belongsTo(User::class,     'id_pengguna');
     }
     public function penyakit()
     {

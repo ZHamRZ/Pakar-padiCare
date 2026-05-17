@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-@section('title', 'Aturan CF Pupuk')
-@section('page-title', 'Aturan CF Pupuk')
+@section('title', 'Nilai CF Pestisida')
+@section('page-title', 'Nilai CF Pestisida')
 
 @section('content')
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <span>Input Rule Certainty Factor Pupuk per Penyakit</span>
+        <span>Input Nilai CF Pakar Pestisida per Penyakit</span>
         <button type="button" class="btn btn-sm btn-outline-secondary" id="toggleExpandBtn">
             <i class="bi bi-arrows-expand"></i> Tampilkan Semua
         </button>
@@ -14,17 +14,17 @@
     <div class="card-body">
         @unless($cfReady ?? false)
         <div class="alert alert-warning">
-            Tabel rule CF pupuk belum tersedia di database. Jalankan migration terlebih dahulu agar panel ini bisa dipakai.
+            Tabel nilai CF pestisida belum tersedia di database. Jalankan migration terlebih dahulu agar panel ini bisa dipakai.
         </div>
         @endunless
-        @if($penyakit->isEmpty() || $pupuk->isEmpty())
-        <div class="alert alert-warning mb-0">Lengkapi data penyakit dan pupuk sebelum mengisi aturan CF.</div>
+        @if($penyakit->isEmpty() || $pestisida->isEmpty())
+        <div class="alert alert-warning mb-0">Lengkapi data penyakit dan pestisida sebelum mengisi nilai CF.</div>
         @elseif(!($cfReady ?? false))
-        <div class="alert alert-light border mb-0">Setelah migration dijalankan, form rule CF pupuk akan aktif otomatis.</div>
+        <div class="alert alert-light border mb-0">Setelah migration dijalankan, form nilai CF pestisida akan aktif otomatis.</div>
         @else
         <div class="alert alert-info d-flex justify-content-between align-items-center">
             <div>
-                Pakar mengisi nilai <strong>MB</strong> dan <strong>MD</strong> untuk hubungan antara penyakit dan pupuk. 
+                Pakar mengisi <strong>MB</strong> (nilai kepercayaan) dan <strong>MD</strong> (nilai ketidakyakinan) untuk hubungan antara penyakit dan pestisida.
                 Gunakan filter untuk memudahkan input data.
             </div>
             <div>
@@ -37,11 +37,11 @@
             </div>
         </div>
 
-        <form action="{{ route('admin.rating.pupuk.simpan') }}" method="POST" id="ratingForm">
+        <form action="{{ route('admin.nilai-cf.pestisida.simpan') }}" method="POST" id="nilaiCfForm">
             @csrf
             @if($errors->any())
             <div class="alert alert-danger">
-                <div class="fw-semibold mb-1">Data aturan CF pupuk belum sesuai.</div>
+                <div class="fw-semibold mb-1">Data nilai CF pestisida belum sesuai.</div>
                 <div>Semua nilai MB dan MD wajib diisi, harus numerik, dan berada pada rentang 0-1. Contoh: 0.100 atau 0.900.</div>
             </div>
             @endif
@@ -61,54 +61,56 @@
                     <table class="table table-bordered align-middle table-sm mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th style="width: 35%;">Pupuk</th>
-                                <th style="width: 18%;">MB</th>
-                                <th style="width: 18%;">MD</th>
+                                <th style="width: 35%;">Pestisida</th>
+                                <th style="width: 18%;">MB (Kepercayaan)</th>
+                                <th style="width: 18%;">MD (Ketidakyakinan)</th>
                                 <th style="width: 18%;">CF Dasar</th>
                                 <th style="width: 22%;" class="text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($pupuk as $pupukItem)
-                            @php($key = $penyakitItem->id . '_' . $pupukItem->id)
+                            @foreach($pestisida as $pestisidaItem)
+                            @php($key = $penyakitItem->id . '_' . $pestisidaItem->id)
                             @php($rule = $rules->get($key))
-                            @php($mb = old("rules.{$penyakitItem->id}.{$pupukItem->id}.mb", optional($rule)->mb ?? 0.700))
-                            @php($md = old("rules.{$penyakitItem->id}.{$pupukItem->id}.md", optional($rule)->md ?? 0.100))
-                            @php($mbErrorKey = "rules.{$penyakitItem->id}.{$pupukItem->id}.mb")
-                            @php($mdErrorKey = "rules.{$penyakitItem->id}.{$pupukItem->id}.md")
+                            @php($mb = old("rules.{$penyakitItem->id}.{$pestisidaItem->id}.mb", optional($rule)->mb ?? 0.700))
+                            @php($md = old("rules.{$penyakitItem->id}.{$pestisidaItem->id}.md", optional($rule)->md ?? 0.100))
+                            @php($mbErrorKey = "rules.{$penyakitItem->id}.{$pestisidaItem->id}.mb")
+                            @php($mdErrorKey = "rules.{$penyakitItem->id}.{$pestisidaItem->id}.md")
                             <tr>
                                 <td>
-                                    <strong>{{ $pupukItem->nama }}</strong><br>
-                                    <small class="text-muted">{{ $pupukItem->kode }}</small>
+                                    <strong>{{ $pestisidaItem->nama }}</strong><br>
+                                    <small class="text-muted">{{ $pestisidaItem->kode }}</small>
                                 </td>
                                 <td>
                                     <input type="number" min="0" max="1" step="0.001" required inputmode="decimal"
-                                        name="rules[{{ $penyakitItem->id }}][{{ $pupukItem->id }}][mb]"
+                                        name="rules[{{ $penyakitItem->id }}][{{ $pestisidaItem->id }}][mb]"
                                         value="{{ $mb }}"
                                         class="form-control form-control-sm cf-input @error($mbErrorKey) is-invalid @enderror"
-                                        data-cf="{{ $penyakitItem->id }}-{{ $pupukItem->id }}">
+                                        data-cf="{{ $penyakitItem->id }}-{{ $pestisidaItem->id }}"
+                                        aria-label="Nilai kepercayaan MB untuk {{ $pestisidaItem->nama }}">
                                     @error($mbErrorKey)
                                     <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </td>
                                 <td>
                                     <input type="number" min="0" max="1" step="0.001" required inputmode="decimal"
-                                        name="rules[{{ $penyakitItem->id }}][{{ $pupukItem->id }}][md]"
+                                        name="rules[{{ $penyakitItem->id }}][{{ $pestisidaItem->id }}][md]"
                                         value="{{ $md }}"
                                         class="form-control form-control-sm cf-input @error($mdErrorKey) is-invalid @enderror"
-                                        data-cf="{{ $penyakitItem->id }}-{{ $pupukItem->id }}">
+                                        data-cf="{{ $penyakitItem->id }}-{{ $pestisidaItem->id }}"
+                                        aria-label="Nilai ketidakyakinan MD untuk {{ $pestisidaItem->nama }}">
                                     @error($mdErrorKey)
                                     <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </td>
-                                <td class="fw-semibold cf-result" data-cf="{{ $penyakitItem->id }}-{{ $pupukItem->id }}">
+                                <td class="fw-semibold cf-result" data-cf="{{ $penyakitItem->id }}-{{ $pestisidaItem->id }}">
                                     {{ number_format((float) $mb - (float) $md, 3) }}
                                 </td>
                                 <td class="text-center">
                                     <div class="d-flex justify-content-center gap-2 flex-wrap">
                                         <button type="button" class="btn btn-sm btn-outline-danger reset-btn" 
                                                 data-mb="0.700" data-md="0.100"
-                                                data-target="{{ $penyakitItem->id }}-{{ $pupukItem->id }}">
+                                                data-target="{{ $penyakitItem->id }}-{{ $pestisidaItem->id }}">
                                             <i class="bi bi-arrow-counterclockwise"></i> Reset
                                         </button>
                                     </div>
@@ -294,7 +296,7 @@ document.addEventListener('DOMContentLoaded', function() {
             rows.forEach(row => {
                 const mbInput = row.querySelector('input[name*="[mb]"]');
                 const mdInput = row.querySelector('input[name*="[md]"]');
-                const pupukId = mbInput.name.match(/rules\[(\d+)\]\[(\d+)\]\[mb\]/)[2];
+                const pestisidaId = mbInput.name.match(/rules\[(\d+)\]\[(\d+)\]\[mb\]/)[2];
                 
                 const mb = parseFloat(mbInput.value);
                 const md = parseFloat(mdInput.value);
@@ -304,7 +306,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;
                 }
                 
-                rulesData[pupukId] = {
+                rulesData[pestisidaId] = {
                     mb: mb,
                     md: md
                 };
@@ -315,8 +317,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            // Kirim request AJAX untuk menyimpan semua rule untuk penyakit ini
-            fetch("{{ route('admin.rating.pupuk.simpan') }}", {
+            // Kirim request AJAX untuk menyimpan semua nilai CF untuk penyakit ini
+            fetch("{{ route('admin.nilai-cf.pestisida.simpan') }}", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

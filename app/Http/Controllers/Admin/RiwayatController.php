@@ -14,7 +14,7 @@ class RiwayatController extends Controller
 
     public function index(Request $request)
     {
-        $filters = $request->only(['tanggal_dari', 'tanggal_sampai', 'user_id', 'status']);
+        $filters = $request->only(['tanggal_dari', 'tanggal_sampai', 'id_pengguna', 'status']);
         $hasFilter = collect($filters)->filter(fn ($value) => filled($value))->isNotEmpty();
 
         $query = Rekomendasi::with([
@@ -33,8 +33,8 @@ class RiwayatController extends Controller
             $query->whereDate('tanggal', '<=', $request->date('tanggal_sampai')->toDateString());
         }
 
-        if ($request->filled('user_id')) {
-            $query->where('id_user', $request->integer('user_id'));
+        if ($request->filled('id_pengguna')) {
+            $query->where('id_pengguna', $request->integer('id_pengguna'));
         }
 
         match ($request->input('status')) {

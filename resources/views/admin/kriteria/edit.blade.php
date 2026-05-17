@@ -23,8 +23,8 @@
                 <div class="col-md-2">
                     <label class="form-label">Jenis</label>
                     <select name="jenis" class="form-select @error('jenis') is-invalid @enderror">
-                        <option value="benefit" {{ old('jenis', $kriteria->jenis) === 'benefit' ? 'selected' : '' }}>Benefit</option>
-                        <option value="cost" {{ old('jenis', $kriteria->jenis) === 'cost' ? 'selected' : '' }}>Cost</option>
+                        <option value="manfaat" {{ old('jenis', $kriteria->jenis) === 'manfaat' ? 'selected' : '' }}>Manfaat</option>
+                        <option value="biaya" {{ old('jenis', $kriteria->jenis) === 'biaya' ? 'selected' : '' }}>Biaya</option>
                     </select>
                     @error('jenis')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>

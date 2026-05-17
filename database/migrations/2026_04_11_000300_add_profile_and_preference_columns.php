@@ -8,9 +8,8 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('no_telp', 30)->nullable()->after('email');
-            $table->text('alamat')->nullable()->after('no_telp');
+        Schema::table('pengguna', function (Blueprint $table) {
+            $table->text('alamat')->nullable()->after('email');
             $table->text('catatan_profil')->nullable()->after('alamat');
         });
 
@@ -26,8 +25,8 @@ return new class extends Migration
             $table->dropColumn(['preferensi_label', 'preferensi_pengguna']);
         });
 
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn(['no_telp', 'alamat', 'catatan_profil']);
+        Schema::table('pengguna', function (Blueprint $table) {
+            $table->dropColumn(['alamat', 'catatan_profil']);
         });
     }
 };

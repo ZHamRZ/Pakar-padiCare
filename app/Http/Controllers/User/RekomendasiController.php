@@ -22,7 +22,7 @@ class RekomendasiController extends Controller
             'detailPupuk.pupuk',
             'detailPestisida.pestisida',
         ])
-            ->where('id_user', Auth::id())
+            ->where('id_pengguna', Auth::id())
             ->findOrFail($id);
 
         return view('user.rekomendasi.show', [
@@ -49,7 +49,7 @@ class RekomendasiController extends Controller
             'detailPupuk.pupuk',
             'detailPestisida.pestisida',
         ])
-            ->where('id_user', Auth::id())
+            ->where('id_pengguna', Auth::id())
             ->findOrFail($id);
 
         $preview = $this->recommendationService->previewForDisease($rekomendasi->id_penyakit, $rekomendasi->preferensi_pengguna ?? []);
@@ -88,7 +88,7 @@ class RekomendasiController extends Controller
             'detailPupuk.pupuk',
             'detailPestisida.pestisida',
         ])
-            ->where('id_user', Auth::id())
+            ->where('id_pengguna', Auth::id())
             ->findOrFail($id);
 
         // Load gambar untuk pupuk dan pestisida

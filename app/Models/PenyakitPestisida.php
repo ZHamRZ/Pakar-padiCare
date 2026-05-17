@@ -15,6 +15,11 @@ class PenyakitPestisida extends Model
         'md',
     ];
 
+    protected $casts = [
+        'mb' => 'decimal:3',
+        'md' => 'decimal:3',
+    ];
+
     public function penyakit()
     {
         return $this->belongsTo(Penyakit::class, 'id_penyakit');
