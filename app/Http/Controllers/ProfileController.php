@@ -123,6 +123,62 @@ class ProfileController extends Controller
         return back()->with('success', 'Profil berhasil diperbarui.');
     }
 
+    /**
+     * Handle AJAX photo crop upload from profile page
+     */
+    public function uploadCroppedPhoto(Request $request): \Illuminate\Http\JsonResponse
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        try {
+            $request->validate([
+                'foto_profil' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
+            ], [
+                'foto_profil.required' => 'Foto profil wajib diupload.',
+                'foto_profil.image' => 'File harus berupa gambar.',
+                'foto_profil.mimes' => 'Format gambar harus JPG, PNG, atau WebP.',
+                'foto_profil.max' => 'Ukuran gambar maksimal 2MB.',
+            ]);
+
+            if ($request->hasFile('foto_profil')) {
+                // Delete old photo
+                ProjectImage::delete($user->foto_profil);
+                
+                // Store new cropped photo
+                $user->foto_profil = ProjectImage::store(
+                    $request->file('foto_profil'),
+                    'profil'
+                );
+                
+                $user->save();
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Foto profil berhasil diperbarui.',
+                    'foto_url' => $user->foto_profil_url,
+                ]);
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak ada file yang diupload.',
+            ], 422);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->errors(),
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat mengupload foto.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
     public function verifyEmail(EmailVerificationRequest $request): RedirectResponse
     {
         /** @var User $user */

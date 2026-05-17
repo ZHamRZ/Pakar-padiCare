@@ -4,6 +4,8 @@
 @section('page-title', 'Profil Saya')
 
 @push('styles')
+<!-- Cropper.js CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
 <style>
 .profile-avatar {
     width: 120px;
@@ -12,6 +14,11 @@
     object-fit: cover;
     border: 4px solid #fff;
     box-shadow: 0 12px 24px rgba(15, 23, 42, .12);
+    transition: transform 0.3s ease;
+}
+
+.profile-avatar:hover {
+    transform: scale(1.05);
 }
 
 .profile-fallback {
@@ -53,6 +60,125 @@
     border-radius: .5rem;
     padding: 1rem;
     margin-top: .75rem;
+}
+
+/* Crop Modal Styles */
+.crop-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(8px);
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.crop-modal.active {
+    display: flex;
+}
+
+.crop-container {
+    background: #fff;
+    border-radius: var(--pc-radius-xl);
+    padding: 1.5rem;
+    max-width: 800px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--pc-shadow-xl);
+}
+
+.crop-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--pc-slate-200);
+}
+
+.crop-header h5 {
+    margin: 0;
+    color: var(--pc-slate-900);
+    font-weight: 700;
+}
+
+.crop-image-container {
+    background: var(--pc-slate-100);
+    border-radius: var(--pc-radius-lg);
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    max-height: 500px;
+}
+
+.crop-image-container img {
+    max-width: 100%;
+    display: block;
+}
+
+.crop-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+}
+
+.crop-preview {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid var(--pc-green-500);
+    box-shadow: var(--pc-shadow-md);
+    margin: 1rem auto;
+    background: #fff;
+}
+
+.crop-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.crop-instructions {
+    background: var(--pc-green-50);
+    border: 1px solid var(--pc-green-200);
+    border-radius: var(--pc-radius-md);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    color: var(--pc-green-900);
+    font-size: 0.9rem;
+}
+
+.crop-instructions i {
+    margin-right: 0.5rem;
+    color: var(--pc-green-700);
+}
+
+/* Loading overlay */
+.crop-loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    border-radius: var(--pc-radius-lg);
+}
+
+.spinner-grow-sm {
+    width: 2rem;
+    height: 2rem;
+    color: var(--pc-green-600);
 }
 </style>
 @endpush
@@ -138,37 +264,19 @@ $verificationResendCooldown = max(0, $verificationResendAvailableAt - now()->tim
                 </div>
                 @endif
 
-                {{-- Edit foto --}}
-                <button class="btn btn-outline-success btn-sm" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#form-foto" aria-expanded="false" aria-controls="form-foto">
+                {{-- Edit foto dengan crop --}}
+                <button class="btn btn-outline-success btn-sm" type="button" id="btn-edit-foto"
+                    aria-label="Edit Foto Profil">
                     <i class="bi bi-camera me-1"></i>Edit Foto Profil
                 </button>
 
-                <div id="form-foto" class="collapse mt-3">
-                    <form action="{{ $profileRoute }}" method="POST" enctype="multipart/form-data">
+                <div class="mt-3">
+                    <form id="form-foto-crop" enctype="multipart/form-data">
                         @csrf
-                        @method('PUT')
-
-                        {{-- Hidden fields wajib agar field lain tidak ter-reset --}}
-                        <input type="hidden" name="nama" value="{{ $user->nama }}">
-                        <input type="hidden" name="username" value="{{ $user->username }}">
-                        <input type="hidden" name="email" value="{{ $user->email }}">
-                        <input type="hidden" name="alamat" value="{{ $user->alamat }}">
-                        <input type="hidden" name="catatan_profil" value="{{ $user->catatan_profil }}">
-
-                        <div class="mb-2">
-                            <input type="file" name="foto_profil" accept="image/jpeg,image/png,image/webp"
-                                class="form-control form-control-sm @error('foto_profil') is-invalid @enderror">
-                            @error('foto_profil')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
-                            @enderror
-                            <div class="form-text">JPG, PNG, atau WebP — maks. 2MB</div>
-                        </div>
-
-                        <button type="submit" class="btn btn-spk btn-sm w-100">
-                            <i class="bi bi-upload me-1"></i>Simpan Foto
-                        </button>
+                        <input type="file" id="foto-profil-input" name="foto_profil" accept="image/jpeg,image/png,image/webp"
+                            class="d-none" required>
                     </form>
+                    <div class="form-text">JPG, PNG, atau WebP — maks. 2MB</div>
                 </div>
             </div>
         </div>
@@ -473,6 +581,9 @@ $verificationResendCooldown = max(0, $verificationResendAvailableAt - now()->tim
         @endsection
 
         @push('scripts')
+        <!-- Cropper.js Library -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
         /**
          * Auto-tutup collapse lain ketika user membuka collapse baru.
@@ -520,5 +631,312 @@ $verificationResendCooldown = max(0, $verificationResendAvailableAt - now()->tim
                 countdownTimer = setInterval(renderCountdown, 1000);
             });
         });
+
+        // ============================================
+        // PROFIL PHOTO CROP FEATURE
+        // ============================================
+        (function() {
+            let cropper = null;
+            let originalImage = null;
+            const isUser = {{ auth()->user()->isAdmin() ? 'false' : 'true' }};
+            const profileRoute = isUser 
+                ? "{{ route('user.profile.photo') }}"
+                : "{{ route('admin.profile.photo') }}";
+            
+            // Elements
+            const btnEditFoto = document.getElementById('btn-edit-foto');
+            const fotoInput = document.getElementById('foto-profil-input');
+            
+            // Create crop modal HTML
+            const cropModalHTML = `
+                <div id="crop-modal" class="crop-modal">
+                    <div class="crop-container">
+                        <div class="crop-header">
+                            <h5><i class="bi bi-crop me-2"></i>Crop Foto Profil</h5>
+                            <button type="button" class="btn-close" id="crop-close-btn"></button>
+                        </div>
+                        
+                        <div class="crop-instructions">
+                            <i class="bi bi-info-circle-fill"></i>
+                            <strong>Tips:</strong> Drag untuk menggeser area, scroll mouse untuk zoom in/out, 
+                            atau gunakan tombol di bawah untuk mengatur ukuran.
+                        </div>
+                        
+                        <div class="crop-image-container position-relative">
+                            <div id="crop-loading" class="crop-loading d-none">
+                                <div class="spinner-grow spinner-grow-sm" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
+                            <img id="crop-image" src="" alt="Crop image">
+                        </div>
+                        
+                        <div class="crop-preview">
+                            <img id="preview-image" src="" alt="Preview">
+                        </div>
+                        
+                        <div class="crop-actions">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" id="crop-reset">
+                                <i class="bi bi-arrow-counterclockwise me-1"></i>Reset
+                            </button>
+                            <button type="button" class="btn btn-outline-success btn-sm" id="crop-zoom-in">
+                                <i class="bi bi-zoom-in me-1"></i>Zoom In
+                            </button>
+                            <button type="button" class="btn btn-outline-success btn-sm" id="crop-zoom-out">
+                                <i class="bi bi-zoom-out me-1"></i>Zoom Out
+                            </button>
+                            <button type="button" class="btn btn-outline-success btn-sm" id="crop-rotate-left">
+                                <i class="bi bi-arrow-counterclockwise me-1"></i>Rotate Left
+                            </button>
+                            <button type="button" class="btn btn-outline-success btn-sm" id="crop-rotate-right">
+                                <i class="bi bi-arrow-clockwise me-1"></i>Rotate Right
+                            </button>
+                        </div>
+                        
+                        <hr class="my-3">
+                        
+                        <div class="d-flex justify-content-between gap-2">
+                            <button type="button" class="btn btn-outline-danger" id="crop-cancel">
+                                <i class="bi bi-x-lg me-1"></i>Batal
+                            </button>
+                            <button type="button" class="btn btn-spk" id="crop-save">
+                                <i class="bi bi-check-lg me-1"></i>Simpan & Upload
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Add modal to body
+            if (!document.getElementById('crop-modal')) {
+                document.body.insertAdjacentHTML('beforeend', cropModalHTML);
+            }
+            
+            const cropModal = document.getElementById('crop-modal');
+            const cropImage = document.getElementById('crop-image');
+            const previewImage = document.getElementById('preview-image');
+            const cropLoading = document.getElementById('crop-loading');
+            
+            // Open file picker when edit button clicked
+            btnEditFoto?.addEventListener('click', function() {
+                fotoInput.click();
+            });
+            
+            // Handle file selection
+            fotoInput?.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                
+                if (!file) return;
+                
+                // Validate file size (max 2MB)
+                if (file.size > 2 * 1024 * 1024) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'File Terlalu Besar',
+                        text: 'Ukuran file maksimal adalah 2MB. Silakan pilih file yang lebih kecil.',
+                        confirmButtonColor: '#1e6b3c'
+                    });
+                    fotoInput.value = '';
+                    return;
+                }
+                
+                // Validate file type
+                const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
+                if (!validTypes.includes(file.type)) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Format File Tidak Valid',
+                        text: 'Hanya file JPG, PNG, atau WebP yang diperbolehkan.',
+                        confirmButtonColor: '#1e6b3c'
+                    });
+                    fotoInput.value = '';
+                    return;
+                }
+                
+                // Read and display image
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    originalImage = event.target.result;
+                    cropImage.src = originalImage;
+                    cropModal.classList.add('active');
+                    
+                    // Initialize cropper after image loads
+                    cropImage.onload = function() {
+                        initCropper();
+                    };
+                };
+                reader.readAsDataURL(file);
+            });
+            
+            // Initialize Cropper.js
+            function initCropper() {
+                if (cropper) {
+                    cropper.destroy();
+                }
+                
+                cropper = new Cropper(cropImage, {
+                    aspectRatio: 1, // Square crop for profile
+                    viewMode: 1,    // Restrict crop box to image
+                    dragMode: 'move',
+                    autoCropArea: 0.8,
+                    responsive: true,
+                    background: false,
+                    ready: function() {
+                        updatePreview();
+                    },
+                    crop: function(event) {
+                        updatePreview();
+                    }
+                });
+            }
+            
+            // Update preview
+            function updatePreview() {
+                if (!cropper) return;
+                
+                const canvas = cropper.getCroppedCanvas({
+                    width: 300,
+                    height: 300,
+                    imageSmoothingEnabled: true,
+                    imageSmoothingQuality: 'high'
+                });
+                
+                if (canvas) {
+                    previewImage.src = canvas.toDataURL('image/jpeg', 0.9);
+                }
+            }
+            
+            // Close modal
+            function closeCropModal() {
+                cropModal.classList.remove('active');
+                if (cropper) {
+                    cropper.destroy();
+                    cropper = null;
+                }
+                cropImage.src = '';
+                previewImage.src = '';
+                fotoInput.value = '';
+                originalImage = null;
+            }
+            
+            // Event listeners for modal controls
+            document.getElementById('crop-close-btn')?.addEventListener('click', closeCropModal);
+            document.getElementById('crop-cancel')?.addEventListener('click', closeCropModal);
+            
+            // Close on backdrop click
+            cropModal?.addEventListener('click', function(e) {
+                if (e.target === cropModal) {
+                    closeCropModal();
+                }
+            });
+            
+            // Reset
+            document.getElementById('crop-reset')?.addEventListener('click', function() {
+                if (cropper) {
+                    cropper.reset();
+                }
+            });
+            
+            // Zoom controls
+            document.getElementById('crop-zoom-in')?.addEventListener('click', function() {
+                if (cropper) {
+                    cropper.zoom(0.1);
+                }
+            });
+            
+            document.getElementById('crop-zoom-out')?.addEventListener('click', function() {
+                if (cropper) {
+                    cropper.zoom(-0.1);
+                }
+            });
+            
+            // Rotate controls
+            document.getElementById('crop-rotate-left')?.addEventListener('click', function() {
+                if (cropper) {
+                    cropper.rotate(-90);
+                }
+            });
+            
+            document.getElementById('crop-rotate-right')?.addEventListener('click', function() {
+                if (cropper) {
+                    cropper.rotate(90);
+                }
+            });
+            
+            // Save cropped image
+            document.getElementById('crop-save')?.addEventListener('click', function() {
+                if (!cropper) return;
+                
+                // Show loading
+                cropLoading.classList.remove('d-none');
+                
+                // Get cropped canvas
+                const canvas = cropper.getCroppedCanvas({
+                    width: 500,
+                    height: 500,
+                    imageSmoothingEnabled: true,
+                    imageSmoothingQuality: 'high'
+                });
+                
+                // Convert to blob
+                canvas.toBlob(function(blob) {
+                    // Create form data
+                    const formData = new FormData();
+                    formData.append('_token', '{{ csrf_token() }}');
+                    
+                    // Append cropped image as file
+                    const file = new File([blob], 'profile-crop.jpg', { type: 'image/jpeg' });
+                    formData.append('foto_profil', file);
+                    
+                    // Submit via AJAX
+                    fetch(profileRoute, {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        cropLoading.classList.add('d-none');
+                        
+                        if (data.success) {
+                            // Reload page to show updated photo
+                            window.location.reload();
+                        } else {
+                            cropLoading.classList.add('d-none');
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Upload Gagal',
+                                text: typeof data.message === 'object' 
+                                    ? Object.values(data.message).flat().join('<br>')
+                                    : data.message || 'Terjadi kesalahan saat upload foto.',
+                                confirmButtonColor: '#1e6b3c',
+                                html: true
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        cropLoading.classList.add('d-none');
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Upload Gagal',
+                            text: 'Terjadi kesalahan koneksi. Silakan coba lagi.',
+                            confirmButtonColor: '#1e6b3c'
+                        });
+                    });
+                }, 'image/jpeg', 0.9);
+            });
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                if (!cropModal.classList.contains('active')) return;
+                
+                if (e.key === 'Escape') {
+                    closeCropModal();
+                } else if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    document.getElementById('crop-save')?.click();
+                }
+            });
+        })();
         </script>
         @endpush

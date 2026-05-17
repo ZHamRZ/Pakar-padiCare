@@ -64,8 +64,10 @@ Route::middleware('auth')->group(function () {
     // -- Legacy profile routes (tetap dipertahankan agar tidak merusak view lama) --
     Route::get('/user/profile',  [ProfileController::class, 'edit'])->name('user.profile.edit');
     Route::put('/user/profile',  [ProfileController::class, 'update'])->name('user.profile.update');
+    Route::post('/user/profile/photo', [ProfileController::class, 'uploadCroppedPhoto'])->name('user.profile.photo');
     Route::get('/admin/profile', [ProfileController::class, 'edit'])->name('admin.profile.edit');
     Route::put('/admin/profile', [ProfileController::class, 'update'])->name('admin.profile.update');
+    Route::post('/admin/profile/photo', [ProfileController::class, 'uploadCroppedPhoto'])->name('admin.profile.photo');
 
     // -- Verifikasi email via signed URL (Laravel bawaan) --
     Route::post('/email/verification-notification', [ProfileController::class, 'sendVerificationEmail'])
