@@ -5,6 +5,7 @@ namespace App\Support;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Intervention\Image\Laravel\Facades\Image as InterventionImage;
 
 class ProjectImage
 {
@@ -21,6 +22,53 @@ class ProjectImage
         $filename = Str::uuid()->toString() . '.' . strtolower($extension);
 
         $file->move($targetDirectory, $filename);
+
+        return $directory . '/' . $filename;
+    }
+
+    /**
+     * Store a cropped image from base64 data
+     */
+    public static function storeCropped(string $base64Image, string $directory): string
+    {
+        $directory = trim('uploads/' . trim($directory, '/'), '/');
+        $targetDirectory = public_path($directory);
+
+        if (!is_dir($targetDirectory)) {
+            mkdir($targetDirectory, 0755, true);
+        }
+
+        // Generate unique filename
+        $filename = Str::uuid()->toString() . '.jpg';
+        $filepath = $targetDirectory . '/' . $filename;
+
+        // Decode base64 image
+        if (preg_match('/^data:image\/(\w+);base64,/', $base64Image, $type)) {
+            $base64Image = substr($base64Image, strpos($base64Image, ',') + 1);
+            $type = strtolower($type[1]); // jpg, png, gif, etc.
+
+            $image = base64_decode($base64Image);
+
+            if ($image === false) {
+                throw new \Exception('Base64 decode failed');
+            }
+
+            // Save the image
+            file_put_contents($filepath, $image);
+
+            // Optional: Use Intervention Image to optimize/resize if needed
+            if (class_exists(InterventionImage::class)) {
+                try {
+                    $img = InterventionImage::read($filepath);
+                    $img->scale(width: 400, height: 400);
+                    $img->save($filepath, quality: 85);
+                } catch (\Exception $e) {
+                    // If intervention fails, keep original
+                }
+            }
+        } else {
+            throw new \Exception('Invalid base64 image data');
+        }
 
         return $directory . '/' . $filename;
     }

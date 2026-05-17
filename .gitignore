@@ -1,15 +1,3 @@
 ```
-# Dependencies
-node_modules/
-vendor/
-
-# Build artifacts
-public/build/
-
-# IDE
-.vscode/
-
-# Logs
-*.log
-
+.env
 ```

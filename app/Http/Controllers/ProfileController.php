@@ -34,6 +34,21 @@ class ProfileController extends Controller
             'email' => $this->normalizeEmail($request->input('email')),
         ]);
 
+        // Handle cropped image upload
+        if ($request->filled('cropped_image')) {
+            try {
+                ProjectImage::delete($user->foto_profil);
+                $user->foto_profil = ProjectImage::storeCropped(
+                    $request->input('cropped_image'),
+                    'profil'
+                );
+                $user->save();
+                return back()->with('success', 'Foto profil berhasil diperbarui.');
+            } catch (\Exception $e) {
+                return back()->withInput()->withErrors(['foto_profil' => 'Gagal menyimpan foto: ' . $e->getMessage()]);
+            }
+        }
+
         $validated = $request->validate([
             'nama' => 'required|string|max:100',
             'username' => [

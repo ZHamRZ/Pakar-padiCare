@@ -64,6 +64,91 @@
         --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
     }
 
+    /* Enhanced Button Styles */
+    .btn-light-secondary {
+        background: var(--spk-slate-100);
+        color: var(--spk-slate-700);
+        border: 1px solid var(--spk-slate-200);
+        transition: all var(--transition-fast);
+    }
+    .btn-light-secondary:hover {
+        background: var(--spk-slate-200);
+        color: var(--spk-slate-800);
+        border-color: var(--spk-slate-300);
+    }
+    
+    /* Icon Box Component */
+    .icon-box-lg {
+        transition: transform var(--transition-base);
+    }
+    .modal:hover .icon-box-lg {
+        transform: scale(1.05);
+    }
+    
+    /* Crop Modal Styles */
+    .crop-modal .modal-dialog {
+        max-width: 700px;
+    }
+    .crop-container {
+        position: relative;
+        width: 100%;
+        height: 400px;
+        background: #000;
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+    }
+    .crop-image {
+        max-width: 100%;
+        display: block;
+        cursor: move;
+    }
+    .crop-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border: 2px dashed rgba(255,255,255,0.5);
+        pointer-events: none;
+    }
+    .crop-controls {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+    .crop-btn {
+        flex: 1;
+        min-width: 100px;
+    }
+    .avatar-preview-container {
+        position: relative;
+        width: 200px;
+        height: 200px;
+        margin: 0 auto;
+    }
+    .avatar-preview {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid var(--spk-green-100);
+        box-shadow: 0 8px 24px rgba(15,23,42,0.12);
+    }
+    .avatar-placeholder {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, var(--spk-dark), var(--spk-secondary));
+        color: #fff;
+        font-size: 3rem;
+        font-weight: 700;
+        border: 4px solid var(--spk-green-100);
+        box-shadow: 0 8px 24px rgba(15,23,42,0.12);
+    }
+
     *, *::before, *::after { box-sizing: border-box; }
     
     html { scroll-behavior: smooth; }
@@ -462,19 +547,30 @@
     <!-- Modal Konfirmasi Logout -->
     <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header border-0 pb-2">
-                    <h5 class="modal-title fw-bold" id="logoutModalLabel">Akhiri Sesi</h5>
+            <div class="modal-content rounded-4 border-0 shadow-lg">
+                <div class="modal-header border-0 pb-0 px-4 pt-4">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="icon-box-lg rounded-circle d-flex align-items-center justify-content-center" style="width: 56px; height: 56px; background: rgba(220, 38, 38, 0.1);">
+                            <i class="bi bi-question-circle-fill text-danger fs-4"></i>
+                        </div>
+                        <div>
+                            <h5 class="modal-title fw-bold mb-0" id="logoutModalLabel">Akhiri Sesi</h5>
+                            <small class="text-muted">Konfirmasi keluar dari akun Anda</small>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body py-3">
-                    <p class="mb-0">Apakah Anda yakin ingin keluar dari sesi ini?</p>
+                <div class="modal-body py-4 px-4">
+                    <p class="mb-0 text-secondary">Apakah Anda yakin ingin keluar dari sesi ini? Anda harus login kembali untuk mengakses aplikasi.</p>
                 </div>
-                <div class="modal-footer border-0 pt-0">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batalkan</button>
-                    <form action="{{ route('logout') }}" method="POST">
+                <div class="modal-footer border-0 px-4 pb-4">
+                    <button type="button" class="btn btn-light-secondary px-4" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-2"></i>Batalkan
+                    </button>
+                    <form action="{{ route('logout') }}" method="POST" class="d-inline">
                         @csrf
-                        <button type="submit" class="btn btn-danger">
-                            <i class="bi bi-box-arrow-left me-1"></i> Akhiri Sesi
+                        <button type="submit" class="btn btn-danger px-4">
+                            <i class="bi bi-box-arrow-left me-2"></i>Akhiri Sesi
                         </button>
                     </form>
                 </div>
@@ -633,6 +729,58 @@
         });
     });
     </script>
+    
+    <!-- Modal Crop Foto Profil -->
+    <div class="modal fade crop-modal" id="cropModal" tabindex="-1" aria-labelledby="cropModalLabel" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow-lg">
+                <div class="modal-header border-0 pb-0 px-4 pt-4">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="icon-box-lg rounded-circle d-flex align-items-center justify-content-center" style="width: 56px; height: 56px; background: rgba(22, 163, 74, 0.1);">
+                            <i class="bi bi-crop-fill text-success fs-4"></i>
+                        </div>
+                        <div>
+                            <h5 class="modal-title fw-bold mb-0" id="cropModalLabel">Sesuaikan Foto Profil</h5>
+                            <small class="text-muted">Crop dan sesuaikan foto Anda</small>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body py-4 px-4">
+                    <div class="crop-container mb-4" id="cropContainer">
+                        <img src="" alt="Preview" class="crop-image" id="cropImage">
+                        <div class="crop-overlay" id="cropOverlay"></div>
+                    </div>
+                    
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label small fw-semibold">Zoom</label>
+                            <input type="range" class="form-range" id="zoomRange" min="1" max="3" step="0.1" value="1">
+                        </div>
+                        <div class="col-12">
+                            <div class="avatar-preview-container">
+                                <img src="" alt="Avatar Preview" class="avatar-preview" id="avatarPreview">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 px-4 pb-4">
+                    <div class="crop-controls w-100">
+                        <button type="button" class="btn btn-light-secondary crop-btn" data-bs-dismiss="modal">
+                            <i class="bi bi-x-circle me-2"></i>Batal
+                        </button>
+                        <button type="button" class="btn btn-outline-primary crop-btn" id="resetCropBtn">
+                            <i class="bi bi-arrow-counterclockwise me-2"></i>Reset
+                        </button>
+                        <button type="button" class="btn btn-spk crop-btn" id="saveCropBtn">
+                            <i class="bi bi-check-circle me-2"></i>Simpan
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     @stack('scripts')
 </body>
 
