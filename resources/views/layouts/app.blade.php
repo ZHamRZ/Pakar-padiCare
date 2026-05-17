@@ -337,32 +337,32 @@
 
     .global-back-button {
         position: fixed;
-        top: 5.25rem;
-        left: calc(260px + 1rem);
-        width: 58px;
-        height: 58px;
+        top: 5rem;
+        left: calc(260px + 1.5rem);
+        width: 52px;
+        height: 52px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        border-radius: 22px;
+        border-radius: 50%;
         text-decoration: none;
-        background: rgba(255, 255, 255, .97);
+        background: rgba(255, 255, 255, 0.98);
         color: var(--spk-dark);
-        border: 1px solid rgba(20, 83, 45, .18);
-        box-shadow: 0 18px 40px rgba(15, 23, 42, .16);
-        z-index: 950;
-        transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+        border: 1px solid rgba(20, 83, 45, 0.15);
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.1);
+        z-index: 900;
+        transition: all 0.2s ease;
     }
 
     .global-back-button:hover {
         color: var(--spk-dark);
         background: #fff;
-        transform: translateY(-1px);
-        box-shadow: 0 22px 44px rgba(15, 23, 42, .20);
+        transform: translateX(-2px);
+        box-shadow: 0 6px 16px rgba(15, 23, 42, 0.15);
     }
 
     .global-back-button i {
-        font-size: 1.6rem;
+        font-size: 1.4rem;
         line-height: 1;
     }
 
