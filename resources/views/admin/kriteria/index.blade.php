@@ -24,10 +24,7 @@
         <div class="col-xl-8">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <span>Daftar Parameter Preferensi Pengguna</span>
-                    <button type="button" id="btnSaveAll" class="btn btn-primary btn-sm">
-                        <i class="bi bi-save me-1"></i>Simpan Semua Perubahan
-                    </button>
+                    <span><i class="bi bi-sliders me-2"></i>Daftar Parameter Preferensi Pengguna</span>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
@@ -75,11 +72,25 @@
                         </table>
                     </div>
                 </div>
+                {{-- Action Buttons di Bawah Tabel --}}
+                <div class="card-footer bg-light d-flex justify-content-between align-items-center">
+                    <a href="{{ route('admin.dashboard') }}" class="btn btn-light-secondary">
+                        <i class="bi bi-arrow-left me-1"></i>Kembali
+                    </a>
+                    <div class="d-flex gap-2">
+                        <button type="button" id="btnReset" class="btn btn-outline-warning">
+                            <i class="bi bi-arrow-counterclockwise me-1"></i>Reset
+                        </button>
+                        <button type="button" id="btnSaveAll" class="btn btn-primary">
+                            <i class="bi bi-save me-1"></i>Simpan Semua Perubahan
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="col-xl-4">
             <div class="card h-100">
-                <div class="card-header">📘 Panduan Parameter Certainty Factor</div>
+                <div class="card-header"><i class="bi bi-book me-2"></i>Panduan Parameter Certainty Factor</div>
                 <div class="card-body">
                     <div class="display-6 fw-bold text-success">{{ number_format($averageBobot, 2) }}</div>
                     <p class="text-muted">Nilai ini menunjukkan rata-rata faktor dasar yang dipakai sebagai adjustment MB/MD saat pengguna memilih prioritas seimbang, hemat biaya, atau efisiensi tinggi.</p>
@@ -105,7 +116,9 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const btnSaveAll = document.getElementById('btnSaveAll');
+    const btnReset = document.getElementById('btnReset');
     const toastContainer = document.getElementById('toastContainer');
+    const form = document.getElementById('kriteriaForm');
     
     // Fungsi menampilkan Toast Notification
     function showToast(message, type = 'success') {
@@ -126,69 +139,82 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 5000);
     }
     
+    // Event handler untuk tombol Reset
+    if (btnReset) {
+        btnReset.addEventListener('click', function() {
+            if (!confirm('Apakah Anda yakin ingin mereset semua perubahan? Data akan dikembalikan ke nilai terakhir yang disimpan.')) {
+                return;
+            }
+            form.reset();
+            showToast('Form telah direset ke nilai default', 'info');
+        });
+    }
+    
     // Event handler untuk tombol Simpan Semua
-    btnSaveAll.addEventListener('click', function() {
-        // Konfirmasi sebelum menyimpan
-        if (!confirm('Apakah Anda yakin ingin menyimpan semua perubahan pada parameter prioritas?')) {
-            return;
-        }
-        
-        // Tampilkan loading state
-        const originalText = btnSaveAll.innerHTML;
-        btnSaveAll.disabled = true;
-        btnSaveAll.innerHTML = '<i class="bi bi-hourglass-split me-1"></i>Menyimpan...';
-        
-        // Kumpulkan data dari form
-        const formData = new FormData();
-        formData.append('_token', '{{ csrf_token() }}');
-        
-        // Ambil semua input dalam tabel
-        const inputs = document.querySelectorAll('#kriteriaForm input, #kriteriaForm select');
-        inputs.forEach(input => {
-            if (input.name) {
-                formData.append(input.name, input.value);
+    if (btnSaveAll) {
+        btnSaveAll.addEventListener('click', function() {
+            // Konfirmasi sebelum menyimpan
+            if (!confirm('Apakah Anda yakin ingin menyimpan semua perubahan pada parameter prioritas?')) {
+                return;
             }
-        });
-        
-        // Kirim via AJAX
-        fetch('{{ route("admin.kriteria.updateBulk") }}', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'Accept': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
-        .then(response => {
-            // Cek content type response
-            const contentType = response.headers.get('content-type');
-            if (contentType && contentType.includes('application/json')) {
-                return response.json();
-            } else {
-                // Jika bukan JSON, anggap sukses jika status OK
-                if (response.ok) {
-                    return { success: true, message: 'Data berhasil disimpan' };
+            
+            // Tampilkan loading state
+            const originalText = btnSaveAll.innerHTML;
+            btnSaveAll.disabled = true;
+            btnSaveAll.innerHTML = '<i class="bi bi-hourglass-split me-1"></i>Menyimpan...';
+            
+            // Kumpulkan data dari form
+            const formData = new FormData();
+            formData.append('_token', '{{ csrf_token() }}');
+            
+            // Ambil semua input dalam tabel
+            const inputs = document.querySelectorAll('#kriteriaForm input, #kriteriaForm select');
+            inputs.forEach(input => {
+                if (input.name) {
+                    formData.append(input.name, input.value);
                 }
-                throw new Error('Server mengembalikan response yang tidak valid');
-            }
-        })
-        .then(data => {
-            if (data.success || data.message) {
-                showToast('✅ Parameter prioritas Certainty Factor berhasil diperbarui!', 'success');
-            } else {
-                throw new Error(data.message || 'Terjadi kesalahan saat menyimpan data');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showToast('❌ ' + (error.message || 'Terjadi kesalahan saat menyimpan data'), 'danger');
-        })
-        .finally(() => {
-            // Kembalikan tombol ke keadaan semula
-            btnSaveAll.disabled = false;
-            btnSaveAll.innerHTML = originalText;
+            });
+            
+            // Kirim via AJAX
+            fetch('{{ route("admin.kriteria.updateBulk") }}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => {
+                // Cek content type response
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    return response.json();
+                } else {
+                    // Jika bukan JSON, anggap sukses jika status OK
+                    if (response.ok) {
+                        return { success: true, message: 'Data berhasil disimpan' };
+                    }
+                    throw new Error('Server mengembalikan response yang tidak valid');
+                }
+            })
+            .then(data => {
+                if (data.success || data.message) {
+                    showToast('✅ Parameter prioritas Certainty Factor berhasil diperbarui!', 'success');
+                } else {
+                    throw new Error(data.message || 'Terjadi kesalahan saat menyimpan data');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('❌ ' + (error.message || 'Terjadi kesalahan saat menyimpan data'), 'danger');
+            })
+            .finally(() => {
+                // Kembalikan tombol ke keadaan semula
+                btnSaveAll.disabled = false;
+                btnSaveAll.innerHTML = originalText;
+            });
         });
-    });
+    }
 });
 </script>
 @endsection
