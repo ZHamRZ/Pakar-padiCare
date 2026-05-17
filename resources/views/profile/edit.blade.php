@@ -353,7 +353,7 @@ $verificationResendCooldown = max(0, $verificationResendAvailableAt - now()->tim
                     </form>
                 </div>
 
-                <!--{{-- ── Catatan Profil ────────────────────────── --}}
+                {{-- ── Catatan Profil ────────────────────────── --}}
                 <div class="info-row">
                     <div>
                         <div class="small text-muted">Catatan Profil</div>
@@ -384,7 +384,7 @@ $verificationResendCooldown = max(0, $verificationResendAvailableAt - now()->tim
                 </div>
 
             </div>{{-- /card-body --}}
-        </div>{{-- /card informasi --}}-->
+        </div>{{-- /card informasi --}}
 
                 {{-- ---- KEAMANAN AKUN ---- --}}
                 <div class="card">
@@ -856,4 +856,3 @@ $verificationResendCooldown = max(0, $verificationResendAvailableAt - now()->tim
         }
         </script>
         @endpush
-@endsection
