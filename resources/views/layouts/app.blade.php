@@ -1,26 +1,87 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="h-full">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="description" content="@yield('meta-description', 'PadiCare Lombok - Sistem Pakar Diagnosis Penyakit dan Rekomendasi Pupuk untuk Tanaman Padi')">
+    <meta name="keywords" content="@yield('meta-keywords', 'padi, penyakit padi, pupuk, sistem pakar, diagnosis, pertanian, lombok')">
     <title>@yield('title', 'PadiCare Lombok') - Sistem Pakar Penyakit & Rekomendasi Pupuk Padi</title>
+    
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+    
+    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    
+    <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ asset('assets/icons8-wheat-hatch-16.png') }}">
+    
+    <!-- PadiCare Design System - Use Vite asset path -->
+    @vite(['resources/css/padicare.css'])
+    
     <style>
+    /* Critical CSS - Inline for faster initial render */
     :root {
         --spk-primary: #1e6b3c;
         --spk-secondary: #2d8a4e;
         --spk-accent: #f5a623;
         --spk-dark: #14532d;
+        --spk-green-50: #f0fdf4;
+        --spk-green-100: #dcfce7;
+        --spk-green-200: #bbf7d0;
+        --spk-green-300: #86efac;
+        --spk-green-400: #4ade80;
+        --spk-green-500: #22c55e;
+        --spk-green-600: #16a34a;
+        --spk-green-700: #15803d;
+        --spk-green-800: #166534;
+        --spk-green-900: #14532d;
+        --spk-slate-50: #f8fafc;
+        --spk-slate-100: #f1f5f9;
+        --spk-slate-200: #e2e8f0;
+        --spk-slate-300: #cbd5e1;
+        --spk-slate-400: #94a3b8;
+        --spk-slate-500: #64748b;
+        --spk-slate-600: #475569;
+        --spk-slate-700: #334155;
+        --spk-slate-800: #1e293b;
+        --spk-slate-900: #0f172a;
+        --radius-sm: 8px;
+        --radius-md: 12px;
+        --radius-lg: 16px;
+        --radius-xl: 20px;
+        --shadow-sm: 0 1px 3px rgba(15,23,42,.06), 0 1px 2px rgba(15,23,42,.04);
+        --shadow-md: 0 4px 16px rgba(15,23,42,.07), 0 1px 4px rgba(15,23,42,.04);
+        --shadow-lg: 0 12px 40px rgba(15,23,42,.09);
+        --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+        --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
     }
 
+    *, *::before, *::after { box-sizing: border-box; }
+    
+    html { scroll-behavior: smooth; }
+    
     body {
-        background: #f4f7f4;
-        font-family: 'Segoe UI', sans-serif;
+        background: var(--spk-slate-50);
+        font-family: 'DM Sans', sans-serif;
+        line-height: 1.6;
+        color: var(--spk-slate-700);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    h1, h2, h3, h4, h5, h6, .fw-bold, .fw-semibold {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-weight: 700;
+        line-height: 1.2;
+        color: var(--spk-slate-900);
     }
 
     .sidebar {
@@ -448,8 +509,9 @@
         <i class="bi bi-arrow-left"></i>
     </a>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js" defer></script>
+    @vite(['resources/js/app.js'])
     <script>
     // SweetAlert2 Toast Configuration with Dark Mode Support
     const Toast = Swal.mixin({
