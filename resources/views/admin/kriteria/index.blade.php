@@ -78,10 +78,16 @@
                         <i class="bi bi-arrow-left me-1"></i>Kembali
                     </a>
                     <div class="d-flex gap-2">
-                        <button type="button" id="btnReset" class="btn btn-outline-warning">
+                        <button type="button" id="btnReset" class="btn btn-outline-warning text-dark">
                             <i class="bi bi-arrow-counterclockwise me-1"></i>Reset
                         </button>
-                        <button type="button" id="btnSaveAll" class="btn btn-primary">
+                        <button type="button" id="btnEditSelected" class="btn btn-outline-primary">
+                            <i class="bi bi-pencil me-1"></i>Edit
+                        </button>
+                        <button type="button" id="btnDeleteSelected" class="btn btn-outline-danger">
+                            <i class="bi bi-trash me-1"></i>Hapus
+                        </button>
+                        <button type="button" id="btnSaveAll" class="btn btn-spk">
                             <i class="bi bi-save me-1"></i>Simpan Semua Perubahan
                         </button>
                     </div>
@@ -117,6 +123,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     const btnSaveAll = document.getElementById('btnSaveAll');
     const btnReset = document.getElementById('btnReset');
+    const btnEditSelected = document.getElementById('btnEditSelected');
+    const btnDeleteSelected = document.getElementById('btnDeleteSelected');
     const toastContainer = document.getElementById('toastContainer');
     const form = document.getElementById('kriteriaForm');
     
@@ -147,6 +155,20 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             form.reset();
             showToast('Form telah direset ke nilai default', 'info');
+        });
+    }
+    
+    // Event handler untuk tombol Edit Selected
+    if (btnEditSelected) {
+        btnEditSelected.addEventListener('click', function() {
+            showToast('Silakan edit langsung pada tabel di atas, kemudian klik Simpan', 'info');
+        });
+    }
+    
+    // Event handler untuk tombol Delete Selected
+    if (btnDeleteSelected) {
+        btnDeleteSelected.addEventListener('click', function() {
+            showToast('Fitur hapus akan segera hadir. Saat ini hanya dapat mengedit parameter.', 'warning');
         });
     }
     
