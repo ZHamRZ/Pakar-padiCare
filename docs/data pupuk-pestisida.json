@@ -1,0 +1,1169 @@
+
+{
+  "metadata": {
+    "description": "Rekomendasi Nilai Certainty Factor untuk Sistem Pakar Diagnosis Penyakit Padi",
+    "created_by": "Pakar Agronomi & Certainty Factor",
+    "batas_nilai": {
+      "MB": {
+        "min": 0,
+        "max": 1,
+        "keterangan": "Measure of Belief - tingkat keyakinan bahwa item efektif menangani/mencegah penyakit"
+      },
+      "MD": {
+        "min": 0,
+        "max": 1,
+        "keterangan": "Measure of Disbelief - tingkat keyakinan bahwa item memperparah/kontraindikasi"
+      },
+      "CF": {
+        "min": -1,
+        "max": 1,
+        "rumus": "CF = MB - MD",
+        "keterangan": "Certainty Factor - hasil akhir antara -1 (pasti salah) hingga +1 (pasti benar)"
+      }
+    },
+    "penyakit": {
+      "P01": "Blast (jamur Magnaporthe oryzae)",
+      "P02": "Hawar Daun Bakteri/Kresek (bakteri Xanthomonas oryzae)",
+      "P03": "Tungro (virus Rice Tungro Bacilliform/Badgeleaf dibawa vektor wereng hijau Nephotettix virescens)",
+      "P04": "Busuk Pelepah/Sheath Blight (jamur Rhizoctonia solani)",
+      "P05": "Bercak Coklat/Brown Spot (jamur Bipolaris oryzae)"
+    },
+    "standardisasi_kode": {
+      "pupuk": "Format: PU## (PU01-PU12)",
+      "pestisida": "Format: PS## (PS01-PS18)",
+      "catatan": "Kode PU12 distandardisasi dari PK12, PS010 menjadi PS10"
+    }
+  },
+  "pupuk": [
+    {
+      "kode": "PU01",
+      "nama": "Urea",
+      "kandungan": "N 46%",
+      "penilaian_per_penyakit": {
+        "P01": {
+          "mb": 0.1,
+          "md": 0.8,
+          "cf": -0.7,
+          "alasan_agronomi": "Nitrogen tinggi pada Urea memperparah Blast karena jamur ini berkembang pesat pada tanaman dengan jaringan lunak akibat N berlebihan."
+        },
+        "P02": {
+          "mb": 0.2,
+          "md": 0.75,
+          "cf": -0.55,
+          "alasan_agronomi": "Urea berlebih menyebabkan daun sukulen dan rentan infeksi bakteri Xanthomonas yang menyebabkan Hawar Daun."
+        },
+        "P03": {
+          "mb": 0.3,
+          "md": 0.5,
+          "cf": -0.2,
+          "alasan_agronomi": "Nitrogen berlebihan membuat tanaman lebih menarik bagi wereng hijau vektor Tungro, meski tanaman tetap butuh nutrisi dasar."
+        },
+        "P04": {
+          "mb": 0.2,
+          "md": 0.7,
+          "cf": -0.5,
+          "alasan_agronomi": "Nitrogen tinggi memperparah Busuk Pelepah karena jamur Rhizoctonia berkembang baik pada kondisi tanaman sukulen."
+        },
+        "P05": {
+          "mb": 0.3,
+          "md": 0.6,
+          "cf": -0.3,
+          "alasan_agronomi": "Urea dapat memperparah Bercak Coklat jika digunakan berlebihan, namun tanaman tetap butuh nitrogen dalam jumlah tepat."
+        }
+      }
+    },
+    {
+      "kode": "PU02",
+      "nama": "NPK Phonska",
+      "kandungan": "N 15%, P 15%, K 15%, S 10%",
+      "penilaian_per_penyakit": {
+        "P01": {
+          "mb": 0.75,
+          "md": 0.15,
+          "cf": 0.6,
+          "alasan_agronomi": "Kandungan Kalium (K) tinggi dalam NPK Phonska meningkatkan ketahanan dinding sel terhadap infeksi jamur Blast."
+        },
+        "P02": {
+          "mb": 0.8,
+          "md": 0.15,
+          "cf": 0.65,
+          "alasan_agronomi": "Nutrisi seimbang NPK dengan sulfur membantu tanaman membentuk pertahanan alami terhadap bakteri tanpa membuat jaringan terlalu sukulen."
+        },
+        "P03": {
+          "mb": 0.7,
+          "md": 0.2,
+          "cf": 0.5,
+          "alasan_agronomi": "Nutrisi lengkap membantu tanaman toleran terhadap virus Tungro meski tidak menyembuhkan infeksi virus secara langsung."
+        },
+        "P04": {
+          "mb": 0.75,
+          "md": 0.15,
+          "cf": 0.6,
+          "alasan_agronomi": "Kalium dalam NPK Phonska memperkuat jaringan pelepah sehingga lebih tahan terhadap serangan jamur Rhizoctonia."
+        },
+        "P05": {
+          "mb": 0.75,
+          "md": 0.15,
+          "cf": 0.6,
+          "alasan_agronomi": "Keseimbangan NPK mencegah defisiensi yang memicu Bercak Coklat sekaligus memperkuat ketahanan tanaman."
+        }
+      }
+    },
+    {
+      "kode": "PU03",
+      "nama": "ZA",
+      "kandungan": "N 21%, S 24%",
+      "penilaian_per_penyakit": {
+        "P01": {
+          "mb": 0.2,
+          "md": 0.7,
+          "cf": -0.5,
+          "alasan_agronomi": "ZA mengandung nitrogen yang dapat memperparah Blast, meski sulfur bermanfaat untuk ketahanan tanaman secara umum."
+        },
+        "P02": {
+          "mb": 0.3,
+          "md": 0.6,
+          "cf": -0.3,
+          "alasan_agronomi": "Sulfur dalam ZA memiliki efek bakterisida ringan, namun nitrogen tetap berisiko memperparah Hawar Daun jika berlebihan."
+        },
+        "P03": {
+          "mb": 0.4,
+          "md": 0.4,
+          "cf": 0.0,
+          "alasan_agronomi": "ZA tidak relevan secara langsung untuk penyakit virus, hanya berperan sebagai nutrisi pendukung pertumbuhan."
+        },
+        "P04": {
+          "mb": 0.3,
+          "md": 0.55,
+          "cf": -0.25,
+          "alasan_agronomi": "Nitrogen dalam ZA berpotensi memperparah Busuk Pelepah meski sulfur memberikan manfaat sekunder."
+        },
+        "P05": {
+          "mb": 0.4,
+          "md": 0.4,
+          "cf": 0.0,
+          "alasan_agronomi": "ZA netral untuk Bercak Coklat karena kandungan nitrogen sedang dan sulfur tidak secara spesifik mengatasi jamur Bipolaris."
+        }
+      }
+    },
+    {
+      "kode": "PU04",
+      "nama": "Kapur Pertanian (Dolomit)",
+      "kandungan": "CaCO3 + MgCO3",
+      "penilaian_per_penyakit": {
+        "P01": {
+          "mb": 0.6,
+          "md": 0.25,
+          "cf": 0.35,
+          "alasan_agronomi": "Dolomit menaikkan pH tanah yang menghambat perkembangan jamur Blast yang menyukai kondisi asam."
+        },
+        "P02": {
+          "mb": 0.5,
+          "md": 0.3,
+          "cf": 0.2,
+          "alasan_agronomi": "Pengapuran membantu mengurangi keasaman tanah yang disukai bakteri Xanthomonas, meski efeknya tidak langsung."
+        },
+        "P03": {
+          "mb": 0.4,
+          "md": 0.4,
+          "cf": 0.0,
+          "alasan_agronomi": "Dolomit tidak berpengaruh langsung pada penyakit virus, hanya memperbaiki kondisi tanah secara umum."
+        },
+        "P04": {
+          "mb": 0.55,
+          "md": 0.3,
+          "cf": 0.25,
+          "alasan_agronomi": "pH tanah yang lebih tinggi akibat dolomit menghambat pertumbuhan jamur Rhizoctonia solani."
+        },
+        "P05": {
+          "mb": 0.5,
+          "md": 0.35,
+          "cf": 0.15,
+          "alasan_agronomi": "Dolomit membantu mengurangi keasaman yang memicu Bercak Coklat, terutama pada tanah masam."
+        }
+      }
+    },
+    {
+      "kode": "PU05",
+      "nama": "Pupuk Kandang / Kompos",
+      "kandungan": "C-organik >= 15%, mikroorganisme menguntungkan",
+      "penilaian_per_penyakit": {
+        "P01": {
+          "mb": 0.7,
+          "md": 0.2,
+          "cf": 0.5,
+          "alasan_agronomi": "Kompos meningkatkan kesuburan tanah dan mikroba antagonis yang menekan populasi jamur Blast."
+        },
+        "P02": {
+          "mb": 0.75,
+          "md": 0.15,
+          "cf": 0.6,
+          "alasan_agronomi": "Mikroorganisme menguntungkan dalam kompos bersifat antagonis terhadap bakteri patogen Xanthomonas."
+        },
+        "P03": {
+          "mb": 0.8,
+          "md": 0.1,
+          "cf": 0.7,
+          "alasan_agronomi": "Tanaman sehat dari pupuk organik lebih toleran terhadap virus Tungro dan kurang menarik bagi wereng vektor."
+        },
+        "P04": {
+          "mb": 0.7,
+          "md": 0.2,
+          "cf": 0.5,
+          "alasan_agronomi": "Kompos memperbaiki struktur tanah dan mendukung musuh alami jamur Rhizoctonia."
+        },
+        "P05": {
+          "mb": 0.7,
+          "md": 0.2,
+          "cf": 0.5,
+          "alasan_agronomi": "Pupuk organik mencegah defisiensi nutrisi yang menjadi pemicu utama Bercak Coklat."
+        }
+      }
+    },
+    {
+      "kode": "PU06",
+      "nama": "Silika Cair",
+      "kandungan": "SiO2 terlarut",
+      "penilaian_per_penyakit": {
+        "P01": {
+          "mb": 0.85,
+          "md": 0.1,
+          "cf": 0.75,
+          "alasan_agronomi": "Silika mengendap di dinding sel epidermis membentuk barrier fisik yang sangat efektif mencegah penetrasi jamur Blast."
+        },
+        "P02": {
+          "mb": 0.7,
+          "md": 0.2,
+          "cf": 0.5,
+          "alasan_agronomi": "Silika memperkuat jaringan daun sehingga bakteri lebih sulit menginfeksi melalui stomata atau luka."
+        },
+        "P03": {
+          "mb": 0.6,
+          "md": 0.25,
+          "cf": 0.35,
+          "alasan_agronomi": "Silika membuat jaringan tanaman lebih keras sehingga wereng hijau sulit menusuk dan menularkan virus."
+        },
+        "P04": {
+          "mb": 0.8,
+          "md": 0.15,
+          "cf": 0.65,
+          "alasan_agronomi": "Silika sangat efektif memperkuat pelepah batang terhadap serangan jamur Rhizoctonia solani."
+        },
+        "P05": {
+          "mb": 0.75,
+          "md": 0.15,
+          "cf": 0.6,
+          "alasan_agronomi": "Silika mencegah masuknya spora jamur Bipolaris melalui penguatan jaringan daun."
+        }
+      }
+    },
+    {
+      "kode": "PU07",
+      "nama": "MKP",
+      "kandungan": "Mono Kalium Phosphate (K 34%, P 52%)",
+      "penilaian_per_penyakit": {
+        "P01": {
+          "mb": 0.8,
+          "md": 0.15,
+          "cf": 0.65,
+          "alasan_agronomi": "Kombinasi Kalium dan Fosfat tinggi dalam MKP meningkatkan ketahanan tanaman terhadap jamur Blast secara signifikan."
+        },
+        "P02": {
+          "mb": 0.7,
+          "md": 0.2,
+          "cf": 0.5,
+          "alasan_agronomi": "Fosfat membantu pembentukan senyawa fenolik anti-bakteri, sementara Kalium memperkuat jaringan."
+        },
+        "P03": {
+          "mb": 0.65,
+          "md": 0.25,
+          "cf": 0.4,
+          "alasan_agronomi": "MKP meningkatkan vigor tanaman sehingga lebih toleran terhadap infeksi virus Tungro."
+        },
+        "P04": {
+          "mb": 0.75,
+          "md": 0.2,
+          "cf": 0.55,
+          "alasan_agronomi": "Kalium dalam MKP memperkuat pelepah dan fosfat mendukung sistem pertahanan tanaman terhadap Rhizoctonia."
+        },
+        "P05": {
+          "mb": 0.75,
+          "md": 0.2,
+          "cf": 0.55,
+          "alasan_agronomi": "MKP mencegah defisiensi K dan P yang menjadi faktor predisposisi Bercak Coklat."
+        }
+      }
+    },
+    {
+      "kode": "PU08",
+      "nama": "KNO3 Putih",
+      "kandungan": "K 44%, N 13%",
+      "penilaian_per_penyakit": {
+        "P01": {
+          "mb": 0.7,
+          "md": 0.2,
+          "cf": 0.5,
+          "alasan_agronomi": "KNO3 memberikan Kalium tinggi untuk ketahanan Blast dengan nitrogen rendah yang aman tidak memperparah penyakit."
+        },
+        "P02": {
+          "mb": 0.65,
+          "md": 0.25,
+          "cf": 0.4,
+          "alasan_agronomi": "Kalium dalam KNO3 memperkuat jaringan, namun nitrogen meski rendah tetap perlu diwaspadai untuk Hawar Daun."
+        },
+        "P03": {
+          "mb": 0.6,
+          "md": 0.3,
+          "cf": 0.3,
+          "alasan_agronomi": "KNO3 membantu ketahanan tanaman terhadap Tungro melalui penguatan jaringan oleh Kalium."
+        },
+        "P04": {
+          "mb": 0.7,
+          "md": 0.2,
+          "cf": 0.5,
+          "alasan_agronomi": "Kalium tinggi dalam KNO3 memperkuat pelepah batang terhadap infeksi jamur Busuk Pelepah."
+        },
+        "P05": {
+          "mb": 0.7,
+          "md": 0.2,
+          "cf": 0.5,
+          "alasan_agronomi": "KNO3 efektif mencegah Bercak Coklat melalui suplai Kalium tanpa risiko nitrogen berlebihan."
+        }
+      }
+    },
+    {
+      "kode": "PU09",
+      "nama": "Pupuk Mikro (Zink/Tembaga)",
+      "kandungan": "Zn, Cu, Fe, Mn, B, Mo",
+      "penilaian_per_penyakit": {
+        "P01": {
+          "mb": 0.6,
+          "md": 0.25,
+          "cf": 0.35,
+          "alasan_agronomi": "Unsur mikro seperti Tembaga memiliki sifat fungisida alami dan Zink mendukung sistem enzim pertahanan tanaman."
+        },
+        "P02": {
+          "mb": 0.55,
+          "md": 0.3,
+          "cf": 0.25,
+          "alasan_agronomi": "Tembaga dalam pupuk mikro bersifat bakterisida ringan yang membantu mengendalikan Xanthomonas."
+        },
+        "P03": {
+          "mb": 0.5,
+          "md": 0.35,
+          "cf": 0.15,
+          "alasan_agronomi": "Unsur mikro mendukung kesehatan tanaman secara umum namun tidak secara langsung mengatasi virus."
+        },
+        "P04": {
+          "mb": 0.55,
+          "md": 0.3,
+          "cf": 0.25,
+          "alasan_agronomi": "Tembaga dan Zink membantu tanaman membentuk senyawa antifungal alami terhadap Rhizoctonia."
+        },
+        "P05": {
+          "mb": 0.65,
+          "md": 0.2,
+          "cf": 0.45,
+          "alasan_agronomi": "Defisiensi Zink dan unsur mikro lainnya adalah penyebab utama Bercak Coklat sehingga suplementasi sangat efektif."
+        }
+      }
+    },
+    {
+      "kode": "PU10",
+      "nama": "NPK Mutiara 16-16-16",
+      "kandungan": "N 16%, P 16%, K 16%",
+      "penilaian_per_penyakit": {
+        "P01": {
+          "mb": 0.7,
+          "md": 0.2,
+          "cf": 0.5,
+          "alasan_agronomi": "NPK seimbang dengan Kalium cukup membantu ketahanan Blast tanpa risiko nitrogen berlebihan."
+        },
+        "P02": {
+          "mb": 0.75,
+          "md": 0.15,
+          "cf": 0.6,
+          "alasan_agronomi": "Formulasi seimbang NPK Mutiara memberikan nutrisi optimal tanpa membuat tanaman terlalu sukulen rentan bakteri."
+        },
+        "P03": {
+          "mb": 0.65,
+          "md": 0.25,
+          "cf": 0.4,
+          "alasan_agronomi": "NPK seimbang menjaga kesehatan tanaman untuk toleransi lebih baik terhadap virus Tungro."
+        },
+        "P04": {
+          "mb": 0.7,
+          "md": 0.2,
+          "cf": 0.5,
+          "alasan_agronomi": "Kalium dalam NPK Mutiara memperkuat pelepah terhadap serangan jamur Sheath Blight."
+        },
+        "P05": {
+          "mb": 0.7,
+          "md": 0.2,
+          "cf": 0.5,
+          "alasan_agronomi": "NPK seimbang mencegah defisiensi nutrisi yang menjadi pemicu Bercak Coklat."
+        }
+      }
+    },
+    {
+      "kode": "PU11",
+      "nama": "SP-36",
+      "kandungan": "P 36%",
+      "penilaian_per_penyakit": {
+        "P01": {
+          "mb": 0.5,
+          "md": 0.35,
+          "cf": 0.15,
+          "alasan_agronomi": "Fosfat membantu perakaran dan energi tanaman namun tidak secara spesifik mengatasi Blast."
+        },
+        "P02": {
+          "mb": 0.55,
+          "md": 0.3,
+          "cf": 0.25,
+          "alasan_agronomi": "Fosfat mendukung pembentukan senyawa pertahanan namun efeknya tidak sekuat Kalium untuk Hawar Daun."
+        },
+        "P03": {
+          "mb": 0.45,
+          "md": 0.35,
+          "cf": 0.1,
+          "alasan_agronomi": "SP-36 hanya berperan sebagai nutrisi dasar tanpa efek langsung pada penyakit virus."
+        },
+        "P04": {
+          "mb": 0.5,
+          "md": 0.35,
+          "cf": 0.15,
+          "alasan_agronomi": "Fosfat membantu kesehatan tanaman secara umum namun tidak spesifik untuk Busuk Pelepah."
+        },
+        "P05": {
+          "mb": 0.55,
+          "md": 0.3,
+          "cf": 0.25,
+          "alasan_agronomi": "Fosfat mencegah defisiensi P yang dapat berkontribusi pada munculnya Bercak Coklat."
+        }
+      }
+    },
+    {
+      "kode": "PU12",
+      "nama": "KCl (Kalium Klorida)",
+      "kandungan": "K 60%",
+      "penilaian_per_penyakit": {
+        "P01": {
+          "mb": 0.85,
+          "md": 0.1,
+          "cf": 0.75,
+          "alasan_agronomi": "Kalium tinggi dalam KCl sangat efektif memperkuat dinding sel dan ketahanan tanaman terhadap jamur Blast."
+        },
+        "P02": {
+          "mb": 0.75,
+          "md": 0.15,
+          "cf": 0.6,
+          "alasan_agronomi": "Kalium memperkuat jaringan daun sehingga bakteri Xanthomonas sulit menginfeksi dan berkembang."
+        },
+        "P03": {
+          "mb": 0.65,
+          "md": 0.25,
+          "cf": 0.4,
+          "alasan_agronomi": "KCl meningkatkan ketahanan fisik tanaman terhadap tusukan wereng hijau vektor Tungro."
+        },
+        "P04": {
+          "mb": 0.8,
+          "md": 0.15,
+          "cf": 0.65,
+          "alasan_agronomi": "Kalium sangat efektif memperkuat pelepah batang terhadap serangan jamur Rhizoctonia solani."
+        },
+        "P05": {
+          "mb": 0.8,
+          "md": 0.15,
+          "cf": 0.65,
+          "alasan_agronomi": "KCl mencegah defisiensi Kalium yang merupakan faktor utama kerentanan terhadap Bercak Coklat."
+        }
+      }
+    }
+  ],
+  "pestisida": [
+    {
+      "kode": "PS01",
+      "nama": "Amistartop 325 SC",
+      "jenis": "fungisida",
+      "bahan_aktif": "Azoksistrobin 200 g/l + Difenokonazol 125 g/l",
+      "penilaian_per_penyakit": {
+        "P01": {
+          "mb": 0.9,
+          "md": 0.05,
+          "cf": 0.85,
+          "alasan_agronomi": "Kombinasi azoksistrobin (strobilurin) dan difenokonazol (triazol) sangat efektif mengendalikan jamur Blast secara preventif dan kuratif."
+        },
+        "P02": {
+          "mb": 0.1,
+          "md": 0.8,
+          "cf": -0.7,
+          "alasan_agronomi": "Fungisida tidak efektif melawan bakteri Xanthomonas dan penggunaannya justru dapat mengganggu keseimbangan mikroba."
+        },
+        "P03": {
+          "mb": 0.0,
+          "md": 0.0,
+          "cf": 0.0,
+          "alasan_agronomi": "Fungisida tidak relevan untuk penyakit virus Tungro karena targetnya bukan virus maupun vektor serangga."
+        },
+        "P04": {
+          "mb": 0.85,
+          "md": 0.1,
+          "cf": 0.75,
+          "alasan_agronomi": "Amistartop sangat efektif terhadap Rhizoctonia solani penyebab Busuk Pelepah melalui mekanisme multi-site."
+        },
+        "P05": {
+          "mb": 0.85,
+          "md": 0.1,
+          "cf": 0.75,
+          "alasan_agronomi": "Kombinasi bahan aktif dalam Amistartop efektif mengendalikan jamur Bipolaris oryzae penyebab Bercak Coklat."
+        }
+      }
+    },
+    {
+      "kode": "PS02",
+      "nama": "Filia 525 SE",
+      "jenis": "fungisida",
+      "bahan_aktif": "Propikonazol 125 g/l + Trisiklazol 400 g/l",
+      "penilaian_per_penyakit": {
+        "P01": {
+          "mb": 0.95,
+          "md": 0.03,
+          "cf": 0.92,
+          "alasan_agronomi": "Trisiklazol khusus sangat efektif terhadap Blast, dikombinasi propikonazol untuk perlindungan menyeluruh."
+        },
+        "P02": {
+          "mb": 0.1,
+          "md": 0.8,
+          "cf": -0.7,
+          "alasan_agronomi": "Fungisida tidak memiliki efektivitas terhadap bakteri dan penggunaannya tidak direkomendasikan untuk Hawar Daun."
+        },
+        "P03": {
+          "mb": 0.0,
+          "md": 0.0,
+          "cf": 0.0,
+          "alasan_agronomi": "Fungisida tidak relevan untuk penyakit virus karena tidak mempengaruhi virus atau vektor serangganya."
+        },
+        "P04": {
+          "mb": 0.8,
+          "md": 0.15,
+          "cf": 0.65,
+          "alasan_agronomi": "Propikonazol efektif terhadap Rhizoctonia, meski trisiklazol lebih spesifik untuk Blast."
+        },
+        "P05": {
+          "mb": 0.8,
+          "md": 0.15,
+          "cf": 0.65,
+          "alasan_agronomi": "Filia efektif mengendalikan Bercak Coklat melalui aksi propikonazol terhadap jamur Bipolaris."
+        }
+      }
+    },
+    {
+      "kode": "PS03",
+      "nama": "Bactocyn 150 AL",
+      "jenis": "bakterisida",
+      "bahan_aktif": "Oksitetrasiklin 15%",
+      "penilaian_per_penyakit": {
+        "P01": {
+          "mb": 0.1,
+          "md": 0.8,
+          "cf": -0.7,
+          "alasan_agronomi": "Bakterisida antibiotik tidak efektif terhadap jamur dan penggunaannya dapat mengganggu keseimbangan mikroba tanah."
+        },
+        "P02": {
+          "mb": 0.85,
+          "md": 0.1,
+          "cf": 0.75,
+          "alasan_agronomi": "Oksitetrasiklin sangat efektif membunuh bakteri Xanthomonas oryzae penyebab Hawar Daun Bakteri secara sistemik."
+        },
+        "P03": {
+          "mb": 0.0,
+          "md": 0.0,
+          "cf": 0.0,
+          "alasan_agronomi": "Bakterisida tidak relevan untuk penyakit virus karena tidak mempengaruhi virus atau vektor serangganya."
+        },
+        "P04": {
+          "mb": 0.1,
+          "md": 0.8,
+          "cf": -0.7,
+          "alasan_agronomi": "Bakterisida tidak efektif terhadap jamur Rhizoctonia dan penggunaannya tidak tepat untuk Busuk Pelepah."
+        },
+        "P05": {
+          "mb": 0.1,
+          "md": 0.8,
+          "cf": -0.7,
+          "alasan_agronomi": "Bakterisida tidak memiliki efek terhadap jamur Bipolaris penyebab Bercak Coklat."
+        }
+      }
+    },
+    {
+      "kode": "PS04",
+      "nama": "Agrept 20 WP",
+      "jenis": "bakterisida",
+      "bahan_aktif": "Streptomisin sulfat 20%",
+      "penilaian_per_penyakit": {
+        "P01": {
+          "mb": 0.1,
+          "md": 0.8,
+          "cf": -0.7,
+          "alasan_agronomi": "Bakterisida streptomisin tidak efektif terhadap jamur Blast dan penggunaannya tidak tepat."
+        },
+        "P02": {
+          "mb": 0.9,
+          "md": 0.05,
+          "cf": 0.85,
+          "alasan_agronomi": "Streptomisin sangat efektif membunuh bakteri Xanthomonas secara sistemik dan menghentikan penyebaran Hawar Daun."
+        },
+        "P03": {
+          "mb": 0.0,
+          "md": 0.0,
+          "cf": 0.0,
+          "alasan_agronomi": "Bakterisida tidak relevan untuk penyakit virus karena tidak mempengaruhi virus atau vektornya."
+        },
+        "P04": {
+          "mb": 0.1,
+          "md": 0.8,
+          "cf": -0.7,
+          "alasan_agronomi": "Bakterisida tidak efektif terhadap jamur Rhizoctonia penyebab Busuk Pelepah."
+        },
+        "P05": {
+          "mb": 0.1,
+          "md": 0.8,
+          "cf": -0.7,
+          "alasan_agronomi": "Bakterisida tidak memiliki aktivitas terhadap jamur Bipolaris penyebab Bercak Coklat."
+        }
+      }
+    },
+    {
+      "kode": "PS05",
+      "nama": "Winder 50 EC",
+      "jenis": "insektisida",
+      "bahan_aktif": "Imidakloprid 50%",
+      "penilaian_per_penyakit": {
+        "P01": {
+          "mb": 0.0,
+          "md": 0.0,
+          "cf": 0.0,
+          "alasan_agronomi": "Insektisida tidak relevan untuk penyakit jamur Blast karena tidak memiliki aktivitas fungisida."
+        },
+        "P02": {
+          "mb": 0.0,
+          "md": 0.0,
+          "cf": 0.0,
+          "alasan_agronomi": "Insektisida tidak relevan untuk penyakit bakteri karena tidak memiliki aktivitas bakterisida."
+        },
+        "P03": {
+          "mb": 0.9,
+          "md": 0.05,
+          "cf": 0.85,
+          "alasan_agronomi": "Imidakloprid sangat efektif membunuh wereng hijau vektor virus Tungro sehingga memutus siklus penularan."
+        },
+        "P04": {
+          "mb": 0.0,
+          "md": 0.0,
+          "cf": 0.0,
+          "alasan_agronomi": "Insektisida tidak relevan untuk penyakit jamur Busuk Pelepah karena tidak memiliki aktivitas fungisida."
+        },
+        "P05": {
+          "mb": 0.0,
+          "md": 0.0,
+          "cf": 0.0,
+          "alasan_agronomi": "Insektisida tidak relevan untuk penyakit jamur Bercak Coklat karena tidak memiliki aktivitas fungisida."
+        }
+      }
+    },
+    {
+      "kode": "PS06",
+      "nama": "Validacin 3 L",
+      "jenis": "bakterisida/fungisida",
+      "bahan_aktif": "Validamisin A 3%",
+      "penilaian_per_penyakit": {
+        "P01": {
+          "mb": 0.3,
+          "md": 0.5,
+          "cf": -0.2,
+          "alasan_agronomi": "Validamisin lebih spesifik untuk Rhizoctonia dan kurang efektif terhadap jamur Blast."
+        },
+        "P02": {
+          "mb": 0.2,
+          "md": 0.6,
+          "cf": -0.4,
+          "alasan_agronomi": "Validamisin tidak dirancang untuk bakteri dan efektivitasnya rendah terhadap Xanthomonas."
+        },
+        "P03": {
+          "mb": 0.0,
+          "md": 0.0,
+          "cf": 0.0,
+          "alasan_agronomi": "Validamisin tidak relevan untuk penyakit virus karena tidak mempengaruhi virus atau vektornya."
+        },
+        "P04": {
+          "mb": 0.9,
+          "md": 0.05,
+          "cf": 0.85,
+          "alasan_agronomi": "Validamisin sangat spesifik dan efektif menghambat pertumbuhan Rhizoctonia solani penyebab Busuk Pelepah."
+        },
+        "P05": {
+          "mb": 0.3,
+          "md": 0.5,
+          "cf": -0.2,
+          "alasan_agronomi": "Validamisin kurang efektif terhadap Bipolaris karena spesifisitasnya lebih tinggi ke Rhizoctonia."
+        }
+      }
+    },
+    {
+      "kode": "PS07",
+      "nama": "Nordox 56 WP",
+      "jenis": "fungisida/bakterisida",
+      "bahan_aktif": "Tembaga Oksida 56%",
+      "penilaian_per_penyakit": {
+        "P01": {
+          "mb": 0.7,
+          "md": 0.2,
+          "cf": 0.5,
+          "alasan_agronomi": "Tembaga oksida memiliki aktivitas fungisida spektrum luas yang efektif mencegah infeksi Blast."
+        },
+        "P02": {
+          "mb": 0.75,
+          "md": 0.15,
+          "cf": 0.6,
+          "alasan_agronomi": "Tembaga oksida sangat efektif sebagai bakterisida kontak terhadap Xanthomonas oryzae."
+        },
+        "P03": {
+          "mb": 0.2,
+          "md": 0.6,
+          "cf": -0.4,
+          "alasan_agronomi": "Tembaga tidak efektif terhadap virus dan penggunaannya untuk Tungro tidak direkomendasikan."
+        },
+        "P04": {
+          "mb": 0.65,
+          "md": 0.25,
+          "cf": 0.4,
+          "alasan_agronomi": "Tembaga oksida memiliki efektivitas moderat terhadap Rhizoctonia melalui aksi kontak."
+        },
+        "P05": {
+          "mb": 0.75,
+          "md": 0.15,
+          "cf": 0.6,
+          "alasan_agronomi": "Tembaga oksida sangat efektif mencegah dan mengendalikan jamur Bipolaris penyebab Bercak Coklat."
+        }
+      }
+    },
+    {
+      "kode": "PS08",
+      "nama": "Mankozeb (Bion-M)",
+      "jenis": "fungisida",
+      "bahan_aktif": "Mancozeb 80%",
+      "penilaian_per_penyakit": {
+        "P01": {
+          "mb": 0.75,
+          "md": 0.15,
+          "cf": 0.6,
+          "alasan_agronomi": "Mancozeb adalah fungisida protektif multi-site yang efektif mencegah spora Blast berkecambah."
+        },
+        "P02": {
+          "mb": 0.2,
+          "md": 0.7,
+          "cf": -0.5,
+          "alasan_agronomi": "Mancozeb tidak efektif terhadap bakteri dan penggunaannya untuk Hawar Daun tidak tepat."
+        },
+        "P03": {
+          "mb": 0.0,
+          "md": 0.0,
+          "cf": 0.0,
+          "alasan_agronomi": "Fungisida tidak relevan untuk penyakit virus karena tidak mempengaruhi virus atau vektornya."
+        },
+        "P04": {
+          "mb": 0.7,
+          "md": 0.2,
+          "cf": 0.5,
+          "alasan_agronomi": "Mancozeb efektif sebagai protektif mencegah infeksi Rhizoctonia pada pelepah."
+        },
+        "P05": {
+          "mb": 0.75,
+          "md": 0.15,
+          "cf": 0.6,
+          "alasan_agronomi": "Mancozeb sangat efektif mencegah perkecambahan spora Bipolaris penyebab Bercak Coklat."
+        }
+      }
+    },
+    {
+      "kode": "PS09",
+      "nama": "Heksakonazol",
+      "jenis": "fungisida",
+      "bahan_aktif": "Hexaconazole 5%",
+      "penilaian_per_penyakit": {
+        "P01": {
+          "mb": 0.8,
+          "md": 0.15,
+          "cf": 0.65,
+          "alasan_agronomi": "Heksakonazol (triazol) efektif menghambat sintesis ergosterol membran sel jamur Blast."
+        },
+        "P02": {
+          "mb": 0.1,
+          "md": 0.8,
+          "cf": -0.7,
+          "alasan_agronomi": "Fungisida triazol tidak efektif terhadap bakteri dan penggunaannya tidak tepat untuk Hawar Daun."
+        },
+        "P03": {
+          "mb": 0.0,
+          "md": 0.0,
+          "cf": 0.0,
+          "alasan_agronomi": "Fungisida tidak relevan untuk penyakit virus karena tidak mempengaruhi virus atau vektornya."
+        },
+        "P04": {
+          "mb": 0.75,
+          "md": 0.15,
+          "cf": 0.6,
+          "alasan_agronomi": "Heksakonazol efektif menghambat pertumbuhan Rhizoctonia solani secara sistemik."
+        },
+        "P05": {
+          "mb": 0.75,
+          "md": 0.15,
+          "cf": 0.6,
+          "alasan_agronomi": "Heksakonazol efektif mengendalikan jamur Bipolaris melalui mekanisme inhibisi sintesis sterol."
+        }
+      }
+    },
+    {
+      "kode": "PS10",
+      "nama": "BPMC (Bassa)",
+      "jenis": "insektisida",
+      "bahan_aktif": "Fenobakar 50%",
+      "penilaian_per_penyakit": {
+        "P01": {
+          "mb": 0.0,
+          "md": 0.0,
+          "cf": 0.0,
+          "alasan_agronomi": "Insektisida tidak relevan untuk penyakit jamur karena tidak memiliki aktivitas fungisida."
+        },
+        "P02": {
+          "mb": 0.0,
+          "md": 0.0,
+          "cf": 0.0,
+          "alasan_agronomi": "Insektisida tidak relevan untuk penyakit bakteri karena tidak memiliki aktivitas bakterisida."
+        },
+        "P03": {
+          "mb": 0.85,
+          "md": 0.1,
+          "cf": 0.75,
+          "alasan_agronomi": "BPMC efektif membunuh wereng hijau vektor Tungro melalui kontak dan fumigan."
+        },
+        "P04": {
+          "mb": 0.0,
+          "md": 0.0,
+          "cf": 0.0,
+          "alasan_agronomi": "Insektisida tidak relevan untuk penyakit jamur karena tidak memiliki aktivitas fungisida."
+        },
+        "P05": {
+          "mb": 0.0,
+          "md": 0.0,
+          "cf": 0.0,
+          "alasan_agronomi": "Insektisida tidak relevan untuk penyakit jamur karena tidak memiliki aktivitas fungisida."
+        }
+      }
+    },
+    {
+      "kode": "PS11",
+      "nama": "Nativo 75 WG",
+      "jenis": "fungisida",
+      "bahan_aktif": "Tebukonazol 50% + Trifloksistrobin 25%",
+      "penilaian_per_penyakit": {
+        "P01": {
+          "mb": 0.9,
+          "md": 0.05,
+          "cf": 0.85,
+          "alasan_agronomi": "Kombinasi triazol dan strobilurin dalam Nativo sangat efektif mengendalikan Blast secara preventif dan kuratif."
+        },
+        "P02": {
+          "mb": 0.1,
+          "md": 0.8,
+          "cf": -0.7,
+          "alasan_agronomi": "Fungisida tidak efektif terhadap bakteri dan penggunaannya tidak tepat untuk Hawar Daun."
+        },
+        "P03": {
+          "mb": 0.0,
+          "md": 0.0,
+          "cf": 0.0,
+          "alasan_agronomi": "Fungisida tidak relevan untuk penyakit virus karena tidak mempengaruhi virus atau vektornya."
+        },
+        "P04": {
+          "mb": 0.85,
+          "md": 0.1,
+          "cf": 0.75,
+          "alasan_agronomi": "Nativo sangat efektif terhadap Rhizoctonia melalui kombinasi aksi sistemik dan protektif."
+        },
+        "P05": {
+          "mb": 0.85,
+          "md": 0.1,
+          "cf": 0.75,
+          "alasan_agronomi": "Kombinasi tebukonazol dan trifloksistrobin sangat efektif mengendalikan Bipolaris oryzae."
+        }
+      }
+    },
+    {
+      "kode": "PS12",
+      "nama": "Seltima 100 CS",
+      "jenis": "insektisida",
+      "bahan_aktif": "Dinotefuran 10%",
+      "penilaian_per_penyakit": {
+        "P01": {
+          "mb": 0.0,
+          "md": 0.0,
+          "cf": 0.0,
+          "alasan_agronomi": "Insektisida tidak relevan untuk penyakit jamur karena tidak memiliki aktivitas fungisida."
+        },
+        "P02": {
+          "mb": 0.0,
+          "md": 0.0,
+          "cf": 0.0,
+          "alasan_agronomi": "Insektisida tidak relevan untuk penyakit bakteri karena tidak memiliki aktivitas bakterisida."
+        },
+        "P03": {
+          "mb": 0.85,
+          "md": 0.1,
+          "cf": 0.75,
+          "alasan_agronomi": "Dinotefuran sangat efektif membunuh wereng hijau vektor Tungro dengan sistemik yang kuat."
+        },
+        "P04": {
+          "mb": 0.0,
+          "md": 0.0,
+          "cf": 0.0,
+          "alasan_agronomi": "Insektisida tidak relevan untuk penyakit jamur karena tidak memiliki aktivitas fungisida."
+        },
+        "P05": {
+          "mb": 0.0,
+          "md": 0.0,
+          "cf": 0.0,
+          "alasan_agronomi": "Insektisida tidak relevan untuk penyakit jamur karena tidak memiliki aktivitas fungisida."
+        }
+      }
+    },
+    {
+      "kode": "PS13",
+      "nama": "Kasumin 20 L",
+      "jenis": "bakterisida",
+      "bahan_aktif": "Kasugamisin 2%",
+      "penilaian_per_penyakit": {
+        "P01": {
+          "mb": 0.2,
+          "md": 0.7,
+          "cf": -0.5,
+          "alasan_agronomi": "Kasumin adalah bakterisida yang tidak efektif terhadap jamur dan penggunaannya untuk Blast tidak tepat."
+        },
+        "P02": {
+          "mb": 0.85,
+          "md": 0.1,
+          "cf": 0.75,
+          "alasan_agronomi": "Kasugamisin sangat efektif menghambat sintesis protein bakteri Xanthomonas penyebab Hawar Daun."
+        },
+        "P03": {
+          "mb": 0.0,
+          "md": 0.0,
+          "cf": 0.0,
+          "alasan_agronomi": "Bakterisida tidak relevan untuk penyakit virus karena tidak mempengaruhi virus atau vektornya."
+        },
+        "P04": {
+          "mb": 0.1,
+          "md": 0.8,
+          "cf": -0.7,
+          "alasan_agronomi": "Bakterisida tidak efektif terhadap jamur Rhizoctonia dan penggunaannya tidak tepat."
+        },
+        "P05": {
+          "mb": 0.1,
+          "md": 0.8,
+          "cf": -0.7,
+          "alasan_agronomi": "Bakterisida tidak memiliki aktivitas terhadap jamur Bipolaris penyebab Bercak Coklat."
+        }
+      }
+    },
+    {
+      "kode": "PS14",
+      "nama": "Plenum 50 WG",
+      "jenis": "insektisida",
+      "bahan_aktif": "Pimetrozin 50%",
+      "penilaian_per_penyakit": {
+        "P01": {
+          "mb": 0.0,
+          "md": 0.0,
+          "cf": 0.0,
+          "alasan_agronomi": "Insektisida tidak relevan untuk penyakit jamur karena tidak memiliki aktivitas fungisida."
+        },
+        "P02": {
+          "mb": 0.0,
+          "md": 0.0,
+          "cf": 0.0,
+          "alasan_agronomi": "Insektisida tidak relevan untuk penyakit bakteri karena tidak memiliki aktivitas bakterisida."
+        },
+        "P03": {
+          "mb": 0.8,
+          "md": 0.15,
+          "cf": 0.65,
+          "alasan_agronomi": "Pimetrozin efektif mengendalikan wereng hijau dengan mekanisme anti-feedant yang menghentikan penularan virus."
+        },
+        "P04": {
+          "mb": 0.0,
+          "md": 0.0,
+          "cf": 0.0,
+          "alasan_agronomi": "Insektisida tidak relevan untuk penyakit jamur karena tidak memiliki aktivitas fungisida."
+        },
+        "P05": {
+          "mb": 0.0,
+          "md": 0.0,
+          "cf": 0.0,
+          "alasan_agronomi": "Insektisida tidak relevan untuk penyakit jamur karena tidak memiliki aktivitas fungisida."
+        }
+      }
+    },
+    {
+      "kode": "PS15",
+      "nama": "Regent 800 WG",
+      "jenis": "insektisida",
+      "bahan_aktif": "Fipronil 80%",
+      "penilaian_per_penyakit": {
+        "P01": {
+          "mb": 0.0,
+          "md": 0.0,
+          "cf": 0.0,
+          "alasan_agronomi": "Insektisida tidak relevan untuk penyakit jamur karena tidak memiliki aktivitas fungisida."
+        },
+        "P02": {
+          "mb": 0.0,
+          "md": 0.0,
+          "cf": 0.0,
+          "alasan_agronomi": "Insektisida tidak relevan untuk penyakit bakteri karena tidak memiliki aktivitas bakterisida."
+        },
+        "P03": {
+          "mb": 0.8,
+          "md": 0.15,
+          "cf": 0.65,
+          "alasan_agronomi": "Fipronil efektif membunuh wereng hijau vektor Tungro melalui kontak dan lambung."
+        },
+        "P04": {
+          "mb": 0.0,
+          "md": 0.0,
+          "cf": 0.0,
+          "alasan_agronomi": "Insektisida tidak relevan untuk penyakit jamur karena tidak memiliki aktivitas fungisida."
+        },
+        "P05": {
+          "mb": 0.0,
+          "md": 0.0,
+          "cf": 0.0,
+          "alasan_agronomi": "Insektisida tidak relevan untuk penyakit jamur karena tidak memiliki aktivitas fungisida."
+        }
+      }
+    },
+    {
+      "kode": "PS16",
+      "nama": "Antracol 70 WP",
+      "jenis": "fungisida",
+      "bahan_aktif": "Propineb 70%",
+      "penilaian_per_penyakit": {
+        "P01": {
+          "mb": 0.7,
+          "md": 0.2,
+          "cf": 0.5,
+          "alasan_agronomi": "Propineb adalah fungisida protektif yang efektif mencegah perkecambahan spora Blast."
+        },
+        "P02": {
+          "mb": 0.15,
+          "md": 0.75,
+          "cf": -0.6,
+          "alasan_agronomi": "Fungisida tidak efektif terhadap bakteri dan penggunaannya untuk Hawar Daun tidak tepat."
+        },
+        "P03": {
+          "mb": 0.0,
+          "md": 0.0,
+          "cf": 0.0,
+          "alasan_agronomi": "Fungisida tidak relevan untuk penyakit virus karena tidak mempengaruhi virus atau vektornya."
+        },
+        "P04": {
+          "mb": 0.65,
+          "md": 0.25,
+          "cf": 0.4,
+          "alasan_agronomi": "Antracol efektif sebagai protektif mencegah infeksi Rhizoctonia pada pelepah."
+        },
+        "P05": {
+          "mb": 0.7,
+          "md": 0.2,
+          "cf": 0.5,
+          "alasan_agronomi": "Propineb efektif mencegah spora Bipolaris berkecambah dan menginfeksi daun."
+        }
+      }
+    },
+    {
+      "kode": "PS17",
+      "nama": "Ridomil Gold 68 WG",
+      "jenis": "fungisida",
+      "bahan_aktif": "Metalaksil 4% + Mancozeb 64%",
+      "penilaian_per_penyakit": {
+        "P01": {
+          "mb": 0.6,
+          "md": 0.3,
+          "cf": 0.3,
+          "alasan_agronomi": "Ridomil lebih spesifik untuk Oomycota dan kurang optimal untuk Blast yang disebabkan jamur sejati."
+        },
+        "P02": {
+          "mb": 0.15,
+          "md": 0.75,
+          "cf": -0.6,
+          "alasan_agronomi": "Fungisida tidak efektif terhadap bakteri dan penggunaannya untuk Hawar Daun tidak tepat."
+        },
+        "P03": {
+          "mb": 0.0,
+          "md": 0.0,
+          "cf": 0.0,
+          "alasan_agronomi": "Fungisida tidak relevan untuk penyakit virus karena tidak mempengaruhi virus atau vektornya."
+        },
+        "P04": {
+          "mb": 0.55,
+          "md": 0.35,
+          "cf": 0.2,
+          "alasan_agronomi": "Mancozeb dalam Ridomil memberikan proteksi moderat terhadap Rhizoctonia tapi bukan pilihan utama."
+        },
+        "P05": {
+          "mb": 0.65,
+          "md": 0.25,
+          "cf": 0.4,
+          "alasan_agronomi": "Mancozeb dalam Ridomil efektif mencegah Bercak Coklat meski bukan fungisida spesifik untuk Bipolaris."
+        }
+      }
+    },
+    {
+      "kode": "PS18",
+      "nama": "Topaz 250 EC",
+      "jenis": "fungisida",
+      "bahan_aktif": "Difenokonazol 25%",
+      "penilaian_per_penyakit": {
+        "P01": {
+          "mb": 0.85,
+          "md": 0.1,
+          "cf": 0.75,
+          "alasan_agronomi": "Difenokonazol (triazol) sangat efektif menghambat pertumbuhan jamur Blast secara sistemik."
+        },
+        "P02": {
+          "mb": 0.1,
+          "md": 0.8,
+          "cf": -0.7,
+          "alasan_agronomi": "Fungisida triazol tidak efektif terhadap bakteri dan penggunaannya tidak tepat untuk Hawar Daun."
+        },
+        "P03": {
+          "mb": 0.0,
+          "md": 0.0,
+          "cf": 0.0,
+          "alasan_agronomi": "Fungisida tidak relevan untuk penyakit virus karena tidak mempengaruhi virus atau vektornya."
+        },
+        "P04": {
+          "mb": 0.8,
+          "md": 0.15,
+          "cf": 0.65,
+          "alasan_agronomi": "Difenokonazol efektif menghambat pertumbuhan Rhizoctonia solani secara sistemik."
+        },
+        "P05": {
+          "mb": 0.8,
+          "md": 0.15,
+          "cf": 0.65,
+          "alasan_agronomi": "Topaz sangat efektif mengendalikan Bipolaris oryzae melalui inhibisi sintesis ergosterol."
+        }
+      }
+    }
+  ]
+}

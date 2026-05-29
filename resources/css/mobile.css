@@ -1,0 +1,833 @@
+/* ==========================================================================
+   PadiCare Mobile & Tablet Overrides
+   Activates ONLY at ≤1024px — desktop (>1024px) is 100% untouched.
+   ========================================================================== */
+
+/* ── Bottom Navigation Bar ──────────────────────────────────── */
+.bottom-nav {
+  display: none;
+}
+
+@media (max-width: 1024px) {
+  .bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1030;
+    background: #ffffff;
+    border-top: 1px solid var(--border, #e5e7eb);
+    padding: 0.375rem 0;
+    padding-bottom: calc(0.375rem + env(safe-area-inset-bottom, 0px));
+    box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.06);
+    justify-content: space-around;
+    align-items: center;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .bottom-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.125rem;
+    padding: 0.25rem 0.375rem;
+    min-width: 48px;
+    min-height: 44px;
+    color: var(--text-muted, #9ca3af);
+    text-decoration: none;
+    font-size: 0.625rem;
+    font-weight: 600;
+    transition: color 0.15s;
+    -webkit-tap-highlight-color: transparent;
+    position: relative;
+    border-radius: var(--radius-md, 8px);
+  }
+  .bottom-nav-item:active {
+    background: var(--primary-50, #f0fdf4);
+  }
+  .bottom-nav-item i {
+    font-size: 1.25rem;
+    transition: transform 0.15s;
+  }
+  .bottom-nav-item:active i {
+    transform: scale(0.9);
+  }
+  .bottom-nav-item span {
+    font-size: 0.625rem;
+    line-height: 1;
+    letter-spacing: 0.01em;
+  }
+  .bottom-nav-item.active {
+    color: var(--primary, #15803d);
+  }
+  .bottom-nav-item.active::before {
+    content: '';
+    position: absolute;
+    top: -0.375rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 3px;
+    background: var(--primary, #15803d);
+    border-radius: 0 0 4px 4px;
+  }
+
+  /* ── Layout ──────────────────────────────────────────────── */
+  .authenticated-layout .main-content {
+    margin-left: 0;
+    padding-bottom: 0;
+  }
+  .authenticated-layout .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1050;
+  }
+  .authenticated-layout .sidebar.show {
+    transform: translateX(0);
+  }
+
+  /* Sidebar backdrop */
+  .sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1049;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+  }
+  .sidebar-backdrop.active {
+    display: block;
+  }
+
+  /* ── Topbar ──────────────────────────────────────────────── */
+  .authenticated-layout .topbar {
+    padding: 0.625rem 1rem;
+    z-index: 1020;
+  }
+  .authenticated-layout .topbar .page-title-text {
+    font-size: 0.8125rem;
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* ── Page body ───────────────────────────────────────────── */
+  .authenticated-layout .page-body {
+    padding: 1rem;
+    padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* ── Page header ─────────────────────────────────────────── */
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+  .page-header h4 {
+    font-size: 1.25rem;
+  }
+  .page-header p {
+    font-size: 0.8125rem;
+  }
+  .page-header .d-flex {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .page-header .btn {
+    width: 100%;
+  }
+
+  /* ── Global back button ──────────────────────────────────── */
+  .global-back-button {
+    top: 4.5rem;
+    left: 0.75rem;
+    width: 36px;
+    height: 36px;
+    z-index: 1010;
+  }
+
+  /* ── Cards ───────────────────────────────────────────────── */
+  .card,
+  .data-card,
+  .filter-card {
+    border-radius: var(--radius-lg);
+    margin-bottom: 1rem;
+  }
+  .card-header {
+    padding: 0.875rem 1rem;
+  }
+  .card-body {
+    padding: 1rem;
+  }
+  .card-footer {
+    padding: 0.75rem 1rem;
+  }
+
+  /* ── Stats cards grid ────────────────────────────────────── */
+  .row.g-3.mb-4 > .col-md-6.col-xl-3 {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+  .stat-card {
+    padding: 1.125rem;
+  }
+  .stat-card .stat-value {
+    font-size: 1.375rem;
+  }
+
+  /* ── Tables → Card list on mobile ────────────────────────── */
+  .table-responsive table.table,
+  .table-responsive table.admin-table {
+    /* Let them render as block cards instead */
+  }
+}
+
+/* ── Mobile: ≤768px ────────────────────────────────────────── */
+@media (max-width: 768px) {
+  body {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* ── Typography ──────────────────────────────────────────── */
+  h1 { font-size: 1.625rem; }
+  h2 { font-size: 1.375rem; }
+  h3 { font-size: 1.25rem; }
+  h4 { font-size: 1.125rem; }
+  h5 { font-size: 1rem; }
+  h6 { font-size: 0.9375rem; }
+
+  /* ── Page body ───────────────────────────────────────────── */
+  .authenticated-layout .page-body {
+    padding: 0.75rem;
+    padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* ── Page header ─────────────────────────────────────────── */
+  .page-header {
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+  .page-header h4 {
+    font-size: 1.125rem;
+  }
+  .page-header .stat-pill {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.75rem;
+  }
+
+  /* ── Stats cards: single column ──────────────────────────── */
+  .row.g-3.mb-4 > .col-md-6.col-xl-3 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+  .stat-card {
+    padding: 1rem;
+  }
+  .stat-card .stat-value {
+    font-size: 1.25rem;
+  }
+  .stat-card .stat-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+
+  /* ── Cards ───────────────────────────────────────────────── */
+  .card,
+  .data-card,
+  .filter-card {
+    border-radius: var(--radius-md);
+    margin-bottom: 0.75rem;
+  }
+  .card-header,
+  .data-card .card-header,
+  .filter-card .card-header {
+    padding: 0.75rem 0.875rem;
+  }
+  .card-header h6,
+  .data-card .card-header h6,
+  .filter-card .card-header h6 {
+    font-size: 0.875rem;
+  }
+  .card-body,
+  .filter-card .card-body {
+    padding: 0.875rem;
+  }
+  .card-footer {
+    padding: 0.625rem 0.875rem;
+  }
+
+  /* ── Tables → Convert to stacked card list ───────────────── */
+  .table-responsive {
+    overflow: visible;
+  }
+  .table-responsive table.table,
+  .table-responsive table.admin-table {
+    display: block;
+    width: 100%;
+  }
+  .table-responsive table.table thead,
+  .table-responsive table.admin-table thead {
+    display: none;
+  }
+  .table-responsive table.table tbody,
+  .table-responsive table.admin-table tbody {
+    display: block;
+    width: 100%;
+  }
+  .table-responsive table.table tbody tr,
+  .table-responsive table.admin-table tbody tr {
+    display: block;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 0.75rem;
+    padding: 0.875rem;
+    position: relative;
+    transition: box-shadow 0.15s;
+  }
+  .table-responsive table.table tbody tr:active,
+  .table-responsive table.admin-table tbody tr:active {
+    background: var(--primary-50);
+  }
+  .table-responsive table.table tbody tr:hover,
+  .table-responsive table.admin-table tbody tr:hover {
+    box-shadow: var(--shadow-md);
+  }
+  .table-responsive table.table tbody tr td,
+  .table-responsive table.admin-table tbody tr td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border-light);
+    gap: 0.5rem;
+    text-align: right;
+  }
+  .table-responsive table.table tbody tr td:last-child,
+  .table-responsive table.admin-table tbody tr td:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+  .table-responsive table.table tbody tr td:first-child,
+  .table-responsive table.admin-table tbody tr td:first-child {
+    padding-top: 0;
+  }
+  /* Label for each cell */
+  .table-responsive table.table tbody tr td::before,
+  .table-responsive table.admin-table tbody tr td::before {
+    content: attr(data-label);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+    text-align: left;
+    flex-shrink: 0;
+    min-width: 80px;
+  }
+  /* Nested cell overrides */
+  .table-responsive table.table tbody tr td .img-cell,
+  .table-responsive table.admin-table tbody tr td .img-cell {
+    order: -1;
+    margin-bottom: 0.25rem;
+  }
+  .table-responsive table.table tbody tr td .img-cell img,
+  .table-responsive table.admin-table tbody tr td .img-cell img {
+    width: 40px;
+    height: 40px;
+  }
+  .table-responsive table.table tbody tr td .img-placeholder,
+  .table-responsive table.admin-table tbody tr td .img-placeholder {
+    width: 40px;
+    height: 40px;
+  }
+  .table-responsive table.table tbody tr td .nama-cell,
+  .table-responsive table.admin-table tbody tr td .nama-cell {
+    text-align: left;
+    flex: 1;
+  }
+  .table-responsive table.table tbody tr td .btn-group,
+  .table-responsive table.admin-table tbody tr td .btn-group {
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+  .table-responsive table.table tbody tr td.text-end,
+  .table-responsive table.admin-table tbody tr td.text-end {
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .table-responsive table.table tbody tr td .d-flex.flex-column.gap-2,
+  .table-responsive table.admin-table tbody tr td .d-flex.flex-column.gap-2 {
+    flex-direction: row !important;
+    width: 100%;
+  }
+  .table-responsive table.table tbody tr td .d-flex.flex-column.gap-2 .btn,
+  .table-responsive table.admin-table tbody tr td .d-flex.flex-column.gap-2 .btn {
+    flex: 1;
+    font-size: 0.75rem;
+    padding: 0.5rem 0.625rem;
+    white-space: nowrap;
+  }
+
+  /* No label for action columns */
+  .table-responsive table.table tbody tr td:last-child::before,
+  .table-responsive table.admin-table tbody tr td:last-child::before {
+    content: none;
+  }
+
+  /* ── Forms ────────────────────────────────────────────────── */
+  .form-control,
+  .form-select {
+    font-size: 16px; /* prevent iOS zoom */
+    padding: 0.75rem 0.875rem;
+    min-height: 44px;
+  }
+  .form-label {
+    font-size: 0.8125rem;
+  }
+  .filter-card .row.g-3 > .col-xl-3.col-md-6 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  /* ── Buttons ─────────────────────────────────────────────── */
+  .btn {
+    min-height: 44px;
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
+  }
+  .btn-sm {
+    min-height: 36px;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.8125rem;
+  }
+  .btn-action {
+    min-width: 44px;
+    min-height: 44px;
+    height: auto;
+    padding: 0.5rem 0.75rem;
+  }
+  .btn-group-vertical {
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+  .btn-group-vertical .btn {
+    border-radius: var(--radius-md) !important;
+    flex: 1;
+  }
+  .page-header .btn {
+    width: 100%;
+  }
+  .d-flex.flex-wrap.gap-2.mt-3 .btn {
+    flex: 1;
+  }
+
+  /* ── Filter card search row ──────────────────────────────── */
+  .filter-card .row.g-2.align-items-center > .col-md-6 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+  .filter-card .row.g-2.align-items-center > .col-md-6.text-end {
+    text-align: left !important;
+  }
+
+  /* ── Info grids / detail items ───────────────────────────── */
+  .info-grid {
+    gap: 0.5rem;
+  }
+  .info-item {
+    font-size: 0.8125rem;
+  }
+
+  /* ── Badges ──────────────────────────────────────────────── */
+  .harga-badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.625rem;
+  }
+
+  /* ── Empty state ─────────────────────────────────────────── */
+  .empty-state {
+    padding: 2.5rem 1rem;
+  }
+  .empty-state .empty-icon {
+    width: 64px;
+    height: 64px;
+  }
+  .empty-state .empty-icon i {
+    font-size: 1.5rem;
+  }
+
+  /* ── Modal ───────────────────────────────────────────────── */
+  .modal-dialog {
+    margin: 0.5rem;
+  }
+  .modal-header {
+    padding: 1rem 1.125rem;
+  }
+  .modal-body {
+    padding: 1.125rem;
+  }
+  .modal-footer {
+    padding: 0.75rem 1.125rem;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .modal-footer .btn {
+    width: 100%;
+  }
+  .modal-footer .btn + .btn {
+    margin-left: 0;
+  }
+
+  /* ── Pagination ──────────────────────────────────────────── */
+  .pagination-wrapper {
+    padding: 0.75rem 0.875rem;
+  }
+
+  /* ── Diagnosis symptom cards ─────────────────────────────── */
+  .symptom-card .symptom-image {
+    height: 120px;
+  }
+  .symptom-shell {
+    padding: 0.75rem;
+  }
+
+  /* ── Admin hero section ──────────────────────────────────── */
+  .admin-hero,
+  .cf-hero {
+    padding: 1.5rem !important;
+    border-radius: var(--radius-lg) !important;
+    margin-bottom: 1rem !important;
+  }
+  .admin-hero .hero-title,
+  .cf-hero .cf-hero-title {
+    font-size: 1.25rem !important;
+  }
+  .admin-hero .hero-sub,
+  .cf-hero .cf-hero-sub {
+    font-size: 0.8125rem !important;
+  }
+  .admin-hero .hero-summary-card {
+    padding: 1rem !important;
+  }
+  .admin-hero .d-flex.flex-wrap.gap-2 .btn-hero-primary,
+  .admin-hero .d-flex.flex-wrap.gap-2 .btn-hero-outline {
+    flex: 1;
+    justify-content: center;
+    font-size: 0.8125rem;
+    padding: 0.625rem 1rem;
+  }
+  .hero-floating-stats {
+    gap: 0.5rem;
+  }
+  .hero-stat-pill {
+    font-size: 0.6875rem;
+    padding: 0.375rem 0.625rem;
+  }
+
+  /* ── Banner/alert info row ───────────────────────────────── */
+  .alert.d-flex.justify-content-between.align-items-center {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: stretch !important;
+  }
+
+  /* ── Section cards ──────────────────────────────────────── */
+  .section-card-header {
+    padding: 0.75rem 1rem;
+  }
+  .section-card-title {
+    font-size: 0.875rem;
+  }
+  .mini-item,
+  .bar-row {
+    padding: 0.75rem 1rem;
+  }
+  .admin-table thead th,
+  .table thead th {
+    padding: 0.625rem 0.875rem;
+    font-size: 0.625rem;
+  }
+
+  /* ── CF form tables ──────────────────────────────────────── */
+  .penyakit-item {
+    padding: 0.75rem !important;
+  }
+  .penyakit-item .table-responsive table.table-bordered {
+    display: block;
+    width: 100%;
+  }
+  .penyakit-item .table-responsive table.table-bordered thead {
+    display: none;
+  }
+  .penyakit-item .table-responsive table.table-bordered tbody,
+  .penyakit-item .table-responsive table.table-bordered tbody tr {
+    display: block;
+    width: 100%;
+  }
+  .penyakit-item .table-responsive table.table-bordered tbody tr {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+  .penyakit-item .table-responsive table.table-bordered tbody tr td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.375rem 0;
+    border: none !important;
+    text-align: right;
+    gap: 0.5rem;
+  }
+  .penyakit-item .table-responsive table.table-bordered tbody tr td::before {
+    content: attr(data-label);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+    text-align: left;
+  }
+  .penyakit-item .table-responsive table.table-bordered tbody tr td:last-child {
+    padding-bottom: 0;
+  }
+
+  /* ── Pref card inputs ────────────────────────────────────── */
+  .pref-card {
+    padding: 1rem;
+  }
+  .pref-card-label {
+    font-size: 0.8125rem;
+  }
+
+  /* ── Footer ──────────────────────────────────────────────── */
+  .footer-container {
+    padding: 1.5rem 1rem 5rem !important;
+    gap: 1.5rem !important;
+  }
+  .footer-desc {
+    font-size: 0.8125rem;
+  }
+  .footer-links {
+    gap: 1.5rem !important;
+  }
+  .footer-col h6 {
+    font-size: 0.75rem;
+  }
+  .footer-col a {
+    font-size: 0.8125rem;
+  }
+
+  /* ── Crop modal ──────────────────────────────────────────── */
+  .crop-modal .modal-dialog {
+    max-width: 100%;
+    margin: 0.5rem;
+  }
+  .crop-wrapper {
+    width: 100%;
+  }
+  .crop-controls {
+    flex-direction: column;
+  }
+  .crop-btn {
+    width: 100%;
+  }
+}
+
+/* ── Momentum scrolling & touch optimizations ──────────────── */
+@media (max-width: 1024px) {
+  .sidebar-nav {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+  .sidebar-nav::-webkit-scrollbar {
+    width: 3px;
+  }
+  .sidebar-nav::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.15);
+    border-radius: 99px;
+  }
+
+  /* Prevent double-tap zoom on interactive elements */
+  a, button, .btn, .bottom-nav-item,
+  .nav-link, .form-control, .form-select,
+  [role="button"], label, select, input, textarea {
+    touch-action: manipulation;
+  }
+}
+
+/* ── Admin riwayat detail: compare-row wrap ────────────────── */
+@media (max-width: 768px) {
+  .compare-row {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .compare-row .product-info {
+    min-width: 0;
+    flex: 1 1 100%;
+  }
+  .compare-row .product-info .code {
+    font-size: 0.65rem;
+  }
+  .score-meter {
+    flex: 1 1 100%;
+    min-width: 60px;
+  }
+
+  /* Disease image in show page */
+  .disease-hero img,
+  img[style*="height: 160px"] {
+    height: 120px !important;
+  }
+
+  /* Case card images in user dashboard */
+  .case-media,
+  .case-media-empty {
+    height: 140px !important;
+  }
+
+  /* Admin page-header stat-pill full width on mobile */
+  .page-header .d-flex.align-items-center.gap-3 {
+    flex-direction: column;
+    align-items: stretch !important;
+  }
+  .page-header .d-flex.align-items-center.gap-3 .btn-spk {
+    width: 100%;
+  }
+
+  /* Pengguna table: verifikasi manual button */
+  .btn-group-vertical {
+    flex-direction: row;
+    gap: 0.375rem;
+  }
+
+  /* Diagnosis: symptom card label stacking */
+  .symptom-shell .d-flex.flex-wrap.gap-2.align-items-center.mb-2 {
+    flex-direction: column;
+    align-items: flex-start !important;
+  }
+
+  /* Riwayat detail: perhitungan CF banner */
+  .d-flex.align-items-center.justify-content-between.flex-wrap.gap-2.p-3 {
+    gap: 0.5rem;
+  }
+  .d-flex.align-items-center.justify-content-between.flex-wrap.gap-2.p-3 .d-flex.align-items-center.gap-3 {
+    flex-wrap: wrap;
+  }
+
+  /* Info banner on detail page */
+  .d-flex.align-items-center.justify-content-between.flex-wrap.gap-2.mb-4.p-3 {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  /* Award/item banners */
+  .winner-badge {
+    font-size: 0.7rem;
+    padding: 0.375rem 0.75rem;
+  }
+}
+
+/* ── Small Mobile: ≤480px ──────────────────────────────────── */
+@media (max-width: 480px) {
+  .authenticated-layout .page-body {
+    padding: 0.625rem;
+    padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .table-responsive table.table tbody tr,
+  .table-responsive table.admin-table tbody tr {
+    padding: 0.75rem;
+  }
+  .table-responsive table.table tbody tr td,
+  .table-responsive table.admin-table tbody tr td {
+    padding: 0.375rem 0;
+    font-size: 0.8125rem;
+  }
+  .table-responsive table.table tbody tr td::before,
+  .table-responsive table.admin-table tbody tr td::before {
+    font-size: 0.625rem;
+    min-width: 60px;
+  }
+
+  .card-header,
+  .data-card .card-header,
+  .filter-card .card-header {
+    padding: 0.625rem 0.75rem;
+  }
+  .card-body,
+  .filter-card .card-body {
+    padding: 0.75rem;
+  }
+
+  .admin-hero,
+  .cf-hero {
+    padding: 1.125rem !important;
+  }
+  .admin-hero .hero-title,
+  .cf-hero .cf-hero-title {
+    font-size: 1.125rem !important;
+  }
+
+  .stat-card {
+    padding: 0.875rem;
+  }
+  .stat-card .stat-value {
+    font-size: 1.125rem;
+  }
+
+  .page-header h4 {
+    font-size: 1rem;
+  }
+
+  .symptom-card .symptom-image {
+    height: 100px;
+  }
+
+  /* Accordion sizing for CF detail */
+  .accordion-body .flow-step {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .accordion-body .flow-step .step-num {
+    width: 28px;
+    height: 28px;
+    font-size: 0.75rem;
+  }
+  .accordion-body .d-flex.flex-wrap.align-items-center.gap-3 {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 0.25rem;
+  }
+
+  /* Perhitungan banner pills */
+  .pill {
+    font-size: 0.65rem;
+    padding: 0.2rem 0.5rem;
+  }
+
+  /* Small banners on detail page */
+  .d-flex.align-items-center.justify-content-between.flex-wrap.gap-2.mb-4.p-3 {
+    padding: 0.75rem !important;
+  }
+
+  /* Riwayat user avatar + info */
+  td[data-label="Pengguna"] > div[style*="display: flex"] {
+    flex-wrap: wrap;
+  }
+
+  /* Stack riwayat action buttons vertically at smallest sizes */
+  .d-flex.flex-column.gap-2[style*="min-width: 150px"] {
+    min-width: 0 !important;
+  }
+}

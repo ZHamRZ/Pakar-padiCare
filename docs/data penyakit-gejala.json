@@ -1,0 +1,152 @@
+[
+  {
+    "gejala_id": "G01",
+    "penyakit_cf": [
+      {"penyakit_id": "P01", "mb": 0.90, "md": 0.00},
+      {"penyakit_id": "P02", "mb": 0.00, "md": 0.90},
+      {"penyakit_id": "P03", "mb": 0.00, "md": 0.90},
+      {"penyakit_id": "P04", "mb": 0.00, "md": 0.70},
+      {"penyakit_id": "P05", "mb": 0.00, "md": 0.50}
+    ]
+  },
+  {
+    "gejala_id": "G02",
+    "penyakit_cf": [
+      {"penyakit_id": "P01", "mb": 0.80, "md": 0.00},
+      {"penyakit_id": "P02", "mb": 0.00, "md": 0.70},
+      {"penyakit_id": "P03", "mb": 0.00, "md": 0.90},
+      {"penyakit_id": "P04", "mb": 0.00, "md": 0.30},
+      {"penyakit_id": "P05", "mb": 0.00, "md": 0.70}
+    ]
+  },
+  {
+    "gejala_id": "G03",
+    "penyakit_cf": [
+      {"penyakit_id": "P01", "mb": 0.90, "md": 0.00},
+      {"penyakit_id": "P02", "mb": 0.00, "md": 0.90},
+      {"penyakit_id": "P03", "mb": 0.00, "md": 0.90},
+      {"penyakit_id": "P04", "mb": 0.00, "md": 0.70},
+      {"penyakit_id": "P05", "mb": 0.00, "md": 0.70}
+    ]
+  },
+  {
+    "gejala_id": "G04",
+    "penyakit_cf": [
+      {"penyakit_id": "P01", "mb": 0.00, "md": 0.50},
+      {"penyakit_id": "P02", "mb": 0.75, "md": 0.00},
+      {"penyakit_id": "P03", "mb": 0.00, "md": 0.30},
+      {"penyakit_id": "P04", "mb": 0.00, "md": 0.90},
+      {"penyakit_id": "P05", "mb": 0.00, "md": 0.70}
+    ]
+  },
+  {
+    "gejala_id": "G05",
+    "penyakit_cf": [
+      {"penyakit_id": "P01", "mb": 0.00, "md": 0.70},
+      {"penyakit_id": "P02", "mb": 0.90, "md": 0.00},
+      {"penyakit_id": "P03", "mb": 0.00, "md": 0.90},
+      {"penyakit_id": "P04", "mb": 0.00, "md": 0.90},
+      {"penyakit_id": "P05", "mb": 0.00, "md": 0.70}
+    ]
+  },
+  {
+    "gejala_id": "G06",
+    "penyakit_cf": [
+      {"penyakit_id": "P01", "mb": 0.00, "md": 0.95},
+      {"penyakit_id": "P02", "mb": 1.00, "md": 0.00},
+      {"penyakit_id": "P03", "mb": 0.00, "md": 0.95},
+      {"penyakit_id": "P04", "mb": 0.00, "md": 0.95},
+      {"penyakit_id": "P05", "mb": 0.00, "md": 0.95}
+    ]
+  },
+  {
+    "gejala_id": "G07",
+    "penyakit_cf": [
+      {"penyakit_id": "P01", "mb": 0.00, "md": 0.70},
+      {"penyakit_id": "P02", "mb": 0.00, "md": 0.50},
+      {"penyakit_id": "P03", "mb": 0.90, "md": 0.00},
+      {"penyakit_id": "P04", "mb": 0.00, "md": 0.90},
+      {"penyakit_id": "P05", "mb": 0.00, "md": 0.70}
+    ]
+  },
+  {
+    "gejala_id": "G08",
+    "penyakit_cf": [
+      {"penyakit_id": "P01", "mb": 0.00, "md": 0.70},
+      {"penyakit_id": "P02", "mb": 0.00, "md": 0.30},
+      {"penyakit_id": "P03", "mb": 0.80, "md": 0.00},
+      {"penyakit_id": "P04", "mb": 0.00, "md": 0.90},
+      {"penyakit_id": "P05", "mb": 0.00, "md": 0.70}
+    ]
+  },
+  {
+    "gejala_id": "G09",
+    "penyakit_cf": [
+      {"penyakit_id": "P01", "mb": 0.00, "md": 0.50},
+      {"penyakit_id": "P02", "mb": 0.00, "md": 0.50},
+      {"penyakit_id": "P03", "mb": 0.90, "md": 0.00},
+      {"penyakit_id": "P04", "mb": 0.00, "md": 0.50},
+      {"penyakit_id": "P05", "mb": 0.00, "md": 0.50}
+    ]
+  },
+  {
+    "gejala_id": "G10",
+    "penyakit_cf": [
+      {"penyakit_id": "P01", "mb": 0.00, "md": 0.30},
+      {"penyakit_id": "P02", "mb": 0.00, "md": 0.90},
+      {"penyakit_id": "P03", "mb": 0.00, "md": 0.90},
+      {"penyakit_id": "P04", "mb": 0.80, "md": 0.00},
+      {"penyakit_id": "P05", "mb": 0.00, "md": 0.50}
+    ]
+  },
+  {
+    "gejala_id": "G11",
+    "penyakit_cf": [
+      {"penyakit_id": "P01", "mb": 0.00, "md": 0.70},
+      {"penyakit_id": "P02", "mb": 0.00, "md": 0.90},
+      {"penyakit_id": "P03", "mb": 0.00, "md": 0.90},
+      {"penyakit_id": "P04", "mb": 0.90, "md": 0.00},
+      {"penyakit_id": "P05", "mb": 0.00, "md": 0.90}
+    ]
+  },
+  {
+    "gejala_id": "G12",
+    "penyakit_cf": [
+      {"penyakit_id": "P01", "mb": 0.00, "md": 0.90},
+      {"penyakit_id": "P02", "mb": 0.00, "md": 0.95},
+      {"penyakit_id": "P03", "mb": 0.00, "md": 0.95},
+      {"penyakit_id": "P04", "mb": 1.00, "md": 0.00},
+      {"penyakit_id": "P05", "mb": 0.00, "md": 0.90}
+    ]
+  },
+  {
+    "gejala_id": "G13",
+    "penyakit_cf": [
+      {"penyakit_id": "P01", "mb": 0.00, "md": 0.30},
+      {"penyakit_id": "P02", "mb": 0.00, "md": 0.70},
+      {"penyakit_id": "P03", "mb": 0.00, "md": 0.90},
+      {"penyakit_id": "P04", "mb": 0.00, "md": 0.50},
+      {"penyakit_id": "P05", "mb": 0.90, "md": 0.00}
+    ]
+  },
+  {
+    "gejala_id": "G14",
+    "penyakit_cf": [
+      {"penyakit_id": "P01", "mb": 0.00, "md": 0.10},
+      {"penyakit_id": "P02", "mb": 0.00, "md": 0.70},
+      {"penyakit_id": "P03", "mb": 0.00, "md": 0.70},
+      {"penyakit_id": "P04", "mb": 0.00, "md": 0.50},
+      {"penyakit_id": "P05", "mb": 0.80, "md": 0.00}
+    ]
+  },
+  {
+    "gejala_id": "G15",
+    "penyakit_cf": [
+      {"penyakit_id": "P01", "mb": 0.00, "md": 0.00},
+      {"penyakit_id": "P02", "mb": 0.00, "md": 0.40},
+      {"penyakit_id": "P03", "mb": 0.00, "md": 0.60},
+      {"penyakit_id": "P04", "mb": 0.00, "md": 0.20},
+      {"penyakit_id": "P05", "mb": 0.30, "md": 0.00}
+    ]
+  }
+]

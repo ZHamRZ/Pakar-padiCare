@@ -1,0 +1,84 @@
+4.3.3 Implementasi Antarmuka Sistem
+
+Penjelasan mengenai implementasi antarmuka sistem yang dibangun pada penelitian ini disusun berdasarkan tiga kelompok pengguna yaitu tamu/guest, petani/user, dan admin. Setiap halaman telah disesuaikan dengan kebutuhan akses masing-masing peran.
+
+1. Halaman Guest/Tamu
+
+   a. Halaman Login
+      Halaman login merupakan pintu masuk bagi pengguna yang telah terdaftar. Formulir terdiri dari input username dan password. Sistem menggunakan mekanisme autentikasi kustom berbasis username (bukan email) sesuai dengan kebutuhan petani di lapangan. Setelah berhasil login, pengguna diarahkan ke dashboard masing-masing berdasarkan peran (role). Halaman ini dibangun dengan Bootstrap 5.3 dan menampilkan logo PadiCare di bagian atas form.
+
+   b. Halaman Register
+      Halaman register menyediakan formulir pendaftaran bagi pengguna baru. Data yang dimasukkan meliputi nama lengkap, username, email, password, dan konfirmasi password. Setelah registrasi, pengguna diarahkan ke halaman login. Sistem mengirimkan token verifikasi email secara otomatis melalui signed URL.
+
+   c. Halaman Beranda
+      Halaman beranda merupakan landing page yang menyambut pengunjung sistem. Menampilkan hero section dengan deskripsi singkat PadiCare, tiga fitur utama (Konsultasi Cerdas, Rekomendasi Tepat, dan Basis Pengetahuan Lengkap), serta penjelasan cara kerja sistem dalam tiga langkah (Pilih Gejala, Analisis Pakar, dan Dapatkan Rekomendasi). Halaman ini bersifat publik dan dapat diakses tanpa autentikasi.
+
+   d. Halaman Konsultasi (Guest)
+      Halaman konsultasi untuk pengguna yang belum login merupakan proses multi-langkah (wizard) yang terdiri dari dua tahap:
+      1) Tahap pemilihan gejala — pengguna memilih gejala-gejala yang dialami tanaman padi melalui daftar checkbox yang dilengkapi gambar gejala.
+      2) Tahap preferensi — pengguna memilih prioritas (Hemat, Efisiensi, Seimbang) dan mengatur tingkat keyakinan (confidence) melalui slider 0–100%.
+      Setelah selesai, sistem menghitung diagnosis menggunakan metode Certainty Factor dan menyimpan hasil sementara ke dalam session.
+
+   e. Halaman Hasil
+      Halaman hasil menampilkan output diagnosis berupa nama penyakit yang terdeteksi, tingkat keyakinan (confidence) dalam persentase beserta label interpretasi (Sangat Yakin, Cukup Yakin, dll), gejala-gejala yang cocok, serta rekomendasi pupuk dan pestisida yang diurutkan berdasarkan skor CF. Setiap rekomendasi dilengkapi detail dosis/takaran dan cara aplikasi. Guest pengguna diarahkan untuk login/mendaftar jika ingin menyimpan hasil.
+
+2. Halaman Petani/User
+
+   a. Halaman Dashboard Petani
+      Setelah login sebagai petani, pengguna disambut dashboard yang menampilkan ringkasan aktivitas. Terdapat kartu statistik (Total Konsultasi, Penyakit Terdiagnosis, dan Riwayat Bulan Ini), grafik perkembangan konsultasi per bulan, serta tabel lima riwayat konsultasi terbaru. Dari sini petani dapat langsung memulai konsultasi baru atau melihat detail riwayat.
+
+   b. Halaman Konsultasi (Petani)
+      Proses konsultasi untuk pengguna yang sudah login memiliki alur yang sama dengan versi guest, namun hasilnya akan tersimpan secara permanen ke dalam database dan tercatat dalam riwayat konsultasi petani.
+
+   c. Halaman Riwayat Konsultasi
+      Menampilkan daftar seluruh konsultasi yang pernah dilakukan oleh petani dalam bentuk tabel yang dilengkapi informasi tanggal, penyakit hasil diagnosis, prioritas yang dipilih, dan tingkat keyakinan. Setiap baris dilengkapi tombol untuk melihat detail lengkap. Tabel dapat difilter berdasarkan rentang tanggal dan kolom dapat diurutkan.
+
+   d. Halaman Detail Riwayat
+      Menampilkan informasi lengkap hasil konsultasi meliputi nama penyakit, gejala yang dipilih, confidence score, serta daftar rekomendasi pupuk dan pestisida lengkap dengan peringkat, skor, dan detail aplikasi.
+
+   e. Halaman Ubah Profil
+      Petani dapat mengupdate data profil seperti nama lengkap, username, dan email melalui formulir yang telah diisi dengan data sebelumnya.
+
+   f. Halaman Ganti Password
+      Menyediakan formulir untuk mengubah kata sandi yang mewajibkan input password lama, password baru, dan konfirmasi password baru.
+
+3. Halaman Admin
+
+   a. Halaman Dashboard Admin
+      Dashboard admin menyajikan gambaran umum sistem melalui lima kartu statistik utama yang menampilkan jumlah total: gejala, penyakit, pupuk, pestisida, dan pengguna. Halaman ini juga menampilkan tiga grafik interaktif menggunakan Chart.js, yakni: Grafik Sebaran Diagnosis (bar chart distribusi penyakit berdasarkan hasil diagnosis), Grafik Perbandingan Pupuk vs Pestisida (doughnut chart perbandingan jumlah rekomendasi pupuk dan pestisida yang diberikan), serta Grafik Konsultasi Bulanan (line chart tren jumlah konsultasi per bulan). Di bagian bawah terdapat dua tabel yang menampilkan lima penyakit paling sering muncul dan lima pengguna paling aktif.
+
+   b. Halaman Data Gejala
+      Halaman ini menampilkan seluruh data gejala dalam bentuk tabel dengan kolom kode gejala, nama gejala, gambar, dan aksi. Admin dapat menambahkan gejala baru, mengedit, atau menghapus gejala. Pencarian berdasarkan kode atau nama gejala tersedia untuk memudahkan navigasi data yang banyak. Setiap gejala dapat dilengkapi dengan gambar pendukung.
+
+   c. Halaman Data Penyakit
+      Menampilkan daftar penyakit dalam bentuk kartu yang dilengkapi gambar, nama, dan kode penyakit. Setiap kartu memiliki tombol untuk melihat detail, mengedit, dan menghapus. Halaman detail menampilkan informasi lengkap penyakit termasuk daftar gejala terkait beserta nilai Certainty Factor (MB/MD) masing-masing.
+
+   d. Halaman Form Penyakit (Tambah/Edit)
+      Formulir penyakit terdiri dari input kode (dibuat otomatis oleh sistem), nama penyakit, gambar, dan deskripsi. Fitur utama halaman ini adalah tabel Rule Gejala Penyakit yang menampilkan seluruh gejala dalam bentuk baris dengan checkbox untuk memilih gejala terkait serta input MB (Measure of Belief) dan MD (Measure of Disbelief) untuk setiap gejala. Nilai MB/MD ini merupakan input dari pakar yang akan digunakan dalam perhitungan Certainty Factor.
+
+   e. Halaman Data Pupuk
+      Menampilkan data pupuk dalam bentuk tabel dengan kolom kode, nama, jenis, dosis per hektar, satuan dosis, harga per hektar, cara aplikasi, dan aksi. Admin memiliki akses CRUD penuh termasuk unggah gambar produk. Fitur pencarian disediakan untuk memudahkan pengelolaan data.
+
+   f. Halaman Data Pestisida
+      Menampilkan data pestisida dalam bentuk tabel dengan struktur serupa dengan halaman pupuk, meliputi kode, nama, jenis, dosis, harga, cara aplikasi, gambar, dan aksi CRUD.
+
+   g. Halaman Nilai CF Pupuk
+      Halaman ini menyajikan tabel yang menghubungkan antara pupuk dan penyakit. Admin dapat mengatur nilai MB dan MD untuk setiap pasangan pupuk-penyakit. Nilai ini merepresentasikan tingkat kepercayaan pakar terhadap efektivitas suatu pupuk dalam menangani penyakit tertentu. Tabel dikelompokkan per penyakit untuk memudahkan pengaturan.
+
+   h. Halaman Nilai CF Pestisida
+      Serupa dengan halaman CF Pupuk, halaman ini digunakan untuk mengatur nilai MB dan MD pada relasi pestisida-penyakit. Data ini menjadi dasar perhitungan Certainty Factor dalam rekomendasi pestisida.
+
+   i. Halaman Data User
+      Menampilkan daftar seluruh pengguna sistem (admin dan petani) dalam bentuk tabel dengan kolom nama, username, email, role (ditampilkan dalam bentuk badge), status verifikasi email, dan aksi. Admin dapat menambahkan pengguna baru, mengedit data, atau menghapus akun. Saat menambah atau mengedit pengguna, admin dapat memilih role antara admin atau petani.
+
+   j. Halaman Riwayat Konsultasi
+      Menampilkan seluruh riwayat konsultasi dari semua pengguna dalam bentuk tabel dengan kolom nama pengguna, penyakit hasil diagnosis, tanggal konsultasi, prioritas, dan aksi. Admin dapat melihat detail teknis perhitungan, mencetak laporan, dan memfilter data berdasarkan rentang tanggal.
+
+   k. Halaman Detail Riwayat Admin
+      Halaman ini menampilkan detail teknis perhitungan Certainty Factor yang digunakan sistem untuk menyusun skor akhir setiap alternatif. Terdapat dua tabel (Pupuk dan Pestisida) yang menampilkan peringkat, kode, nama, dan skor akhir setiap produk. Setiap baris dapat diperluas (collapse) untuk menampilkan detail perhitungan rule-by-rule yang meliputi: kode rule, jenis, preferensi user, MB tambahan, MD tambahan, dampak, dan catatan. Informasi CF dasar dan CF akhir ditampilkan di bagian bawah setiap detail produk.
+
+   l. Halaman Cetak Riwayat
+      Halaman ini dirancang khusus untuk pencetakan (printer-friendly) dengan tata letak yang bersih tanpa navigasi sidebar. Menampilkan laporan lengkap konsultasi meliputi: informasi pengguna, waktu konsultasi, diagnosis, prioritas user, gejala yang dipakai, serta tabel rekomendasi pupuk dan pestisida lengkap dengan peringkat, skor, takaran/dosis, dan cara aplikasi. Dilengkapi tombol Cetak/Simpan PDF dan Download HTML.
+
+   m. Halaman Kriteria Preferensi
+      Menampilkan daftar preferensi sistem dalam bentuk kartu. Setiap preferensi terdiri dari key, value, judul (nama), dan deskripsi. Preferensi yang dikelola meliputi: ambang batas anggaran (budget thresholds) untuk pemilihan preset otomatis berdasarkan luas lahan dikali harga per hektar, tingkat toleransi risiko (risk tolerance) dengan pengali confidence (konservatif 1.0x, moderate 0.85x, eksperimental 0.7x), serta nilai default confidence slider. Admin dapat menambah, mengedit, dan menghapus preferensi sesuai kebutuhan.
