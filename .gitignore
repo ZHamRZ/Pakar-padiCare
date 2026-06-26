@@ -1,4 +1,43 @@
 /vendor
 /node_modules
 .env
+.env.*
+!.env.example
+
+# AI / Agent config
+AGENTS.md
+agent.md
+agents.md
+.codex
+.agents/
+.opencode/
+.claude/
+.cursor/
+
+# Build artifacts
+/public/build/
+
+# Database dumps
+*.sql
+!*.sql.example
+
+# IDE
+.idea/
+.vscode/
+.fleet/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+/logs/
+
+# Cache
 .phpunit.result.cache
+
+# Orphan files
+.gitignore.save
